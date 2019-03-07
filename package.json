@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
     "express": "^4.16.4",
+    "knex": "^0.16.3",
     "mysql2": "^1.6.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.3",
-    "sequelize": "^4.42.0"
+    "react-scripts": "^2.1.8",
+    "redux": "^4.0.1"
   },
   "scripts": {
     "start": "client-build && server-start",
