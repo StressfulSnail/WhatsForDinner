@@ -19,12 +19,14 @@ After cloning repository run: `npm install`
 ## Core Libraries
 ### Frontend
 - [React.js](https://reactjs.org/docs/getting-started.html)
+  - [Redux](https://redux.js.org/introduction/getting-started)
   - [react-router](https://reacttraining.com/react-router/web/guides/quick-start)
   - [Jest](https://jestjs.io/docs/en/getting-started) + [Enzyme](https://airbnb.io/enzyme/)
+  - [Material UI](https://material-ui.com/)
 
 ### Backend
 - [Node.js](https://nodejs.org/api/)
 - [Express](https://expressjs.com/en/4x/api.html)
   - [Passport.js](http://www.passportjs.org/docs/) + [passport-local](http://www.passportjs.org/packages/passport-local/)
-  - [Sequelize](http://docs.sequelizejs.com/)
+  - [Knex.js](https://knexjs.org/#Builder)
 - [Jest](https://jestjs.io/docs/en/getting-started)
