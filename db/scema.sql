@@ -44,7 +44,7 @@ CREATE TABLE `personal_recipe` (
   `recipe_id` INT NOT NULL,
   `account_id` INT NOT NULL,
   `note` VARCHAR(255),
-  PRIMARY KEY (`recipe_id`, `account_id`),
+  PRIMARY KEY (`recipe_id`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipe`(`recipe_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account`(`account_id`)
 );
