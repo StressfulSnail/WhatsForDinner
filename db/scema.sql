@@ -58,7 +58,8 @@ CREATE TABLE `shared_recipe` (
 CREATE TABLE `tag_type` (
   `tag_type_id` INT NOT NULL AUTO_INCREMENT,
   `type_name` VARCHAR(15) NOT NULL,
-  PRIMARY KEY (`tag_type_id`)
+  PRIMARY KEY (`tag_type_id`),
+  UNIQUE KEY unique_type_name (`type_name`)
 );
 
 CREATE TABLE `tag` (
@@ -66,6 +67,7 @@ CREATE TABLE `tag` (
   `tag_type_id` INT NOT NULL,
   `tag_name` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`tag_id`),
+  UNIQUE KEY unique_tag_name (`tag_name`),
   FOREIGN KEY (`tag_type_id`) REFERENCES `tag_type`(`tag_type_id`)
 );
 
@@ -81,13 +83,15 @@ CREATE TABLE `recipe_tag` (
 CREATE TABLE `measurement_unit` (
   `unit_id` INT NOT NULL AUTO_INCREMENT,
   `unit_name` VARCHAR(15) NOT NULL,
-  PRIMARY KEY (`unit_id`)
+  PRIMARY KEY (`unit_id`),
+  UNIQUE KEY unique_unit_name (`unit_name`)
 );
 
 CREATE TABLE `ingredient` (
   `ingredient_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`ingredient_id`)
+  PRIMARY KEY (`ingredient_id`),
+  UNIQUE KEY unique_name (`name`)
 );
 
 CREATE TABLE `ingredient_count` (
