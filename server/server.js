@@ -1,6 +1,7 @@
+require('dotenv').config(); // Load in environment variables from .env
 const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => res.send('Hello!'));
 
-app.listen(3001, () => console.log(`Server listening on port 3001!`));
+app.listen(process.env.SERVER_PORT, () => console.log(`Server listening on port ${process.env.SERVER_PORT}!`));
