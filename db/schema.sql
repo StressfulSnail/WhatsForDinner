@@ -12,6 +12,8 @@ CREATE TABLE `account` (
   `last_name` VARCHAR(50),
   `sub_level` TINYINT NOT NULL,
   `confirmed` TINYINT NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`account_id`),
   UNIQUE KEY unique_email (`email`),
   UNIQUE KEY unique_username (`username`)
@@ -22,6 +24,8 @@ CREATE TABLE `meal_plan` (
   `account_id` INT NOT NULL,
   `start_date` DATE NOT NULL,
   `end_date` DATE NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`meal_plan_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account`(`account_id`)
 );
@@ -36,6 +40,8 @@ CREATE TABLE `recipe` (
   `prep_instructions` TEXT,
   `taste_rating` TINYINT,
   `difficulty_rating` TINYINT,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   INDEX (`name`),
   PRIMARY KEY (`recipe_id`)
 );
@@ -44,6 +50,8 @@ CREATE TABLE `personal_recipe` (
   `recipe_id` INT NOT NULL,
   `account_id` INT NOT NULL,
   `note` VARCHAR(255),
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`recipe_id`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipe`(`recipe_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account`(`account_id`)
@@ -51,6 +59,8 @@ CREATE TABLE `personal_recipe` (
 
 CREATE TABLE `shared_recipe` (
   `recipe_id` INT NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`recipe_id`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipe`(`recipe_id`)
 );
@@ -58,6 +68,8 @@ CREATE TABLE `shared_recipe` (
 CREATE TABLE `tag_type` (
   `tag_type_id` INT NOT NULL AUTO_INCREMENT,
   `type_name` VARCHAR(15) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`tag_type_id`),
   UNIQUE KEY unique_type_name (`type_name`)
 );
@@ -66,6 +78,8 @@ CREATE TABLE `tag` (
   `tag_id` INT NOT NULL AUTO_INCREMENT,
   `tag_type_id` INT NOT NULL,
   `tag_name` VARCHAR(15) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY unique_tag_name (`tag_name`),
   FOREIGN KEY (`tag_type_id`) REFERENCES `tag_type`(`tag_type_id`)
@@ -75,6 +89,8 @@ CREATE TABLE `tag` (
 CREATE TABLE `recipe_tag` (
   `recipe_id` INT NOT NULL,
   `tag_id` INT NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`recipe_id`, `tag_id`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipe`(`recipe_id`),
   FOREIGN KEY (`tag_id`) REFERENCES `tag`(`tag_id`)
@@ -83,6 +99,8 @@ CREATE TABLE `recipe_tag` (
 CREATE TABLE `measurement_unit` (
   `unit_id` INT NOT NULL AUTO_INCREMENT,
   `unit_name` VARCHAR(15) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`unit_id`),
   UNIQUE KEY unique_unit_name (`unit_name`)
 );
@@ -90,6 +108,8 @@ CREATE TABLE `measurement_unit` (
 CREATE TABLE `ingredient` (
   `ingredient_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`ingredient_id`),
   UNIQUE KEY unique_name (`name`)
 );
@@ -99,6 +119,8 @@ CREATE TABLE `ingredient_count` (
   `ingredient_id` INT NOT NULL,
   `unit_id` INT NOT NULL,
   `measurement` FLOAT NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`recipe_id`, `ingredient_id`),
   FOREIGN KEY (`unit_id`) REFERENCES `measurement_unit`(`unit_id`)
 );
@@ -110,6 +132,8 @@ CREATE TABLE `meal` (
   `meal_time` INT,
   `servings_required` INT,
   `note` VARCHAR(255),
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`meal_id`),
   FOREIGN KEY (`meal_plan_id`) REFERENCES `meal_plan`(`meal_plan_id`)
 );
@@ -117,6 +141,8 @@ CREATE TABLE `meal` (
 CREATE TABLE `meal_recipe` (
   `meal_id` INT NOT NULL,
   `recipe_id` INT NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`meal_id`, `recipe_id`),
   FOREIGN KEY (`meal_id`) REFERENCES `meal`(`meal_id`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipe`(`recipe_id`)
@@ -128,6 +154,8 @@ CREATE TABLE `comment` (
   `account_id` INT NOT NULL,
   `comment_date` DATETIME NOT NULL,
   `comment_text` VARCHAR(255) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL,
+  `modified_on` TIMESTAMP NOT NULL,
   PRIMARY KEY (`comment_id`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipe`(`recipe_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account`(`account_id`)
