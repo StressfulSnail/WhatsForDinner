@@ -18,18 +18,51 @@ class AccountService {
         return account;
     }
 
+    _modelToTable(accountModel) {
+        return {
+            account_id: accountModel.id,
+            email: accountModel.email,
+            username: accountModel.username,
+            password: accountModel.password,
+            payment_info: accountModel.paymentInfo,
+            first_name: accountModel.firstName,
+            middle_name: accountModel.middleName,
+            last_name: accountModel.lastName,
+            sub_level: accountModel.subscriptionLevel,
+            confirmed: accountModel.confirmed ? 1 : 0,
+        }
+    }
+
     async getAccount(id) {
-        const account = await knex.select()
+        const accounts = await knex.select()
             .from('account')
             .where({ 'account_id': id });
 
-        const accountModel = this._tableToModel(account[0]);
-        accountModel.password = null;
-        return accountModel;
+        return accounts.length === 0 ? null : this._tableToModel(accounts[0]);
+    }
+
+    async findByEmail(email) {
+        const accounts = await knex.select()
+            .from('account')
+            .where({ 'email': email });
+        return accounts.length === 0 ? null : this._tableToModel(accounts[0]);
+    }
+
+    async findByUsername(username) {
+        const accounts = await knex.select()
+            .from('account')
+            .where({ 'username': username });
+        return accounts.length === 0 ? null : this._tableToModel(accounts[0]);
     }
 
     async saveAccount(account) {
-
+        const accountData = this._modelToTable(account);
+        accountData.account_id = null;
+        await knex.insert({
+            ...accountData,
+            created_on: knex.fn.now(),
+            modified_on: knex.fn.now(),
+        }).into('account');
     }
 }
 
