@@ -1,5 +1,5 @@
-const accountService = require('./accountService');
-const Account = require('../model/Account');
+const accountService = jest.requireActual('./accountService');
+const Account = jest.requireActual('../model/Account');
 
 let modal;
 let table;
@@ -32,12 +32,14 @@ beforeEach(() => {
    };
 });
 
-it('can convert table object to modal', () => {
-   const output = accountService._tableToModel(table);
-   expect(output).toEqual(modal);
-});
+describe('account data converters', () => {
+   it('can convert table object to modal', () => {
+      const output = accountService._tableToModel(table);
+      expect(output).toEqual(modal);
+   });
 
-it('can convert modal to table object', () => {
-   const output = accountService._modelToTable(modal);
-   expect(output).toEqual(table);
+   it('can convert modal to table object', () => {
+      const output = accountService._modelToTable(modal);
+      expect(output).toEqual(table);
+   });
 });

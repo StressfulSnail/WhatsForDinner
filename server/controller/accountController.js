@@ -8,6 +8,9 @@ class AccountController {
     async getAccountById(request, response) {
         try {
             const account = await accountService.getAccount(request.params.accountId);
+            if (!account) {
+                return response.sendStatus(404);
+            }
             account.password = null;
             response.send(account);
         } catch (e) {

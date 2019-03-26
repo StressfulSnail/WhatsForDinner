@@ -9,4 +9,9 @@ const knex = require('knex')({
     }
 });
 
+if (process.env.NODE_ENV === 'test') {
+    const mockKnex = require('mock-knex');
+    mockKnex.mock(knex);
+}
+
 module.exports = knex;

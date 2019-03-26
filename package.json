@@ -19,7 +19,9 @@
   },
   "scripts": {
     "start": "client-build && server-start",
+    "test": "client-test || server-test",
     "server-start": "node ./server/server.js",
+    "server-test": "jest",
     "client-start": "react-scripts start",
     "client-build": "react-scripts build",
     "client-test": "react-scripts test",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
-    "enzyme-to-json": "^3.3.5"
+    "enzyme-to-json": "^3.3.5",
+    "mock-knex": "^0.4.4"
   }
 }
