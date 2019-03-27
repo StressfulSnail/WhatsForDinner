@@ -60,21 +60,40 @@ class AccountService {
         accountData.account_id = null;
 
         await knex.transaction(async (transaction) => {
-            const accountId = await transaction.insert({
-                ...accountData,
-                created_on: knex.fn.now(),
-                modified_on: knex.fn.now(),
-            })
+            const accountId = await transaction.insert(accountData)
                 .into('account')
                 .returning('account_id');
 
             await transaction.insert({
                 invitation_key: invitation.key,
                 account_id: accountId,
-                created_on: knex.fn.now(),
-                modified_on: knex.fn.now(),
             })
                 .into('account_invitation');
+        });
+    }
+
+    async getInviteId(inviteKey) {
+        const matchingInvites = await knex
+            .select('invitation_id')
+            .from('account_invitation')
+            .where({ invitation_key: inviteKey })
+            .limit(1);
+        return matchingInvites.length === 0 ? null : matchingInvites[0].invitation_id;
+    }
+
+    async confirmAccount(inviteId) {
+        await knex.transaction(async (transaction) => {
+            const accountId = await transaction
+                .select('account_id')
+                .from('account_invitation')
+                .where({ invitation_id: inviteId })
+                .limit(1);
+
+            await transaction('account_invitation').delete().where({ invitation_id: inviteId });
+
+            await transaction('account')
+                .update({ confirmed: 1 })
+                .where({ account_id: accountId[0].account_id });
         });
     }
 }

@@ -64,6 +64,20 @@ class AccountController {
             response.sendStatus(500);
         }
     }
+
+    async confirmAccount(request, response) {
+        try {
+            const invitationId = await accountService.getInviteId(request.params.invitationId);
+            if (!invitationId) {
+                return response.sendStatus(404);
+            }
+            await accountService.confirmAccount(invitationId);
+            response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new AccountController();
