@@ -5,9 +5,17 @@ Managing recipes, deciding what to cook, creating meal lists and the resulting s
 WhatsForDinner will further provide value to its users by streamlining and simplifying this routine process and providing structure around food, which has numerous health benefits - from helping people select lower calorie options, portion control, budgeting and avoiding foods with allergens in them that the user may wish to avoid.  The product will be free with advertising banners and will offer a paid subscription model for premium users.
 
 ## Setup
+### Install libraries
 Have Node >= 10 installed
 
 After cloning repository run: `npm install`
+
+### Create your .env
+Your .env file will store all of your local environment variables. Make a copy of base.env at the project root named .env then fill in the variables.
+
+If you need to create new environment variables, add it to the base.env file as well so the variable names can be versioned.
+
+Do not commit your personal .env file as it hold your super secret local DB password.
 
 ## Start Scripts
 `npm run start` Start application
