@@ -5,12 +5,32 @@
 class RecipeBook{
 
     constructor(){
-        this.recipes = null; //Supposed to be a list/array of PersonalRecipes.
+        this.recipes = []; //Supposed to be a list/array of PersonalRecipes.
     }
 
 
-    //Keep an eye on this method. An array/list of objects might be trickier than expected in react.
-    addRecipe(newRecipe){
+    //Keep an eye on this method. An array/list of objects might be trickier than expected in react. -DH
+    //Needs testing
+    addRecipe(personalRecipe){
+        this.recipes.push(personalRecipe);
+    }
 
+
+    //Needs testing
+    /*I don't like the idea of scanning the entire array every time we want to remove something. I'm going to rewrite
+    this in the future to utilize the recipe IDs when I get more familiar with javascript variables and how the ID
+    process works -DH*/
+    removeRecipe(personalRecipe) {
+        for (var x = 0; x < this.recipes.length; x++) {
+            if (personalRecipe.getID === this.recipes[x].getID())
+            {
+                this.recipes.splice(x-1, 1);
+            }
+        }
+    }
+
+    //May change this to print each individual recipe object, depending on how front-end wants to utilize this method.
+    getRecipes() {
+        return this.recipes;
     }
 }
