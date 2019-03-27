@@ -6,5 +6,6 @@ const accountController = require('../controller/accountController');
 router.get('/:accountId', accountController.getAccountById);
 router.post('/', accountController.createAccount);
 router.post('/confirm/:invitationId', accountController.confirmAccount);
+router.post('/validate', accountController.validateUser);
 
 module.exports = router;

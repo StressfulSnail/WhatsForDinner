@@ -26,10 +26,10 @@ class AccountController {
             const account = new Account();
             account.email = request.body.email;
             account.username = request.body.username;
-            account.password = request.body.password;
             account.firstName = request.body.firstName;
             account.middleName = request.body.middleName;
             account.lastName = request.body.lastName;
+            account.setHashedPassword(request.body.password);
 
             const validEmail = !!account.email.match(/^.+@.+\..+$/);
             const validPassword = account.password.length >= 8 && // verify length
@@ -73,6 +73,23 @@ class AccountController {
             }
             await accountService.confirmAccount(invitationId);
             response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async validateUser(request, response) {
+        const username = request.body.username;
+        const password = request.body.password;
+        try {
+            const account = await accountService.findByUsername(username);
+            if (!account) {
+                return response.sendStatus(404);
+            }
+
+            response.send(account.verifyPassword(password)); // TODO link up with passport
+
         } catch (e) {
             console.error(e);
             response.sendStatus(500);
