@@ -1,7 +1,11 @@
+const Invitation = require('../model/Invitation');
+Invitation.mockImplementation(() => ({ key: 'INVITE_KEY' }));
+
 const accountController = jest.requireActual('./accountController');
 const Account = jest.requireActual('../model/Account');
 // requires mocks
 const accountService = require('../service/accountService');
+const emailService = require('../service/emailService');
 
 let mockResponse;
 
@@ -132,5 +136,22 @@ describe('create account', () => {
        expect(mockResponse.status.mock.calls[0][0]).toEqual(400);
    });
 
-   // it('sends email with activation link');
+   it('sends email with activation link', async () => {
+
+       const request = {
+           body: {
+               email: 'test@test.com',
+               username: 'test',
+               password: '.Test123',
+               firstName: 'Jeff',
+               middleName: 'J',
+               lastName: 'Jefferson',
+           }
+       };
+
+       await accountController.createAccount(request, mockResponse);
+
+       expect(emailService.sendInvitation.mock.calls[0][0]).toEqual(request.body.email);
+       expect(emailService.sendInvitation.mock.calls[0][1]).toEqual('INVITE_KEY');
+   });
 });

@@ -55,14 +55,27 @@ class AccountService {
         return accounts.length === 0 ? null : this._tableToModel(accounts[0]);
     }
 
-    async saveAccount(account) {
+    async saveAccount(account, invitation) {
         const accountData = this._modelToTable(account);
         accountData.account_id = null;
-        await knex.insert({
-            ...accountData,
-            created_on: knex.fn.now(),
-            modified_on: knex.fn.now(),
-        }).into('account');
+
+        await knex.transaction(async (transaction) => {
+            const accountId = await transaction.insert({
+                ...accountData,
+                created_on: knex.fn.now(),
+                modified_on: knex.fn.now(),
+            })
+                .into('account')
+                .returning('account_id');
+
+            await transaction.insert({
+                invitation_key: invitation.key,
+                account_id: accountId,
+                created_on: knex.fn.now(),
+                modified_on: knex.fn.now(),
+            })
+                .into('account_invitation');
+        });
     }
 }
 

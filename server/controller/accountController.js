@@ -1,5 +1,7 @@
 const accountService = require('../service/accountService');
+const emailService = require('../service/emailService');
 const Account = require('../model/Account');
+const Invitation = require('../model/Invitation');
 const errorResponses = require('./errorResponses');
 
 class AccountController {
@@ -51,7 +53,11 @@ class AccountController {
                 return response.status(status).send(message);
             }
 
-            await accountService.saveAccount(account);
+            const invitation = new Invitation();
+            invitation.account = account;
+
+            await accountService.saveAccount(account, invitation);
+            emailService.sendInvitation(account.email, invitation.key);
             response.sendStatus(200);
         } catch (e) {
             console.error(e);
