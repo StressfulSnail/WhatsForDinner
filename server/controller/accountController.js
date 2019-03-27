@@ -29,6 +29,15 @@ class AccountController {
             account.middleName = request.body.middleName;
             account.lastName = request.body.lastName;
 
+            const validEmail = !!account.email.match(/^.+@.+\..+$/);
+            const validPassword = account.password.length >= 8 && // verify length
+                                !!account.password.match(/[^a-zA-Z0-9]/) && // verify at least 1 special character
+                                !!account.password.match(/[A-Z]/) &&  // verify at least 1 capital letter
+                                !!account.password.match(/[0-9]/);  // verify at least 1 number
+            if (!validEmail || !validPassword) {
+                return response.sendStatus(400);
+            }
+
             const duplicateEmail = await accountService.findByEmail(account.email);
             const duplicateUsername = await accountService.findByUsername(account.username);
 
