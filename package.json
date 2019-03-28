@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.9.2",
+    "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "knex": "^0.16.3",
@@ -14,11 +15,14 @@
     "react-dom": "^16.8.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "client-build && server-start",
+    "test": "client-test || server-test",
     "server-start": "node ./server/server.js",
+    "server-test": "jest",
     "client-start": "react-scripts start",
     "client-build": "react-scripts build",
     "client-test": "react-scripts test",
@@ -36,6 +40,7 @@
   "devDependencies": {
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
-    "enzyme-to-json": "^3.3.5"
+    "enzyme-to-json": "^3.3.5",
+    "mock-knex": "^0.4.4"
   }
 }
