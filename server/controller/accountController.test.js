@@ -2,10 +2,10 @@ const Invitation = require('../model/Invitation');
 Invitation.mockImplementation(() => ({ key: 'INVITE_KEY' }));
 
 const accountController = jest.requireActual('./accountController');
-const Account = jest.requireActual('../model/Account');
 // requires mocks
 const accountService = require('../service/accountService');
 const emailService = require('../service/emailService');
+const Account = require('../model/Account');
 
 let mockResponse;
 
@@ -22,7 +22,7 @@ beforeEach(() => {
 describe('get account by id', () => {
     it('finds accounts by id', async () => {
         const id = 4;
-        const request = {params: {accountId: id}};
+        const request = {user: {id}};
         accountService.getAccount.mockImplementation(() => ({id: 4}));
 
         await accountController.getAccountById(request, mockResponse);
@@ -32,7 +32,7 @@ describe('get account by id', () => {
 
     it('does not return hashed password', async () => {
         const id = 4;
-        const request = {params: {accountId: id}};
+        const request = {user: {id}};
         accountService.getAccount.mockImplementation(() => ({id: 4, password: 'password that we still dont want people to know even though its hashed'}));
 
         await accountController.getAccountById(request, mockResponse);
@@ -42,7 +42,7 @@ describe('get account by id', () => {
 
     it('returns 404 if no accounts with id exist', async () => {
         const id = -1;
-        const request = {params: {accountId: id}};
+        const request = {user: {id}};
         accountService.getAccount.mockImplementation(() => null);
 
         await accountController.getAccountById(request, mockResponse);
@@ -67,7 +67,19 @@ describe('create account', () => {
        await accountController.createAccount(request, mockResponse);
 
        expect(mockResponse.sendStatus.mock.calls[0][0]).toEqual(200);
-       expect(accountService.saveAccount.mock.calls[0][0]).toEqual(request.body);
+       
+       const {
+           email,
+           username,
+           firstName,
+           middleName,
+           lastName } = accountService.saveAccount.mock.calls[0][0];
+       
+       expect(email).toEqual(request.body.email);
+       expect(username).toEqual(request.body.username);
+       expect(firstName).toEqual(request.body.firstName);
+       expect(middleName).toEqual(request.body.middleName);
+       expect(lastName).toEqual(request.body.lastName);
    });
 
    it('verifies valid email syntax', async () => {
