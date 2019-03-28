@@ -8,7 +8,7 @@ class Recipe {
     constructor() {
         this.id = null;                 //Replace with ID Generation later
         this.name = null;
-        this.ingredientList = null;        //List<Ingredient>
+        this.ingredientList = new Array();        //Array<Ingredient>
         this.prepInstructions = null;
         this.prepTime = 0;
         this.cookTime = 0;
@@ -16,7 +16,7 @@ class Recipe {
         this.tasteRating = 0;
         this.difficultyRating = 0;
         this.imageURL = null;
-        this.tags = null;               //List<Tag>
+        this.tags = new Array();               //Array<Tag>
     }
 
 
