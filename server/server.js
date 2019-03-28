@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+require('./passport');
 app.use(bodyParser.json());
 
 app.use('/api', require('./route/mainRoute'));
