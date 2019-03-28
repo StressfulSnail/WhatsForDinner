@@ -8,6 +8,7 @@ class Recipe {
     constructor() {
         this.id = null;                 //Replace with ID Generation later
         this.name = null;
+        this.imageURL = null;
         this.ingredientList = new Array();        //Array<Ingredient>
         this.prepInstructions = null;
         this.prepTime = 0;
@@ -15,10 +16,52 @@ class Recipe {
         this.caloricEstimate = 0;
         this.tasteRating = 0;
         this.difficultyRating = 0;
-        this.imageURL = null;
         this.tags = new Array();               //Array<Tag>
     }
 
+    constructor(otherRecipe) {
+        this.id = null;         //Replace with ID Generation Later
+        this.name = otherRecipe.name;
+        this.imageURL = otherRecipe.imageURL;
+        this.ingredientList = otherRecipe.ingredientList.slice();
+        this.prepInstructions = otherRecipe.prepInstructions;
+        this.prepTime = otherRecipe.prepTime;
+        this.cookTime = otherRecipe.cookTime;
+        this.caloricEstimate = otherRecipe.caloricEstimate;
+        this.tasteRating = otherRecipe.tasteRating;
+        this.difficultyRating = otherRecipe.difficultyRating;
+        this.tags = otherRecipe.tags.slice();
+    }
+
+
+    //Calls on the copy constructor (above) to clone itself and return the clone.
+    makeCopy(){
+        let newRecipe = new Recipe(this);
+
+        return newRecipe;
+    }
+
+    addIngredient(ingredientName, ingredientAmount){
+
+    }
+
+
+    removeIngredient(ingredientName) {
+        for (var x = 0; x < this.recipes.length; x++) {
+            if (this.ingredientList[x].getName() === ingredientName)
+            {
+                this.ingredientList.splice(x-1, 1);
+            }
+        }
+    }
+
+    addTag(name){
+        tags.push(name);
+    }
+
+    removeTag(name){
+
+    }
 
     //Getters
     getID(){
