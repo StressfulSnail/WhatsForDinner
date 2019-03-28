@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 
 class Account {
 
@@ -5,7 +6,7 @@ class Account {
         this.id = null;
         this.email = null;
         this.username = null;
-        this.password = null;
+        this._password = null;
         this.paymentInfo = null;
         this.firstName = null;
         this.middleName = null;
@@ -14,6 +15,21 @@ class Account {
         this.confirmed = false;
     }
 
+    get password() {
+        return this._password;
+    }
+
+    set password(password) {
+        this._password = password;
+    }
+
+    setHashedPassword(password) {
+        this._password = bcrypt.hashSync(password, 10);
+    }
+
+    verifyPassword(password) {
+        return bcrypt.compareSync(password, this._password);
+    }
 }
 
 module.exports = Account;

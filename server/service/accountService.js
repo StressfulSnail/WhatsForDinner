@@ -55,14 +55,46 @@ class AccountService {
         return accounts.length === 0 ? null : this._tableToModel(accounts[0]);
     }
 
-    async saveAccount(account) {
+    async saveAccount(account, invitation) {
         const accountData = this._modelToTable(account);
         accountData.account_id = null;
-        await knex.insert({
-            ...accountData,
-            created_on: knex.fn.now(),
-            modified_on: knex.fn.now(),
-        }).into('account');
+
+        await knex.transaction(async (transaction) => {
+            const accountId = await transaction.insert(accountData)
+                .into('account')
+                .returning('account_id');
+
+            await transaction.insert({
+                invitation_key: invitation.key,
+                account_id: accountId,
+            })
+                .into('account_invitation');
+        });
+    }
+
+    async getInviteId(inviteKey) {
+        const matchingInvites = await knex
+            .select('invitation_id')
+            .from('account_invitation')
+            .where({ invitation_key: inviteKey })
+            .limit(1);
+        return matchingInvites.length === 0 ? null : matchingInvites[0].invitation_id;
+    }
+
+    async confirmAccount(inviteId) {
+        await knex.transaction(async (transaction) => {
+            const accountId = await transaction
+                .select('account_id')
+                .from('account_invitation')
+                .where({ invitation_id: inviteId })
+                .limit(1);
+
+            await transaction('account_invitation').delete().where({ invitation_id: inviteId });
+
+            await transaction('account')
+                .update({ confirmed: 1 })
+                .where({ account_id: accountId[0].account_id });
+        });
     }
 }
 
