@@ -92,7 +92,7 @@ class AccountController {
                     return response.sendStatus(500);
                 }
 
-                const token = jwt.sign({ account } , 'jwt_secret');
+                const token = jwt.sign({ account } , process.env.JWT_SECRET);
                 return response.json({ token });
             });
         })(request, response, done);
