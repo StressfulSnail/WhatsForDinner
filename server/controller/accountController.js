@@ -1,3 +1,5 @@
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const accountService = require('../service/accountService');
 const emailService = require('../service/emailService');
 const Account = require('../model/Account');
@@ -6,10 +8,9 @@ const errorResponses = require('./errorResponses');
 
 class AccountController {
 
-    // TODO authenticate
     async getAccountById(request, response) {
         try {
-            const account = await accountService.getAccount(request.params.accountId);
+            const account = await accountService.getAccount(request.user.id);
             if (!account) {
                 return response.sendStatus(404);
             }
@@ -79,21 +80,22 @@ class AccountController {
         }
     }
 
-    async validateUser(request, response) {
-        const username = request.body.username;
-        const password = request.body.password;
-        try {
-            const account = await accountService.findByUsername(username);
-            if (!account) {
-                return response.sendStatus(404);
+    async validateUser(request, response, done) {
+        passport.authenticate('local', { session: false }, (err, account) => {
+            if (err || !account) {
+                return response.sendStatus(400);
             }
 
-            response.send(account.verifyPassword(password)); // TODO link up with passport
+            request.login(account, { session: false }, (err) => {
+                if (err) {
+                    console.error(err);
+                    return response.sendStatus(500);
+                }
 
-        } catch (e) {
-            console.error(e);
-            response.sendStatus(500);
-        }
+                const token = jwt.sign({ account } , 'jwt_secret');
+                return response.json({ token });
+            });
+        })(request, response, done);
     }
 }
 
