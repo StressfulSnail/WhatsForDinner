@@ -47,7 +47,7 @@ class Recipe {
 
 
     removeIngredient(ingredientName) {
-        for (var x = 0; x < this.recipes.length; x++) {
+        for (var x = 0; x < this.ingredientList.length; x++) {
             if (this.ingredientList[x].getName() === ingredientName)
             {
                 this.ingredientList.splice(x-1, 1);
@@ -56,11 +56,16 @@ class Recipe {
     }
 
     addTag(name){
-        tags.push(name);
+        this.tags.push(name);
     }
 
     removeTag(name){
-
+        for (var x = 0; x < this.tags.length; x++) {
+            if (this.tags[x].getName() === name)
+            {
+                this.tags.splice(x-1, 1);
+            }
+        }
     }
 
     //Getters
