@@ -116,6 +116,41 @@ class AccountController {
         }
     }
 
+    async editAccount(request, response)
+    {
+        try
+        {
+
+            const account = new Account();
+            account.username = request.body.username;
+            account.firstName = request.body.firstName;
+            account.middleName = request.body.middleName;
+            account.lastName = request.body.lastName;
+
+            const validateEmail = await accountService.findByEmail(account.email);
+            const validateUsername = await accountService.findByUsername(account.username);
+
+            if (!validateEmail)
+                {
+                const {status, message} = errorResponses.cantFindEmail;
+                return response.status(status).send(message);
+                }
+
+            if (!validateUsername)
+                {
+                const {status, message} = errorResponses.cantFindUsername;
+                return response.status(status).send(message);
+                }
+
+            await accountService.saveAccount(account);
+            response.sendStatus(200);
+        }
+        catch (e)
+        {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
 
 
 
