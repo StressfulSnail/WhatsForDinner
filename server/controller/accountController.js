@@ -100,6 +100,25 @@ class AccountController {
             });
         })(request, response, done);
     }
+
+    async deleteAccount(request, response) {
+        try {
+            const account = await accountService.getAccount(request.user.id);
+            if (!account)
+                {
+                return response.sendStatus(404);  //404 means we dcan't find it!
+                }
+            await accountService.deleteAccount(account.id);
+            response.sendStatus(200); //200 is OK!
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500); //500 is a problem!
+        }
+    }
+
+
+
+
 }
 
 module.exports = new AccountController();

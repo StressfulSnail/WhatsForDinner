@@ -51,4 +51,13 @@ router.post('/confirm/:invitationId', accountController.confirmAccount);
  */
 router.post('/validate', accountController.validateUser);
 
+/**
+ * DELETE /api/account/delete
+ * Delete Account
+ *
+ */
+router.delete('/delete', passport.authenticate ('jwt', {session: false }), accountController.deleteAccount);
+
+
+
 module.exports = router;
