@@ -96,6 +96,23 @@ class AccountService {
                 .where({ account_id: accountId[0].account_id });
         });
     }
+
+
+
+
+    async deleteAccount(id)
+    {
+        await knex.delete()
+            .from('account_invitation')
+            .where({ 'account_id': id }); //there is a foreign key restraint in place ( FOREIGN KEY (`account_id`) REFERENCES `account`(`account_id`)) , so do this one first.
+
+        await knex.delete()
+            .from('account')
+            .where({ 'account_id': id }); //not a lot of discussion here, just do it.
+
+        console.log("deletion performed");
+    }
+
 }
 
 module.exports = new AccountService();
