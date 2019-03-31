@@ -97,9 +97,6 @@ class AccountService {
         });
     }
 
-
-
-
     async deleteAccount(id)
     {
         await knex.delete()
@@ -113,6 +110,14 @@ class AccountService {
         console.log("deletion performed");
     }
 
+    async editAccount(account)
+    {
+        await knex.from('account')
+            .where({ account_id: account.id })
+            .update(this._modelToTable(account));
+
+        console.log("update attempt performed");
+    }
 }
 
 module.exports = new AccountService();
