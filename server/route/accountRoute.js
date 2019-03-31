@@ -58,6 +58,13 @@ router.post('/validate', accountController.validateUser);
  */
 router.delete('/delete', passport.authenticate ('jwt', {session: false }), accountController.deleteAccount);
 
+/**
+ * POST /api/account/edit
+ * Edit Account
+ *
+ */
+router.post('/edit', passport.authenticate ('jwt', {session: false }), accountController.editAccount);
+
 
 
 module.exports = router;
