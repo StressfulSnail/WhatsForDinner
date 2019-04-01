@@ -9,11 +9,17 @@ class PersonalRecipe extends Recipe{
         this.note = null;
     }
 
-    getaccountID() {
+    constructor(otherRecipe) {
+        super(otherRecipe);
+        this.accountID = null;
+        this.note = otherRecipe.note;
+    }
+
+    getAccountID() {
         return this.accountID;
     }
 
-    setaccountID(newID){
+    setAccountID(newID){
         this.accountID = newID;
     }
 

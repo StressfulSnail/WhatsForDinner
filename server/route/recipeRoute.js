@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-const accountController = require('../controller/accountController');
+const recipeController = require('../controller/accountController');
 
 /**
  * GET /api/recipe/
@@ -17,44 +17,32 @@ const accountController = require('../controller/accountController');
  *      caloricEstimate: int
  *      tasteRating: int
  *      difficultyRating: int
- *      tags: array(Tag);
+ *      tags: array(Tag)
  * }
  */
-router.get('/', passport.authenticate('jwt', { session: false }), accountController.getAccountById);
+router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipeById());
 
 /**
- * POST /api/account/
+ * POST /api/recipe/
  * Create a new account
  * Body {
- *      email: string
- *      username: string
- *      password: string
- *      firstName: string
- *      middleName: string
- *      lastName: string
+ *      name: string
+ *      imageURL: string
+ *      ingredientList: Array(Ingredient)
+ *      prepInstructions: string
+ *      prepTime: int
+ *      cookTime: int
+ *      caloricEstimate: int
+ *      tasteRating: int
+ *      difficultyRating: int
+ *      tags: array(Tag)
  * }
  */
-router.post('/', accountController.createAccount);
+router.post('/', recipeController.createRecipe);
 
 /**
- * POST /api/account/confirm/:invitationId
- * Confirm account with invitation key
- */
-router.post('/confirm/:invitationId', accountController.confirmAccount);
-
-/**
- * POST /api/account/validate
- * Validate user
- * Body {
- *     username: string
- *     password: string
- * }
- */
-router.post('/validate', accountController.validateUser);
-
-/**
- * DELETE /api/account/delete
- * Delete Account
+ * DELETE /api/recipe/delete
+ * Delete Recipe
  *
  */
 router.delete('/delete', passport.authenticate ('jwt', {session: false }), accountController.deleteAccount);

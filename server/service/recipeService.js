@@ -1,8 +1,10 @@
 const knex = require('../db');
-const Recipe = require('../model/Recipe');
+const PersonalRecipe = require('../model/PersonalRecipe');
 
 class RecipeService {
 
+    //Am likely going to change this to incorporate some degree of polymorphism- determine if the recipe is personal or shared
+    //and then construct that way.
     _tableToModel(tableObj) {
         const recipe = new PersonalRecipe();
         recipe.recipeID = tableObj.recipe_id;
