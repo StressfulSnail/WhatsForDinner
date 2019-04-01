@@ -5,7 +5,7 @@ const Recipe = require('../model/Recipe');
 const Ingredient = require('../model/Ingredient');
 const errorResponses = require('./errorResponses');
 
-class AccountController {
+class RecipeController {
 
     async getRecipeById(request, response) {
         try {

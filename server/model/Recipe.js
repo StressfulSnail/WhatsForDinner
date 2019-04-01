@@ -6,7 +6,7 @@ class Recipe {
 
     //0 Arg constructor- may replace this with a Name-Arg constructor later.
     constructor() {
-        this.id = null;                 //Replace with ID Generation later
+        this.recipe_id = null;                 //ID Generation handled by SQL table
         this.name = null;
         this.imageURL = null;
         this.ingredientList = new Array();        //Array<Ingredient>
@@ -20,7 +20,7 @@ class Recipe {
     }
 
     constructor(otherRecipe) {
-        this.id = null;         //Replace with ID Generation Later
+        this.recipe_id = null;         //ID Generation handled by SQL table.
         this.name = otherRecipe.name;
         this.imageURL = otherRecipe.imageURL;
         this.ingredientList = otherRecipe.ingredientList.slice();
@@ -44,9 +44,6 @@ class Recipe {
 
     //Placeholder while I figure out a 2D array for this system.
     addIngredient(ingredientName, ingredientAmount){
-        newIngredient = new Ingredient(ingredientName);
-        ingredientAmount = new IngredientCount(ingredientAmount);
-        ingredientList.push(newIngredient, ingredientAmount);
     }
 
 
@@ -74,7 +71,7 @@ class Recipe {
 
     //Getters
     getID(){
-        return this.id;
+        return this.recipe_id;
     }
     getName(){
         return this.name;
@@ -107,7 +104,7 @@ class Recipe {
 
     //Setters
     setID(newID){
-        this.id = newID;
+        this.recipe_id = newID;
     }
     setName(newName) {
         this.name = newName;

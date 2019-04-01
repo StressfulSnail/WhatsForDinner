@@ -5,7 +5,16 @@ class PersonalRecipe extends Recipe{
 
     constructor() {
         super();
+        this.accountID = null;
         this.note = null;
+    }
+
+    getaccountID() {
+        return this.accountID;
+    }
+
+    setaccountID(newID){
+        this.accountID = newID;
     }
 
     getNote(){
