@@ -41,8 +41,12 @@ class Recipe {
         return newRecipe;
     }
 
-    addIngredient(ingredientName, ingredientAmount){
 
+    //Placeholder while I figure out a 2D array for this system.
+    addIngredient(ingredientName, ingredientAmount){
+        newIngredient = new Ingredient(ingredientName);
+        ingredientAmount = new IngredientCount(ingredientAmount);
+        ingredientList.push(newIngredient, ingredientAmount);
     }
 
 
