@@ -34,3 +34,5 @@ class RecipeBook{
         return this.recipes;
     }
 }
+
+module.exports = Recipebook;
