@@ -16,3 +16,5 @@ class Ingredient {
         this.name = newName;
     }
 }
+
+module.exports = Ingredient;

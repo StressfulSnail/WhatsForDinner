@@ -8,6 +8,11 @@ class PersonalRecipe extends Recipe{
         this.note = null;
     }
 
+    constructor(otherRecipe) {
+        super(otherRecipe);
+        this.note = otherRecipe.note;
+    }
+
     getNote(){
         return this.note;
     }
@@ -23,3 +28,5 @@ class PersonalRecipe extends Recipe{
     //I put this in here in case we needed users to be able to append to their currently existing notes. If you do
     //not think it is necessary feel free to remove it.
 }
+
+module.exports = PersonalRecipe;

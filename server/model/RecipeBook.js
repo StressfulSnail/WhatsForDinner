@@ -5,7 +5,7 @@
 class RecipeBook{
 
     constructor(){
-        this.recipes = []; //Supposed to be a list/array of PersonalRecipes.
+        this.recipes = new Array(); //Supposed to be a list/array of PersonalRecipes.
     }
 
 
@@ -34,3 +34,5 @@ class RecipeBook{
         return this.recipes;
     }
 }
+
+module.exports = Recipebook;

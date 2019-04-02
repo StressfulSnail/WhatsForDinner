@@ -27,3 +27,5 @@ class IngredientCount {
         this.measurement = newMeasurement;
     }
 }
+
+module.exports = IngredientCount;
