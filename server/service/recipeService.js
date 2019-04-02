@@ -18,8 +18,6 @@ class RecipeService {
         recipe.tasteRating = tableObj.tasteRating;
         recipe.difficultyRating = tableObj.difficultyRating;
         //recipe.tags = tableObj.tags;
-        recipe.accountID = tableObj.accountID;
-        //recipe.note = tableObj.note;
         return recipe;
     }
 
@@ -36,14 +34,13 @@ class RecipeService {
             tasteRating: recipeModel.tasteRating,
             difficultyRating: recipeModel.difficultyRating,
             tags: recipeModel.tags,
-            account_id: recipeModel.account_id,
             note: recipeModel.note
         }
     }
 
-    async getPublicRecipe(recipeID) {
+    async getRecipe(recipeID) {
         const recipes= await knex.select()
-            .from('personal_recipe')
+            .from('Recipe')
             .where({ 'recipe_id': recipeID });
 
         return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
@@ -58,6 +55,9 @@ class RecipeService {
         return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
     }
 
+
+    //Right now, I believe this will just return the first recipe with the name specified. We should probably alter it to
+    //return an array of recipe (or something similar).
     async findRecipeByName(recipeName) {
         const recipes = await knex.select()
             .from('personal_recipe')
@@ -67,20 +67,21 @@ class RecipeService {
 
     async findPersonalRecipeByName(recipeName, accountID) {
         const recipes = await knex.select()
-            .from('personal_recipes')
-            .where({'recipeName': recipeName,
-                           'account_id': accountID});
+            .from('recipe')
+            .joinRaw('personal_recipe')
+            .where({'name': recipeName, 'account_id': accountID});
 
         return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+
     }
 
-    async saveRecipe(recipe, accountID) {
-        const recipeData = this._modelToTable(recipe);
+    async saveRecipe(Recipe) {
+        const recipeData = this._modelToTable(Recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction(async (transaction) => {
             const recipeID = await transaction.insert(recipeData)
-                .into( 'personal_recipe')
+                .into( 'Recipe')
                 .returning('recipe_id');
         });
     }

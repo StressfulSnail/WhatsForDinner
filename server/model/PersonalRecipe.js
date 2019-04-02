@@ -5,22 +5,12 @@ class PersonalRecipe extends Recipe{
 
     constructor() {
         super();
-        this.accountID = null;
         this.note = null;
     }
 
     constructor(otherRecipe) {
         super(otherRecipe);
-        this.accountID = null;
         this.note = otherRecipe.note;
-    }
-
-    getAccountID() {
-        return this.accountID;
-    }
-
-    setAccountID(newID){
-        this.accountID = newID;
     }
 
     getNote(){

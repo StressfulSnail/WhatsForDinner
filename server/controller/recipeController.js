@@ -28,6 +28,9 @@ class RecipeController {
             const imageURL = request.getImageURL();
 
             //const validImageURL = Fill this in later
+
+            //Check for Duplicates here if necessary
+
             const ingredientList = request.getIngredients();
             const prepInstructions = request.getPrepInstructions();
             const prepTime = request.getPrepTime();
@@ -38,9 +41,15 @@ class RecipeController {
             const tags = request.getTags();
             const accountID = request.getAccountID();
             const note = request.getNote();
+
+            await recipeService.saveRecipe(request);
+            response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
         }
     }
 
 }
 
-module.exports = new recipeController();
+module.exports = new RecipeController();
