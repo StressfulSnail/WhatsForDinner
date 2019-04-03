@@ -10,14 +10,14 @@ class RecipeService {
         recipe.recipeID = tableObj.recipe_id;
         recipe.name = tableObj.name;
         recipe.imageURL = tableObj.imageURL;
-        //recipe.ingredientList = tableObj.ingredientList; (unsure as to array implementation)
+        //recipe.ingredientList = tableObj.ingredientList; Not represented in ERD - Separate Table
         recipe.prepInstructions = tableObj.prepInstructions;
         recipe.prepTime = tableObj.prepTime;
         recipe.cookTime = tableObj.cookTime;
         recipe.caloricEstimate = tableObj.caloricEstimate;
         recipe.tasteRating = tableObj.tasteRating;
         recipe.difficultyRating = tableObj.difficultyRating;
-        //recipe.tags = tableObj.tags;
+        //recipe.tags = tableObj.tags; Not represented in ERD - Separate Table
         return recipe;
     }
 
@@ -26,15 +26,14 @@ class RecipeService {
             recipe_id: recipeModel.recipe_id,
             name: recipeModel.name,
             imageURL: recipeModel.imageURL,
-            ingredientList: recipeModel.ingredientList,
+            //ingredientList: recipeModel.ingredientList, See Above
             prepInstructions: recipeModel.prepInstructions,
             prepTime: recipeModel.prepTime,
             cookTime: recipeModel.cookTime,
             caloricEstimate: recipeModel.caloricEstimate,
             tasteRating: recipeModel.tasteRating,
-            difficultyRating: recipeModel.difficultyRating,
-            tags: recipeModel.tags,
-            note: recipeModel.note
+            difficultyRating: recipeModel.difficultyRating
+            //tags: recipeModel.tags,                   See Above
         }
     }
 
@@ -75,16 +74,34 @@ class RecipeService {
 
     }
 
-    async saveRecipe(Recipe) {
+    /* WIP
+    async findRecipeByIngredient(ingredientID) {
+        const recipeID = await knex.select()
+            .from('recipe')
+            .joinRaw('ingredient_count')
+            .where({'ingredient_ID': ingredientID})
+            .returning('recipeID');
+    } */
+
+
+    //Will need to expand on this
+    async saveRecipe(Recipe, accountID) {
         const recipeData = this._modelToTable(Recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction(async (transaction) => {
             const recipeID = await transaction.insert(recipeData)
-                .into( 'Recipe')
+                .into( 'recipe')
                 .returning('recipe_id');
+
+            await transaction.insert( {
+                recipe_ID: recipeID,
+                account_id: accountID})
+                .into('personal_recipe');
         });
     }
+
+
 
 }
 

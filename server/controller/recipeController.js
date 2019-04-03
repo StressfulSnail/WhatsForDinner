@@ -39,8 +39,6 @@ class RecipeController {
             const tasteRating = request.getTasteRating();
             const difficultyRating = request.getDifficultyRating();
             const tags = request.getTags();
-            const accountID = request.getAccountID();
-            const note = request.getNote();
 
             await recipeService.saveRecipe(request);
             response.sendStatus(200);
