@@ -29,12 +29,8 @@ const LoginLink = props => <Link to="/login" {...props} />;
 
 class LandingPage extends React.Component {
 
-    testMethod = () => {
-        this.props.login();
-    };
-
     render() {
-        const { classes, isAuthenticated } = this.props;
+        const { classes } = this.props;
         return (
             <div className={classes.root}>
                 <AppBar position="static">
@@ -43,10 +39,9 @@ class LandingPage extends React.Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant="h6" color="inherit" className={classes.grow}>
-                            Welcome {isAuthenticated ? 'Logged in User' : 'Guest'}
+                            Welcome
                         </Typography>
                         <Button color="inherit" component={LoginLink}>Login</Button>
-                        <Button color="inherit" onClick={this.testMethod}>TEST THINGS!</Button>
                         <br/>
                         <Link to="/recover">
                             <span>Forgot username/password?</span>
@@ -70,7 +65,7 @@ const mapStateToProps = (state) => { // map only the items in the state this com
     }
 };
 
-const mapActionsToProps = (dispatch) => {
+const mapActionsToProps = (dispatch) => { // map actions needed for this component
     return {
         login: (token) => dispatch({ type: LOGIN, payload: { token } }),
         logout: () => dispatch({ type: LOGOUT }),
