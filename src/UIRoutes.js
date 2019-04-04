@@ -4,7 +4,7 @@ import './index.css';
 import LandingPage from './views/public/LandingPage.js';
 import CreateAccountPage from './views/public/CreateAccountPage.js';
 import AccountRecoveryPage from './views/public/AccountRecoveryPage.js';
-import LoginPage from './views/public/LoginPage.js';
+import HomePage from './views/public/HomePage.js';
 
 class UIRoutes extends Component {
     render() {
@@ -12,8 +12,8 @@ class UIRoutes extends Component {
             <div>
                 <Route exact path="/" component={LandingPage} />
                 <Route path="/create-account" component={CreateAccountPage} />
-                <Route path="/recover-account" component={LoginPage} />
-                <Route path="/login" compenent={LoginPage} />
+                <Route path="/recover-account" component={AccountRecoveryPage} />
+                <Route path="/home" compenent={HomePage} />
             </div>
         )
     }

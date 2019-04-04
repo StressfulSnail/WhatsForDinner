@@ -12,6 +12,10 @@ import LoginDialog from '../../components/LoginDialog.js';
 import image from '../../static/images/foodiesfeed.com_summer-barbeque-feast.jpg';
 import { LOAD_ACCOUNT, LOGIN, LOGOUT } from "../../actions/accountActions";
 
+/**
+ * Styles for this page's components
+ * @type {{grow: {flexGrow: number}, root: {flexGrow: number}, menuButton: {marginRight: number, marginLeft: number}}}
+ */
 const styles = {
     root: {
         flexGrow: 1,
@@ -37,6 +41,10 @@ const styles = {
 // Avoid properties collisions
 const CreateAccountLink = (props) => <Link to="/create-account" {...props} />;
 
+/**
+ * This class represents the landing page: the first page the user sees when they navigate to the app.
+ * This page has a Login dialogue popup, and allows navigation to the Create Account and Account Recovery Page.
+ */
 class LandingPage extends React.Component {
 
     render() {
@@ -82,7 +90,13 @@ LandingPage.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => { // map only the items in the state this component will use, if any of these values change the component will reload
+/**
+ * Maps items in the central redux store to the properties (props) argument.  Only maps items necessary for this
+ * component.
+ * @param state
+ * @returns {{isAuthenticated: *, accountData: *, token: *}}
+ */
+const mapStateToProps = (state) => {
     return {
         isAuthenticated: state.account.isAuthenticated,
         token: state.account.token,
@@ -90,6 +104,12 @@ const mapStateToProps = (state) => { // map only the items in the state this com
     }
 };
 
+/**
+ * Maps actions on the central redux store to the properties (props) argument.  Only maps actions necessary for this
+ * component.
+ * @param dispatch
+ * @returns {{logout: (function(): *), loadAccount: (function(*): *), login: (function(*): *)}}
+ */
 const mapActionsToProps = (dispatch) => { // map actions needed for this component
     return {
         login: (token) => dispatch({ type: LOGIN, payload: { token } }),
@@ -98,5 +118,12 @@ const mapActionsToProps = (dispatch) => { // map actions needed for this compone
     }
 };
 
+/**
+ * Binds redux mapping to component
+ */
 const connectedLandingPage = connect(mapStateToProps, mapActionsToProps)(LandingPage);
+
+/**
+ * Binds styles to component
+ */
 export default withStyles(styles)(connectedLandingPage);

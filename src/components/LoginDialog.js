@@ -39,7 +39,7 @@ class LoginDialog extends React.Component {
             .then((token) => {
                 this.props.dispatchLogin(token);
                 this.handleClose();
-                this.props.history.push("/dashboard");
+                this.props.history.push("/home");
             })
             .catch(() => {
                 this.setState({
