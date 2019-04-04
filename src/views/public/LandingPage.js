@@ -5,10 +5,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import { Link } from 'react-router-dom';
-import {connect} from "react-redux";
+import { Grid } from '@material-ui/core';
+import { connect } from 'react-redux';
+import LoginDialog from '../../components/LoginDialog.js';
+import image from '../../static/images/foodiesfeed.com_summer-barbeque-feast.jpg';
 import { LOAD_ACCOUNT, LOGIN, LOGOUT } from "../../actions/accountActions";
 
 const styles = {
@@ -18,37 +19,61 @@ const styles = {
     grow: {
         flexGrow: 1,
     },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
+    button: {
+        marginLeft: 10,
+        marginRight: 0
     },
+    link: {
+        marginTop: 0,
+        marginRight: 15,
+        marginBottom: 10
+    },
+    image: {
+        width: "100%",
+        flexShrink: 1
+    }
 };
 
 // Avoid properties collisions
-const LoginLink = props => <Link to="/login" {...props} />;
+const CreateAccountLink = (props) => <Link to="/create-account" {...props} />;
 
 class LandingPage extends React.Component {
 
     render() {
         const { classes } = this.props;
         return (
-            <div className={classes.root}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="h6" color="inherit" className={classes.grow}>
-                            Welcome
-                        </Typography>
-                        <Button color="inherit" component={LoginLink}>Login</Button>
-                        <br/>
-                        <Link to="/recover">
-                            <span>Forgot username/password?</span>
-                        </Link>
-                    </Toolbar>
-                </AppBar>
-            </div>
+            <React.Fragment>
+                <div className={classes.root}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Typography variant="h6" color="inherit" className={classes.grow}>
+                                Welcome
+                            </Typography>
+                            <LoginDialog />
+                            <Button
+                                component={CreateAccountLink}
+                                variant="contained"
+                                color="secondary"
+                                className={classes.button}
+                            >
+                                Sign up!
+                            </Button>
+                        </Toolbar>
+                        <br />
+                        <Grid container justify="flex-end">
+                            <Link
+                                to="/recover-account"
+                                variant="inherit"
+                                color="secondary"
+                                className={classes.link}
+                            >
+                                Forgot username/password
+                            </Link>
+                        </Grid>
+                    </AppBar>
+                </div>
+                <img src={image} className={classes.image} alt="burrito" />
+            </React.Fragment>
         );
     }
 }

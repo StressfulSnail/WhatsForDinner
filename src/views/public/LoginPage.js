@@ -27,7 +27,7 @@ const styles = {
 };
 
 // Avoid properties collisions
-const HomeLink = props => <Link to="/" {...props} />;
+const HomeLink = (props) => <Link to="/" {...props} />;
 
 class LoginPage extends React.Component {
 
@@ -39,7 +39,7 @@ class LoginPage extends React.Component {
         this.password = event.target.value;
     };
 
-    login = () => {
+    login = (username, password) => {
         accountService.validateAccount(this.username, this.password)
             .then((token) => this.props.dispatchLogin(token))
             .catch(() => console.error('oh no! you are not authenticated!')); // should show message to user instead
