@@ -30,12 +30,13 @@ const styles = {
 const HomeLink = (props) => <Link to="/" {...props} />;
 
 /**
- * This class represents the Account Recovery Page.  Currently unfinished and here to test routing.
+ * This class represents the Home Page: the page the user sees when they log in.
+ * Currently unfinished and here to test routing.
  * @param props
  * @returns {*}
  * @constructor
  */
-function AccountRecoveryPage(props) {
+function HomePage(props) {
     const { classes } = props;
     return (
         <div className={classes.root}>
@@ -45,7 +46,7 @@ function AccountRecoveryPage(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" color="inherit" className={classes.grow}>
-                        Recover Account
+                        Home: You  logged in!
                     </Typography>
                     <Button color="inherit" component={HomeLink}>Home</Button>
                 </Toolbar>
@@ -54,8 +55,8 @@ function AccountRecoveryPage(props) {
     );
 }
 
-AccountRecoveryPage.propTypes = {
+HomePage.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(AccountRecoveryPage);
+export default withStyles(styles)(HomePage);
