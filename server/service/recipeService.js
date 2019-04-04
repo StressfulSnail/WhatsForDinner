@@ -45,6 +45,8 @@ class RecipeService {
         return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
     }
 
+
+    //Returns a recipe when given the RecipeID and the accountID. Possibly redundant.
     async getPersonalRecipe(recipeID, accountID){
         const recipes= await knex.select()
             .from('personal_recipe')

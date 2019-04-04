@@ -1,7 +1,6 @@
-const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const recipeService = require('../service/recipeService');
-const PersonalRecipe = require('../model/PersonalRecipe');
+const Recipe = require('../model/PersonalRecipe');
 const Ingredient = require('../model/Ingredient');
 const IngredientCount = require('../model/IngredientCount');
 const RecipeBook = require('../model/RecipeBook');
@@ -11,7 +10,7 @@ class RecipeController {
 
     async getRecipeById(request, response) {
         try {
-            const recipe = await recipeService.getPersonalRecipe(request.recipes.recipe_id, request.recipes.account_id);
+            const recipe = await recipeService.getRecipe(request.recipes.recipe_id);
             if (!recipe) {
                 return response.sendStatus(404);
             }
