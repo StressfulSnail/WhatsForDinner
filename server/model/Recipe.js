@@ -4,21 +4,6 @@
 
 class Recipe {
 
-    //0 Arg constructor- may replace this with a Name-Arg constructor later.
-    constructor() {
-        this.recipe_id = null;                 //ID Generation handled by SQL table
-        this.name = null;
-        this.imageURL = null;
-        this.ingredientList = new Array();        //Array<Ingredient>
-        this.prepInstructions = null;
-        this.prepTime = 0;
-        this.cookTime = 0;
-        this.caloricEstimate = 0;
-        this.tasteRating = 0;
-        this.difficultyRating = 0;
-        this.tags = new Array();               //Array<Tag>
-    }
-
     constructor(otherRecipe) {
         this.recipe_id = null;         //ID Generation handled by SQL table.
         this.name = otherRecipe.name;

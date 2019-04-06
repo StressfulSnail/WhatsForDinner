@@ -66,7 +66,7 @@ class RecipeService {
             .count('*')
             .from('personal_recipe')
             .where({ recipe_id: recipeId, account_id: accountId });
-        return count === 1;
+        return count[0]['count(*)'] === 1;
     }
 
     /**
@@ -77,9 +77,9 @@ class RecipeService {
     async publicRecipeExists(recipeId) {
         const count = await knex
             .count('*')
-            .from('public_recipe')
+            .from('shared_recipe')
             .where({ recipe_id: recipeId });
-        return count === 1;
+        return count[0]['count(*)'] === 1;
     }
 
     //Right now, I believe this will just return the first recipe with the name specified. We should probably alter it to

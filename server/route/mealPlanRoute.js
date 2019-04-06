@@ -29,4 +29,4 @@ const mealPlanController = require('../controller/mealPlanController');
  */
 router.post('/', passport.authenticate('jwt', { session: false }), mealPlanController.createMealPlan);
 
-module.export = router;
+module.exports = router;
