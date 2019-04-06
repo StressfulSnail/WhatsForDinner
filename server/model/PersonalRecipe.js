@@ -4,10 +4,15 @@ const Recipe = require('./Recipe');
 
 class PersonalRecipe extends Recipe{
 
-    constructor(otherRecipe) {
-        super(otherRecipe);
-        this.note = otherRecipe.note;
+    constructor() {
+        super();
+        this.note = null;
     }
+
+    // constructor(otherRecipe) {
+    //     super(otherRecipe);
+    //     this.note = otherRecipe.note;
+    // }
 
     getNote(){
         return this.note;
