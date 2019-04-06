@@ -4,6 +4,7 @@
 class Meal {
     constructor() {
         this.id = null;
+        this.name = null;
         this.date = null;
         this.mealTime = null;
         this.servingsRequired = null;
