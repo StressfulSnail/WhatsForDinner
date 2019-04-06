@@ -33,6 +33,7 @@ CREATE DATABASE whats_for_dinner;
   CREATE TABLE `meal_plan` (
     `meal_plan_id` INT NOT NULL AUTO_INCREMENT,
     `account_id` INT NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
     `start_date` DATE NOT NULL,
     `end_date` DATE NOT NULL,
     `created_on` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -139,8 +140,7 @@ CREATE DATABASE whats_for_dinner;
   CREATE TABLE `meal` (
     `meal_id` INT NOT NULL AUTO_INCREMENT,
     `meal_plan_id` INT NOT NULL,
-    `meal_date` DATE NOT NULL,
-    `meal_time` INT,
+    `meal_date_time` DATETIME NOT NULL,
     `servings_required` INT,
     `note` VARCHAR(255),
     `created_on` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
