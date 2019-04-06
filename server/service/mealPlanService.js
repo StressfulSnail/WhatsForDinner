@@ -7,6 +7,7 @@ class MealPlanService {
     _tableToModel(tableObj) {
         const mealPlan = new MealPlan();
         mealPlan.id = tableObj.meal_plan_id;
+        mealPlan.name = tableObj.name;
         mealPlan.startDate = tableObj.start_date;
         mealPlan.endDate = tableObj.end_date;
 
@@ -19,17 +20,24 @@ class MealPlanService {
         return {
             meal_plan_id: mealPlanModel.id,
             account_id: mealPlanModel.account.id,
+            name: mealPlanModel.name,
             start_date: mealPlanModel.startDate,
             end_date: mealPlanModel.endDate,
         }
     }
 
+    /**
+     * @param mealPlan
+     * @returns {Promise<number>} Id of the saved Meal Plan
+     */
     async saveMealPlan(mealPlan) {
         const tableData = this._modelToTable(mealPlan);
-        tableData.id = null; // set to null so mysql auto generates
-        await knex
+        tableData.meal_plan_id = null; // set to null so mysql auto generates
+        const id = await knex
             .insert(tableData)
-            .into('meal_plan');
+            .into('meal_plan')
+            .returning('meal_plan_id');
+        return id[0];
     }
 }
 

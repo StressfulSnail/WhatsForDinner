@@ -13,8 +13,7 @@ const mealPlanController = require('../controller/mealPlanController');
  *      endDate: Date
  *      meals: [
  *          {
- *              date: Date
- *              time: Time
+ *              dateTime: Date
  *              servingsRequired: number
  *              note: string
  *              recipes: [
