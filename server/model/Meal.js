@@ -8,7 +8,8 @@ class Meal {
         this.date = null;
         this.mealTime = null;
         this.servingsRequired = null;
-        this.recipe = null; // Recipe object
+        this.recipes = []; // Array of Recipe objects
+        this.mealPlan = null; // Parent MealPlan object
         this.note = null;
     }
 }

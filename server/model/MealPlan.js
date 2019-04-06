@@ -15,6 +15,7 @@ class MealPlan {
      * @param meal {Meal}
      */
     addMeal(meal) {
+        meal.mealPlan = this;
         this._mealList.push(meal);
     }
 
