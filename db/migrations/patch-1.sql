@@ -1,0 +1,5 @@
+ALTER TABLE meal_plan ADD name VARCHAR(50) NOT NULL;
+
+ALTER TABLE meal DROP COLUMN meal_date;
+ALTER TABLE meal DROP COLUMN meal_time;
+ALTER TABLE meal ADD meal_date_time DATETIME NOT NULL;

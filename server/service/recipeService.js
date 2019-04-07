@@ -55,6 +55,32 @@ class RecipeService {
         return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
     }
 
+    /**
+     * Check if personal recipe with given id exists
+     * @param recipeId
+     * @param accountId
+     * @returns {Promise<boolean>}
+     */
+    async personalRecipeExists(recipeId, accountId) {
+        const count = await knex
+            .count('*')
+            .from('personal_recipe')
+            .where({ recipe_id: recipeId, account_id: accountId });
+        return count[0]['count(*)'] === 1;
+    }
+
+    /**
+     * Check if public recipe with given id exists
+     * @param recipeId
+     * @returns {Promise<boolean>}
+     */
+    async publicRecipeExists(recipeId) {
+        const count = await knex
+            .count('*')
+            .from('shared_recipe')
+            .where({ recipe_id: recipeId });
+        return count[0]['count(*)'] === 1;
+    }
 
     //Right now, I believe this will just return the first recipe with the name specified. We should probably alter it to
     //return an array of recipe (or something similar).
