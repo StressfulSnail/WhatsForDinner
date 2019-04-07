@@ -29,8 +29,8 @@ class MealPlanController {
         try {
             const account = request.user;
             const { body } = request;
-            for (let m = 0; m < meals.length; m++) {
-                const meal = meals[m];
+            for (let m = 0; m < body.meals.length; m++) {
+                const meal = body.meals[m];
                 if (!await MealPlanController._validateRecipeAccess(account, meal.recipes)) {
                     return response.sendStatus(400);
                 }
