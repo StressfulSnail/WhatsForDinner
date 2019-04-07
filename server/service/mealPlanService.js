@@ -65,9 +65,9 @@ class MealPlanService {
     }
 
     /**
-     * Gets all meal plans belonging to an account
+     * Gets meal plan with given id
      * @param mealPlanId
-     * @returns {Promise<MealPlan[]>}
+     * @returns {Promise<MealPlan>}
      */
     async getMealPlan(mealPlanId) {
         const results = await knex
@@ -76,6 +76,16 @@ class MealPlanService {
             .where({ meal_plan_id: mealPlanId })
             .limit(1);
         return results.length === 1 ? this._tableToModel(results[0]) : null;
+    }
+
+    /**
+     * @param mealPlan {MealPlan}
+     * @returns {Promise<void>}
+     */
+    async deleteMealPlan(mealPlan) {
+        await knex('meal_plan')
+            .delete()
+            .where({ meal_plan_id: mealPlan.id });
     }
 }
 

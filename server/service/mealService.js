@@ -139,6 +139,23 @@ class MealService {
 
         return meals;
     }
+
+    /**
+     * @param meal {Meal}
+     * @returns {Promise<void>}
+     */
+    async deleteMeal(meal) {
+        await knex.transaction(async (transaction) => {
+            // delete all meal recipes for this meal
+            await transaction('meal_recipe')
+                .delete()
+                .where({ meal_id: meal.id });
+            // delete meal
+            await transaction('meal')
+                .delete()
+                .where({ meal_id: meal.id });
+        });
+    }
 }
 
 module.exports = new MealService();

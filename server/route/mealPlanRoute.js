@@ -58,7 +58,7 @@ router.put('/:mealPlanId', passport.authenticate('jwt', { session: false }), mea
  * DELETE /api/mealplan/:mealPlanId
  * Delete meal plan with given id, will delete any children meals
  */
-router.delete('/:mealPlanId');
+router.delete('/:mealPlanId', passport.authenticate('jwt', { session: false }), mealPlanController.deleteMealPlan);
 
 /**
  * GET /api/mealplan/:mealPlanId/meals
@@ -119,7 +119,7 @@ router.put('/:mealPlanId/meals/:mealId', passport.authenticate('jwt', { session:
  * DELETE /api/mealplan/:mealPlanId/meals/:mealId
  * Delete meal with given mealId
  */
-router.delete('/:mealPlanId/meals/:mealId');
+router.delete('/:mealPlanId/meals/:mealId', passport.authenticate('jwt', { session: false }), mealPlanController.deleteMeal);
 
 
 

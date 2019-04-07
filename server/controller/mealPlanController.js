@@ -28,7 +28,7 @@ class MealPlanController {
     async createMealPlan(request, response) {
         try {
             const account = request.user;
-            const { body } = request;
+            const {body} = request;
             for (let m = 0; m < body.meals.length; m++) {
                 const meal = body.meals[m];
                 if (!await MealPlanController._validateRecipeAccess(account, meal.recipes)) {
@@ -82,7 +82,7 @@ class MealPlanController {
         try {
             const account = request.user;
             const mealPlanId = request.params.mealPlanId;
-            const { body } = request;
+            const {body} = request;
             const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
 
             if (!mealPlan) {
@@ -143,6 +143,9 @@ class MealPlanController {
             const mealPlanId = request.params.mealPlanId;
 
             const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (!mealPlan) { // make sure meal plan exists
+                return response.sendStatus(404);
+            }
             if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
                 return response.sendStatus(401);
             }
@@ -154,7 +157,7 @@ class MealPlanController {
                     dateTime: meal.dateTime,
                     servingsRequired: meal.servingsRequired,
                     note: meal.note,
-                    recipes: meal.recipes.map(recipe => ({ id: recipe.id, name: recipe.name })),
+                    recipes: meal.recipes.map(recipe => ({id: recipe.id, name: recipe.name})),
                 }
             });
 
@@ -196,7 +199,7 @@ class MealPlanController {
     async updateMeal(request, response) {
         try {
             const account = request.user;
-            const { mealPlanId, mealId } = request.params;
+            const {mealPlanId, mealId} = request.params;
             const body = request.body;
 
             const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
@@ -225,6 +228,61 @@ class MealPlanController {
 
             return response.sendStatus(200);
         } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async deleteMeal(request, response) {
+        try {
+            const account = request.user;
+            const {mealPlanId, mealId} = request.params;
+
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (!mealPlan) { // make sure meal plan exists
+                return response.sendStatus(404);
+            }
+            if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
+                return response.sendStatus(401);
+            }
+
+            const meal = await mealService.getMeal(mealId);
+            if (!meal) { // make sure meal exists
+                return response.sendStatus(404);
+            }
+
+            await mealService.deleteMeal(meal);
+
+            return response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async deleteMealPlan(request, response) {
+        try {
+            const account = request.user;
+            const mealPlanId = request.params.mealPlanId;
+
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (!mealPlan) { // make sure meal plan exists
+                return response.sendStatus(404);
+            }
+            if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
+                return response.sendStatus(401);
+            }
+
+            // delete children meals
+            const meals = await mealService.getMealPlanMeals(mealPlanId);
+            for (let meal of meals) {
+                await mealService.deleteMeal(meal);
+            }
+
+            await mealPlanService.deleteMealPlan(mealPlan);
+
+            return response.sendStatus(200);
+        } catch(e) {
             console.error(e);
             response.sendStatus(500);
         }
