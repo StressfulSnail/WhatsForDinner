@@ -6,20 +6,33 @@ const Meal = require('../model/Meal');
 const Recipe = require('../model/Recipe');
 
 class MealPlanController {
+    /**
+     * Validate access to all recipes (also validates they exist)
+     * @param account
+     * @param recipes
+     * @returns {Promise<boolean>}
+     * @private
+     */
+    static async _validateRecipeAccess(account, recipes) {
+        for (let r = 0; r < recipes.length; r++) {
+            const recipe = recipes[r];
+            // check if a personal recipe belonging to the account, or is a public recipe
+            if (!await recipeService.personalRecipeExists(recipe.id, account.id)
+                && !await recipeService.publicRecipeExists(recipe.id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     async createMealPlan(request, response) {
         try {
             const account = request.user;
             const { body } = request;
-            // validate access to all recipes (also validates they exist)
-            for (let m = 0; m < body.meals.length; m++) {
-                const meal = body.meals[m];
-                for (let r = 0; r < meal.recipes.length; r++) {
-                    const recipe = meal.recipes[r];
-                    // check if a personal recipe belonging to the account, or is a public recipe
-                    if (!await recipeService.personalRecipeExists(recipe.id, account.id)
-                        && !await recipeService.publicRecipeExists(recipe.id)) {
-                        return response.sendStatus(400);
-                    }
+            for (let m = 0; m < meals.length; m++) {
+                const meal = meals[m];
+                if (!await MealPlanController._validateRecipeAccess(account, meal.recipes)) {
+                    return response.sendStatus(400);
                 }
             }
 
@@ -57,6 +70,44 @@ class MealPlanController {
                 const mealId = await mealService.saveMeal(meal);
                 meal.id = mealId;
             }
+
+            return response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async createMeal(request, response) {
+        try {
+            const account = request.user;
+            const mealPlanId = request.params.mealPlanId;
+            const { body } = request;
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+
+            if (!mealPlan) {
+                return response.sendStatus(404); // Meal Plan not found
+            }
+            if (!await MealPlanController._validateRecipeAccess(account, body.recipes)) {
+                return response.sendStatus(400); // Don't have access or recipe does not exist
+            }
+
+            // create meal entity
+            const meal = new Meal();
+            meal.dateTime = new Date(body.dateTime);
+            meal.servingsRequired = body.servingsRequired;
+            meal.note = body.note;
+            meal.recipes = body.recipes.map(recipeBody => {
+                const recipe = new Recipe();
+                recipe.id = recipeBody.id;
+                return recipe;
+            });
+
+            // meal to meal plan
+            mealPlan.addMeal(meal);
+
+            // save meal
+            meal.id = await mealService.saveMeal(meal);
 
             return response.sendStatus(200);
         } catch (e) {

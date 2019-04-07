@@ -95,7 +95,7 @@ router.get('/:mealPlanId/meals', passport.authenticate('jwt', { session: false }
  *    ]
  *  }
  */
-router.post('/:mealPlanId/meals');
+router.post('/:mealPlanId/meals', passport.authenticate('jwt', { session: false }), mealPlanController.createMeal);
 
 /**
  * PUT /api/mealplan/:mealPlanId/meals/:mealId
