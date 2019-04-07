@@ -64,6 +64,55 @@ class MealPlanController {
             response.sendStatus(500);
         }
     }
+
+    async getMealPlans(request, response) {
+        try {
+            const account = request.user;
+
+            const mealPlans = await mealPlanService.getAccountMealPlans(account.id);
+            const jsonData = mealPlans.map(mealPlan => {
+                return {
+                    id: mealPlan.id,
+                    name: mealPlan.name,
+                    startDate: mealPlan.startDate,
+                    endDate: mealPlan.endDate,
+                }
+            });
+
+            return response.json(jsonData);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async getMeals(request, response) {
+        try {
+            const account = request.user;
+            const mealPlanId = request.params.mealPlanId;
+
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
+                return response.sendStatus(401);
+            }
+
+            const meals = await mealService.getMealPlanMeals(mealPlanId);
+            const jsonData = meals.map(meal => {
+                return {
+                    id: meal.id,
+                    dateTime: meal.dateTime,
+                    servingsRequired: meal.servingsRequired,
+                    note: meal.note,
+                    recipes: meal.recipes.map(recipe => ({ id: recipe.id, name: recipe.name })),
+                }
+            });
+
+            return response.json(jsonData);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new MealPlanController();

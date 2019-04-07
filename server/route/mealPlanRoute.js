@@ -40,7 +40,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), mealPlanContr
  *   }
  * ]
  */
-router.get('/');
+router.get('/', passport.authenticate('jwt', { session: false }), mealPlanController.getMealPlans);
 
 /**
  * PUT /api/mealplan/:mealPlanId
@@ -78,7 +78,7 @@ router.delete('/:mealPlanId');
  *  }
  *]
  */
-router.get('/:mealPlanId/meals');
+router.get('/:mealPlanId/meals', passport.authenticate('jwt', { session: false }), mealPlanController.getMeals);
 
 /**
  * POST /api/mealplan/:mealPlanId/meals

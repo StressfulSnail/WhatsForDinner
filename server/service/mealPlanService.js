@@ -39,6 +39,33 @@ class MealPlanService {
             .returning('meal_plan_id');
         return id[0];
     }
+
+    /**
+     * Gets all meal plans belonging to an account
+     * @param accountId
+     * @returns {Promise<MealPlan[]>}
+     */
+    async getAccountMealPlans(accountId) {
+        const results = await knex
+            .select('*')
+            .from('meal_plan')
+            .where({ account_id: accountId });
+        return results.map(rowData => this._tableToModel(rowData));
+    }
+
+    /**
+     * Gets all meal plans belonging to an account
+     * @param mealPlanId
+     * @returns {Promise<MealPlan[]>}
+     */
+    async getMealPlan(mealPlanId) {
+        const results = await knex
+            .select('*')
+            .from('meal_plan')
+            .where({ meal_plan_id: mealPlanId })
+            .limit(1);
+        return results.length === 1 ? this._tableToModel(results[0]) : null;
+    }
 }
 
 module.exports = new MealPlanService();
