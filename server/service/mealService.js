@@ -1,5 +1,6 @@
 const knex = require('../db');
 const Meal = require('../model/Meal');
+const MealPlan = require('../model/MealPlan');
 const Recipe = require('../model/Recipe');
 
 class MealService {
@@ -10,6 +11,10 @@ class MealService {
         meal.dateTime = tableObj.meal_date_time;
         meal.servingsRequired = tableObj.servings_required;
         meal.note = tableObj.note;
+
+        meal.mealPlan = new MealPlan();
+        meal.mealPlan.id = tableObj.meal_plan_id;
+
         return meal;
     }
 
@@ -56,6 +61,57 @@ class MealService {
            }
         });
         return mealId[0];
+    }
+
+    /**
+     * @param meal {Meal}
+     * @returns {Promise<void>}
+     */
+    async updateMeal(meal) {
+        const mealTableData = this._modelToTable(meal);
+
+        await knex.transaction(async (transaction) => {
+            await transaction('meal')
+                .update(mealTableData)
+                .where({ meal_id: meal.id });
+
+            // delete all meal recipes for this meal
+            await transaction('meal_recipe')
+                .delete()
+                .where({ meal_id: meal.id });
+
+            // then rebuild with recipes from meal object
+            const mealRecipeTablesData =
+                meal.recipes.map(recipe => this._recipesToMealRecipeTable(recipe, meal.id));
+            for (let mealRecipeTableData of mealRecipeTablesData) {
+                await transaction
+                    .insert(mealRecipeTableData)
+                    .into('meal_recipe');
+            }
+        });
+    }
+
+    async getMeal(mealId) {
+        const results = await knex
+            .select('*')
+            .from('meal')
+            .where({ meal_id: mealId })
+            .limit(1);
+
+        const meal = results.length === 1 ? this._tableToModel(results[0]) : null;
+        if (!meal) {
+            return null;
+        }
+
+        // add recipes to meal model
+        const recipeResults = await knex
+            .select('recipe.recipe_id', 'recipe.name')
+            .from('meal_recipe')
+            .leftJoin('recipe', 'meal_recipe.recipe_id', '=', 'recipe.recipe_id')
+            .where({ meal_id: meal.id });
+        meal.recipes = recipeResults.map(rowData => this._recipeTableToRecipeModel(rowData));
+
+        return meal;
     }
 
     /**

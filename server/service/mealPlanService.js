@@ -27,7 +27,7 @@ class MealPlanService {
     }
 
     /**
-     * @param mealPlan
+     * @param mealPlan {MealPlan}
      * @returns {Promise<number>} Id of the saved Meal Plan
      */
     async saveMealPlan(mealPlan) {
@@ -38,6 +38,17 @@ class MealPlanService {
             .into('meal_plan')
             .returning('meal_plan_id');
         return id[0];
+    }
+
+    /**
+     * @param mealPlan {MealPlan}
+     * @returns {Promise<void>}
+     */
+    async updateMealPlan(mealPlan) {
+        const tableData = this._modelToTable(mealPlan);
+        await knex('meal_plan')
+            .update(tableData)
+            .where({ meal_plan_id: mealPlan.id });
     }
 
     /**

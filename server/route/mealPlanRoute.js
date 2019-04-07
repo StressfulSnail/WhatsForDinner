@@ -52,7 +52,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), mealPlanContro
  *    endDate: Date
  * }
  */
-router.put('/:mealPlanId');
+router.put('/:mealPlanId', passport.authenticate('jwt', { session: false }), mealPlanController.updateMealPlan);
 
 /**
  * DELETE /api/mealplan/:mealPlanId
@@ -113,7 +113,7 @@ router.post('/:mealPlanId/meals', passport.authenticate('jwt', { session: false 
  *    ]
  *  }
  */
-router.put('/:mealPlanId/meals/:mealId');
+router.put('/:mealPlanId/meals/:mealId', passport.authenticate('jwt', { session: false }), mealPlanController.updateMeal);
 
 /**
  * DELETE /api/mealplan/:mealPlanId/meals/:mealId

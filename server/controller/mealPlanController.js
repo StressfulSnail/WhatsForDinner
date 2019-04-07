@@ -164,6 +164,71 @@ class MealPlanController {
             response.sendStatus(500);
         }
     }
+
+    async updateMealPlan(request, response) {
+        try {
+            const account = request.user;
+            const mealPlanId = request.params.mealPlanId;
+            const body = request.body;
+
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (!mealPlan) { // make sure meal plan exists
+                return response.sendStatus(404);
+            }
+            if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
+                return response.sendStatus(401);
+            }
+
+            mealPlan.account = account;
+            mealPlan.name = body.name;
+            mealPlan.startDate = new Date(body.startDate);
+            mealPlan.endDate = new Date(body.endDate);
+
+            await mealPlanService.updateMealPlan(mealPlan);
+
+            return response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async updateMeal(request, response) {
+        try {
+            const account = request.user;
+            const { mealPlanId, mealId } = request.params;
+            const body = request.body;
+
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (!mealPlan) { // make sure meal plan exists
+                return response.sendStatus(404);
+            }
+            if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
+                return response.sendStatus(401);
+            }
+
+            const meal = await mealService.getMeal(mealId);
+            if (!meal) { // make sure meal exists
+                return response.sendStatus(404);
+            }
+
+            meal.dateTime = new Date(body.dateTime);
+            meal.servingsRequired = body.servingsRequired;
+            meal.note = body.note;
+            meal.recipes = body.recipes.map(recipeBody => {
+                const recipe = new Recipe();
+                recipe.id = recipeBody.id;
+                return recipe;
+            });
+
+            await mealService.updateMeal(meal);
+
+            return response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new MealPlanController();
