@@ -26,14 +26,14 @@ class RecipeService {
             recipe_id: recipeModel.recipe_id,
             name: recipeModel.name,
             imageURL: recipeModel.imageURL,
-            ingredientList: recipeModel.ingredientList,
+//            ingredientList: recipeModel.ingredientList,   Commented out because it's difficult to put an array into a table
             prepInstructions: recipeModel.prepInstructions,
             prepTime: recipeModel.prepTime,
             cookTime: recipeModel.cookTime,
             caloricEstimate: recipeModel.caloricEstimate,
             tasteRating: recipeModel.tasteRating,
             difficultyRating: recipeModel.difficultyRating,
-            tags: recipeModel.tags,
+//            tags: recipeModel.tags,                       See above
             note: recipeModel.note
         }
     }

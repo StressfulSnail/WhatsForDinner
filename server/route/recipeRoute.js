@@ -20,7 +20,7 @@ const recipeController = require('../controller/accountController');
  *      tags: array(Tag)
  * }
  */
-router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipeById());
+router.get('/', , recipeController.getRecipeById());
 
 /**
  * POST /api/recipe/
@@ -45,14 +45,14 @@ router.post('/', recipeController.createRecipe);
  * Delete Recipe
  *
  */
-router.delete('/delete', passport.authenticate ('jwt', {session: false }), accountController.deleteAccount);
+router.delete('/delete', , recipeController.deleteAccount);
 
 /**
  * POST /api/account/edit
  * Edit Account
  *
  */
-router.post('/edit', passport.authenticate ('jwt', {session: false }), accountController.editAccount);
+router.post('/edit', , recipeController.editAccount);
 
 
 

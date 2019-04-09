@@ -9,9 +9,9 @@ const errorResponses = require('./errorResponses');
 
 class RecipeController {
 
-    async getRecipeById(request, response) {
+    async getRecipe(request, response) {
         try {
-            const recipe = await recipeService.getPersonalRecipe(request.recipes.recipe_id, request.recipes.account_id);
+            const recipe = await recipeService.getRecipe(request.recipes.recipe_id);
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -20,6 +20,18 @@ class RecipeController {
             console.error(e);
             response.sendStatus(500);
         }
+    }
+
+    async searchPersonalRecipes(request, response) {
+
+    }
+
+    async getSharedRecipes(request, response) {
+
+    }
+
+    async searchSharedRecipes(request, response){
+
     }
 
     async createRecipe(request, response) {
@@ -32,6 +44,8 @@ class RecipeController {
             //Check for Duplicates here if necessary
 
             const ingredientList = request.getIngredients();
+            //To be used in a different method.
+
             const prepInstructions = request.getPrepInstructions();
             const prepTime = request.getPrepTime();
             const cookTime = request.getCookTime();
@@ -45,6 +59,46 @@ class RecipeController {
             await recipeService.saveRecipe(request);
             response.sendStatus(200);
         } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async updateRecipe(request, response) {
+        try {
+            const recipe = await recipeService.getRecipe(request.recipe_id);
+            if (!recipe) {
+                return response.sendStatus(404);
+            }
+//            recipe.recipe_id = request.recipe_id; Commented out because recipe_id should be immutable.
+            recipe.name = request.name;
+            recipe.imageURL = request.imageURL;
+            recipe.ingredientList = request.ingredientList;
+            recipe.prepInstructions = request.prepInstructions;
+            recipe.prepTime = request.prepTime;
+            recipe.cookTime = request.cookTime;
+            recipe.caloricEstimate = request.caloricEstimate;
+            recipe.tasteRating = request.tasteRating;
+            recipe.difficultyRating = request.difficultyRating;
+            recipe.tags = request.tags;
+
+            await recipeService.editRecipe(recipe);
+            response.sendStatus(200);
+        } catch(e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async deleteRecipe(request, response) {
+        try {
+            const recipe = await recipeService.getRecipe(request.recipe_id);
+            if (!recipe) {
+                return response.sendStatus(404);
+            }
+            await recipeService.deleteRecipe(recipe.recipe_id);
+            response.sendStatus(200);
+        }catch(e) {
             console.error(e);
             response.sendStatus(500);
         }
