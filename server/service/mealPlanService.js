@@ -27,7 +27,7 @@ class MealPlanService {
     }
 
     /**
-     * @param mealPlan
+     * @param mealPlan {MealPlan}
      * @returns {Promise<number>} Id of the saved Meal Plan
      */
     async saveMealPlan(mealPlan) {
@@ -38,6 +38,54 @@ class MealPlanService {
             .into('meal_plan')
             .returning('meal_plan_id');
         return id[0];
+    }
+
+    /**
+     * @param mealPlan {MealPlan}
+     * @returns {Promise<void>}
+     */
+    async updateMealPlan(mealPlan) {
+        const tableData = this._modelToTable(mealPlan);
+        await knex('meal_plan')
+            .update(tableData)
+            .where({ meal_plan_id: mealPlan.id });
+    }
+
+    /**
+     * Gets all meal plans belonging to an account
+     * @param accountId
+     * @returns {Promise<MealPlan[]>}
+     */
+    async getAccountMealPlans(accountId) {
+        const results = await knex
+            .select('*')
+            .from('meal_plan')
+            .where({ account_id: accountId });
+        return results.map(rowData => this._tableToModel(rowData));
+    }
+
+    /**
+     * Gets meal plan with given id
+     * @param mealPlanId
+     * @returns {Promise<MealPlan>}
+     */
+    async getMealPlan(mealPlanId) {
+        const results = await knex
+            .select('*')
+            .from('meal_plan')
+            .where({ meal_plan_id: mealPlanId })
+            .limit(1);
+        return results.length === 1 ? this._tableToModel(results[0]) : null;
+    }
+
+    /**
+     * @param mealPlan {MealPlan}
+     * @returns {Promise<void>}
+     */
+    async deleteMealPlan(mealPlan) {
+        await knex('meal_plan')
+            .delete()
+            .where({ meal_plan_id: mealPlan.id });
     }
 }
 

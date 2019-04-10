@@ -25,8 +25,8 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "client-build && server-start",
-    "test": "client-test || server-test",
+    "start": "npm run client-build && npm run server-start",
+    "test": "npm run client-test || npm run server-test",
     "server-start": "node ./server/server.js",
     "server-test": "jest",
     "client-start": "react-scripts start",
