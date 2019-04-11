@@ -5,6 +5,7 @@ class IngredientCount {
     constructor(){
         this.measurementUnit = null;
         this.measurement = 0.0;
+        this.Ingredient = null;
     }
 
     //getters
@@ -17,6 +18,10 @@ class IngredientCount {
         return this.measurement;
     }
 
+    getIngredient(){
+        return this.Ingredient;
+    }
+
     //setters
 
     setMeasurementUnit(newMeasurementUnit){
@@ -25,6 +30,10 @@ class IngredientCount {
 
     setMeasurement(newMeasurement){
         this.measurement = newMeasurement;
+    }
+
+    setIngredient(newIngredient) {
+        this.Ingredient = newIngredient;
     }
 }
 

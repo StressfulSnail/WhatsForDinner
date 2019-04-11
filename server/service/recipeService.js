@@ -10,14 +10,14 @@ class RecipeService {
         recipe.recipeID = tableObj.recipe_id;
         recipe.name = tableObj.name;
         recipe.imageURL = tableObj.imageURL;
-        //recipe.ingredientList = tableObj.ingredientList; (unsure as to array implementation)
+        //recipe.ingredientList = tableObj.ingredientList; would not be on the Recipe table. Check Ingredient_Count
         recipe.prepInstructions = tableObj.prepInstructions;
         recipe.prepTime = tableObj.prepTime;
         recipe.cookTime = tableObj.cookTime;
         recipe.caloricEstimate = tableObj.caloricEstimate;
         recipe.tasteRating = tableObj.tasteRating;
         recipe.difficultyRating = tableObj.difficultyRating;
-        //recipe.tags = tableObj.tags;
+        //recipe.tags = tableObj.tags;      Would be on the recipe_tag table.
         return recipe;
     }
 
@@ -34,7 +34,7 @@ class RecipeService {
             tasteRating: recipeModel.tasteRating,
             difficultyRating: recipeModel.difficultyRating,
 //            tags: recipeModel.tags,                       See above
-            note: recipeModel.note
+//            note: recipeModel.note                        Specific to PersonalRecipe
         }
     }
 
@@ -109,7 +109,13 @@ class RecipeService {
             const recipeID = await transaction.insert(recipeData)
                 .into( 'Recipe')
                 .returning('recipe_id');
-        });
+        }
+
+        await Recipe.getIngredients().forEach(function(element))) {
+            await transaction.insert(recipeID, element)
+                .into('ingredient_count');
+        }
+
     }
 
 }

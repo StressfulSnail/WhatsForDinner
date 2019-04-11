@@ -18,19 +18,19 @@ class Recipe {
         this.tags = new Array();               //Array<Tag>
     }
 
-    // constructor(otherRecipe) {
-    //     this.recipe_id = null;         //ID Generation handled by SQL table.
-    //     this.name = otherRecipe.name;
-    //     this.imageURL = otherRecipe.imageURL;
-    //     this.ingredientList = otherRecipe.ingredientList.slice();
-    //     this.prepInstructions = otherRecipe.prepInstructions;
-    //     this.prepTime = otherRecipe.prepTime;
-    //     this.cookTime = otherRecipe.cookTime;
-    //     this.caloricEstimate = otherRecipe.caloricEstimate;
-    //     this.tasteRating = otherRecipe.tasteRating;
-    //     this.difficultyRating = otherRecipe.difficultyRating;
-    //     this.tags = otherRecipe.tags.slice();
-    // }
+     constructor(otherRecipe) {
+         this.recipe_id = null;         //ID Generation handled by SQL table.
+         this.name = otherRecipe.name;
+         this.imageURL = otherRecipe.imageURL;
+         this.ingredientList = otherRecipe.ingredientList.slice();
+         this.prepInstructions = otherRecipe.prepInstructions;
+         this.prepTime = otherRecipe.prepTime;
+         this.cookTime = otherRecipe.cookTime;
+         this.caloricEstimate = otherRecipe.caloricEstimate;
+         this.tasteRating = otherRecipe.tasteRating;
+         this.difficultyRating = otherRecipe.difficultyRating;
+         this.tags = otherRecipe.tags.slice();
+     }
 
 
     //Calls on the copy constructor (above) to clone itself and return the clone.
