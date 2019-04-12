@@ -28,6 +28,12 @@ const styles = {
 };
 
 class MealPlansPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visiblePlans: this.props.mealPlans,
+        }
+    }
 
     componentDidMount() {
         const { token, mealPlans, loadingStart, loadingComplete, loadMealPlans } = this.props;
@@ -37,13 +43,22 @@ class MealPlansPage extends React.Component {
                 .then((mealPlans) => {
                     loadingComplete();
                     loadMealPlans(mealPlans);
+                    this.setState({ visiblePlans: mealPlans });
                 })
                 .catch(console.err);
         }
     }
 
+    searchPlans = (event) => {
+        const searchText = event.target.value;
+        this.setState({
+            visiblePlans: this.props.mealPlans.filter(meal => meal.name.indexOf(searchText) > -1),
+        });
+    };
+
     render() {
-        const { classes, mealPlans } = this.props;
+        const { classes } = this.props;
+        const { visiblePlans } = this.state;
         return <div>
             <AppBar position="static">
                 <Toolbar>
@@ -66,6 +81,7 @@ class MealPlansPage extends React.Component {
                                     </InputAdornment>
                                 ),
                             }}
+                            onChange={this.searchPlans}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -87,7 +103,7 @@ class MealPlansPage extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {mealPlans.map(plan =>
+                            {visiblePlans.map(plan =>
                                 (<TableRow key={plan.id}>
                                     <TableCell component="th" scope="row">
                                         {plan.name}
