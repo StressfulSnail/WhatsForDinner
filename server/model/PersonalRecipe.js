@@ -9,14 +9,13 @@ class PersonalRecipe extends Recipe{
         this.note = null;
     }
 
-     constructor(otherRecipe) {
+
+    makeCopy(otherRecipe){
         if (otherRecipe instanceof PersonalRecipe) {
-            super(otherRecipe);
+            super.makeCopy(otherRecipe);
             this.note = otherRecipe.note;
-        } else if (otherRecipe instanceof Recipe) {
-            super(otherRecipe);
         }
-     }
+    }
 
     getNote(){
         return this.note;

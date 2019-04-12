@@ -18,7 +18,7 @@ class Recipe {
         this.tags = new Array();               //Array<Tag>
     }
 
-     constructor(otherRecipe) {
+    makeCopy(otherRecipe){
         if (otherRecipe instanceof Recipe) {
             this.recipe_id = null;         //ID Generation handled by SQL table.
             this.name = otherRecipe.name;
@@ -32,18 +32,9 @@ class Recipe {
             this.difficultyRating = otherRecipe.difficultyRating;
             this.tags = otherRecipe.tags.slice();
         }
-     }
-
-
-    //Calls on the copy constructor (above) to clone itself and return the clone.
-    makeCopy(){
-        let newRecipe = new Recipe(this);
-
-        return newRecipe;
     }
 
 
-    //Placeholder while I figure out a 2D array for this system.
     addIngredient(ingredientName, ingredientAmount){
     }
 

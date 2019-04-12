@@ -7,7 +7,7 @@ class RecipeService {
     //and then construct that way.
     _recipeTableToModel(tableObj) {
         const recipe = new PersonalRecipe();
-        recipe.recipeID = tableObj.recipe_id;
+        recipe.recipe_id = tableObj.recipe_id;
         recipe.name = tableObj.name;
         recipe.imageURL = tableObj.imageURL;
         //recipe.ingredientList = tableObj.ingredientList; would not be on the Recipe table. Check Ingredient_Count
@@ -109,6 +109,8 @@ class RecipeService {
             const recipeID = await transaction.insert(recipeData)
                 .into( 'Recipe')
                 .returning('recipe_id');
+
+            Recipe.setID(recipeID);
         })
 
  /*       await Recipe.getIngredients().forEach(function(element))) {
