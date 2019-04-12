@@ -17,6 +17,9 @@ import {Button} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
+import mealPlanService from "../../services/mealPlanService";
+import {LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
+import DateFormat from "../../components/DateFormat";
 
 const styles = {
     grid: {
@@ -27,12 +30,20 @@ const styles = {
 class MealPlansPage extends React.Component {
 
     componentDidMount() {
-        setTimeout(() => this.props.loadingStart(),2000);
-        setTimeout(() => this.props.loadingComplete(),4000);
+        const { token, mealPlans, loadingStart, loadingComplete, loadMealPlans } = this.props;
+        if (mealPlans.length < 1) {
+            loadingStart();
+            mealPlanService.getMealPlans(token)
+                .then((mealPlans) => {
+                    loadingComplete();
+                    loadMealPlans(mealPlans);
+                })
+                .catch(console.err);
+        }
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, mealPlans } = this.props;
         return <div>
             <AppBar position="static">
                 <Toolbar>
@@ -76,17 +87,19 @@ class MealPlansPage extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                                <TableRow key='dsa'>
+                            {mealPlans.map(plan =>
+                                (<TableRow key={plan.id}>
                                     <TableCell component="th" scope="row">
-                                        dsa
+                                        {plan.name}
                                     </TableCell>
-                                    <TableCell align="right">dsa</TableCell>
-                                    <TableCell align="right">sadsa</TableCell>
+                                    <TableCell align="right"><DateFormat value={plan.startDate} /></TableCell>
+                                    <TableCell align="right"><DateFormat value={plan.endDate} /></TableCell>
                                     <TableCell align="right">
                                         <Button color="primary">VIEW</Button>
                                         <Button color="secondary">DELETE</Button>
                                     </TableCell>
-                                </TableRow>
+                                </TableRow>))
+                            }
                         </TableBody>
                     </Table>
                 </Paper>
@@ -103,6 +116,7 @@ MealPlansPage.propTypes = {
 const mapStateToProps = (state) => {
     return {
         token: state.account.token,
+        mealPlans: state.mealPlans.plans,
     }
 };
 
@@ -110,6 +124,7 @@ const mapActionsToProps = (dispatch) => {
     return {
         loadingStart: () => dispatch({ type: LOADING_STARTED }),
         loadingComplete: () => dispatch({ type: LOADING_COMPLETE }),
+        loadMealPlans: (plans) => dispatch({ type: LOAD_MEAL_PLANS, payload: { plans } }),
     }
 };
 
