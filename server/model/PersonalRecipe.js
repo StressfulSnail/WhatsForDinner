@@ -10,8 +10,12 @@ class PersonalRecipe extends Recipe{
     }
 
      constructor(otherRecipe) {
-         super(otherRecipe);
-         this.note = otherRecipe.note;
+        if (otherRecipe instanceof PersonalRecipe) {
+            super(otherRecipe);
+            this.note = otherRecipe.note;
+        } else if (otherRecipe instanceof Recipe) {
+            super(otherRecipe);
+        }
      }
 
     getNote(){

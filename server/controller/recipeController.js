@@ -1,4 +1,3 @@
-const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const recipeService = require('../service/recipeService');
 const PersonalRecipe = require('../model/PersonalRecipe');
@@ -23,7 +22,16 @@ class RecipeController {
     }
 
     async searchPersonalRecipes(request, response) {
-
+        try {
+            const recipe = await recipeService.getPersonalRecipe(request.recipes.recipe_id);
+            if (!recipe) {
+                return response.sendStatus(404);
+            }
+            response.send(recipe);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
     }
 
     async getSharedRecipes(request, response) {
@@ -64,7 +72,7 @@ class RecipeController {
         }
     }
 
-    async updateRecipe(request, response) {
+    async editRecipe(request, response) {
         try {
             const recipe = await recipeService.getRecipe(request.recipe_id);
             if (!recipe) {

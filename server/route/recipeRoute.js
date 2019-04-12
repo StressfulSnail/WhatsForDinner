@@ -1,8 +1,9 @@
+//Keep an eye on this. 100% sure this will change as I familiarize myself with these models. -Duncan
+
 const express = require('express');
-const passport = require('passport');
 const router = express.Router();
 
-const recipeController = require('../controller/accountController');
+const recipeController = require('../controller/recipeController');
 
 /**
  * GET /api/recipe/
@@ -45,14 +46,14 @@ router.post('/', recipeController.createRecipe);
  * Delete Recipe
  *
  */
-router.delete('/delete', , recipeController.deleteAccount);
+router.delete('/delete', , recipeController.deleteRecipe);
 
 /**
  * POST /api/account/edit
  * Edit Account
  *
  */
-router.post('/edit', , recipeController.editAccount);
+router.post('/edit', , recipeController.editRecipe);
 
 
 

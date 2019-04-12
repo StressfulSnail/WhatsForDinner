@@ -5,7 +5,7 @@ class RecipeService {
 
     //Am likely going to change this to incorporate some degree of polymorphism- determine if the recipe is personal or shared
     //and then construct that way.
-    _tableToModel(tableObj) {
+    _recipeTableToModel(tableObj) {
         const recipe = new PersonalRecipe();
         recipe.recipeID = tableObj.recipe_id;
         recipe.name = tableObj.name;
@@ -21,7 +21,7 @@ class RecipeService {
         return recipe;
     }
 
-    _modelToTable(recipeModel) {
+    _recipeModelToTable(recipeModel) {
         return {
             recipe_id: recipeModel.recipe_id,
             name: recipeModel.name,
@@ -43,7 +43,7 @@ class RecipeService {
             .from('Recipe')
             .where({ 'recipe_id': recipeID });
 
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
     async getPersonalRecipe(recipeID, accountID){
@@ -52,7 +52,7 @@ class RecipeService {
             .where({ 'recipe_id': recipeID,
                             'account_id': accountID});
 
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
     /**
@@ -88,7 +88,7 @@ class RecipeService {
         const recipes = await knex.select()
             .from('personal_recipe')
             .where({ 'name': recipeName });
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
     async findPersonalRecipeByName(recipeName, accountID) {
@@ -97,7 +97,7 @@ class RecipeService {
             .joinRaw('personal_recipe')
             .where({'name': recipeName, 'account_id': accountID});
 
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
 
     }
 
@@ -109,12 +109,12 @@ class RecipeService {
             const recipeID = await transaction.insert(recipeData)
                 .into( 'Recipe')
                 .returning('recipe_id');
-        }
+        })
 
-        await Recipe.getIngredients().forEach(function(element))) {
+ /*       await Recipe.getIngredients().forEach(function(element))) {
             await transaction.insert(recipeID, element)
                 .into('ingredient_count');
-        }
+        } */
 
     }
 
