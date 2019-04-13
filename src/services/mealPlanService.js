@@ -19,6 +19,18 @@ class MealPlanService extends BaseService {
 
         return await response.json();
     }
+
+    async getMeals(token, mealPlanId) {
+        const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals`, {
+            headers: super.getHeaders(token),
+        });
+
+        if(!response.ok) {
+            throw new Error(await response.text());
+        }
+
+        return await response.json();
+    }
 }
 
 export default new MealPlanService();
