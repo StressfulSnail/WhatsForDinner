@@ -17,7 +17,14 @@ class MealPlanService extends BaseService {
             throw new Error(await response.text());
         }
 
-        return await response.json();
+        const json = await response.json();
+        return json.map(plan => {
+            return {
+                ...plan,
+                startDate: new Date(plan.startDate),
+                endDate: new Date(plan.endDate),
+            }
+        });
     }
 
     async getMeals(token, mealPlanId) {
@@ -29,7 +36,13 @@ class MealPlanService extends BaseService {
             throw new Error(await response.text());
         }
 
-        return await response.json();
+        const json = await response.json();
+        return json.map(meal => {
+            return {
+                ...meal,
+                dateTime: new Date(meal.dateTime),
+            };
+        });
     }
 }
 

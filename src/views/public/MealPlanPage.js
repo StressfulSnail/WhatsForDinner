@@ -4,12 +4,16 @@ import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core";
 import {LOAD_MEAL_PLANS, LOAD_MEALS, MEAL_PLAN_SELECTED} from "../../actions/mealPlanActions";
 import mealPlanService from "../../services/mealPlanService";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import PlanCalendar from "../../components/PlanCalendar";
 
 const styles = {};
 
 class MealPlanPage extends React.Component {
 
-    componentWillMount() {
+    componentDidMount() {
         const {
             token,
             mealPlans,
@@ -45,10 +49,19 @@ class MealPlanPage extends React.Component {
     render() {
         const { selectedPlan, meals } = this.props;
         return <div>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h6" color="inherit">
+                        Meal Plans
+                    </Typography>
+                </Toolbar>
+            </AppBar>
+
             <h1>{JSON.stringify(selectedPlan)}</h1>
             {
-                meals.map(meal => <p>{JSON.stringify(meal)}</p>)
+                meals.map(meal => <p key={meal.id}>{JSON.stringify(meal)}</p>)
             }
+            <PlanCalendar meals={meals} startDate={selectedPlan.startDate} endDate={selectedPlan.endDate}/>
         </div>
     }
 }

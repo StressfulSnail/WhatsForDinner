@@ -2,7 +2,7 @@ import {LOAD_MEAL_PLANS, LOAD_MEALS, MEAL_PLAN_SELECTED} from "../actions/mealPl
 
 const initialState = {
     plans: [],
-    selectedPlan: null,
+    selectedPlan: {},
     meals: [],
 };
 
