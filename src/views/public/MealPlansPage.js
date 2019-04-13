@@ -20,6 +20,7 @@ import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
 import mealPlanService from "../../services/mealPlanService";
 import {LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
 import DateFormat from "../../components/DateFormat";
+import { Link } from 'react-router-dom';
 
 const styles = {
     grid: {
@@ -111,7 +112,9 @@ class MealPlansPage extends React.Component {
                                     <TableCell align="right"><DateFormat value={plan.startDate} /></TableCell>
                                     <TableCell align="right"><DateFormat value={plan.endDate} /></TableCell>
                                     <TableCell align="right">
-                                        <Button color="primary">VIEW</Button>
+                                        <Button color="primary"
+                                                component={Link}
+                                                to={`/meal-plans/${plan.id}`}>VIEW</Button>
                                         <Button color="secondary">DELETE</Button>
                                     </TableCell>
                                 </TableRow>))
