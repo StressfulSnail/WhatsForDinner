@@ -7,7 +7,7 @@ import mealPlanService from "../../services/mealPlanService";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import PlanCalendar from "../../components/PlanCalendar";
+import PlanCalendar from "../../components/mealPlans/PlanCalendar";
 
 const styles = {};
 
@@ -58,9 +58,6 @@ class MealPlanPage extends React.Component {
             </AppBar>
 
             <h1>{JSON.stringify(selectedPlan)}</h1>
-            {
-                meals.map(meal => <p key={meal.id}>{JSON.stringify(meal)}</p>)
-            }
             <PlanCalendar meals={meals} startDate={selectedPlan.startDate} endDate={selectedPlan.endDate}/>
         </div>
     }

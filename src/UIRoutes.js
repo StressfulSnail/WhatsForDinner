@@ -7,7 +7,7 @@ import AccountRecoveryPage from './views/public/AccountRecoveryPage.js';
 import HomePage from './views/public/HomePage.js';
 import MealPlansPage from './views/public/MealPlansPage';
 import MealPlanPage from './views/public/MealPlanPage';
-import LoadingIndicator from "./components/LoadingIndicator";
+import LoadingIndicator from "./components/common/LoadingIndicator";
 import {connect} from "react-redux";
 
 class UIRoutes extends Component {

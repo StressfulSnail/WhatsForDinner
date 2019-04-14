@@ -19,7 +19,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
 import mealPlanService from "../../services/mealPlanService";
 import {LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
-import DateFormat from "../../components/DateFormat";
+import DateFormat from "../../components/common/DateFormat";
 import { Link } from 'react-router-dom';
 
 const styles = {
