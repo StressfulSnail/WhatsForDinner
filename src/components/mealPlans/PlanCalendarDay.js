@@ -4,6 +4,7 @@ import {Card, CardContent, Typography, withStyles} from "@material-ui/core";
 import TimeFormat from "../common/TimeFormat";
 
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT'];
+const sortMeals = (meal1, meal2) => meal1.dateTime - meal2.dateTime;
 
 const styles = {
     card: {
@@ -22,7 +23,7 @@ const PlanCalendarDay = function (props) {
                 {daysOfWeek[date.getDay()]} {date.getMonth() + 1}/{date.getDate()}
             </Typography>
             { meals.length === 0 ? <p>There are no meals created for today!</p> : '' }
-            { meals.map((meal, index) =>
+            { meals.sort(sortMeals).map((meal, index) =>
                 <div key={index}>
                     <h5><TimeFormat value={meal.dateTime} /></h5>
                     { meal.recipes.map((recipe, index) =>

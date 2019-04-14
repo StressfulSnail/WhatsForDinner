@@ -8,8 +8,18 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import PlanCalendar from "../../components/mealPlans/PlanCalendar";
+import Grid from "@material-ui/core/Grid";
+import DateFormat from "../../components/common/DateFormat";
 
-const styles = {};
+const styles = {
+    mealTitle: {
+        paddingLeft: '1em',
+    },
+    dateRange: {
+        marginTop: '-1em',
+        marginBottom: '2em',
+    }
+};
 
 class MealPlanPage extends React.Component {
 
@@ -47,7 +57,7 @@ class MealPlanPage extends React.Component {
     }
 
     render() {
-        const { selectedPlan, meals } = this.props;
+        const { classes, selectedPlan, meals } = this.props;
         return <div>
             <AppBar position="static">
                 <Toolbar>
@@ -57,7 +67,16 @@ class MealPlanPage extends React.Component {
                 </Toolbar>
             </AppBar>
 
-            <h1>{JSON.stringify(selectedPlan)}</h1>
+            <div className={classes.mealTitle}>
+                <Grid justify="center" container>
+                    <Grid item xs={12} lg={7}>
+                        <h1>{selectedPlan.name}</h1>
+                        <Typography color="textSecondary" className={classes.dateRange}>
+                            <DateFormat value={selectedPlan.startDate} /> through <DateFormat value={selectedPlan.endDate} />
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </div>
             <PlanCalendar meals={meals} startDate={selectedPlan.startDate} endDate={selectedPlan.endDate}/>
         </div>
     }
