@@ -1,0 +1,2 @@
+
+export const LOAD_MEAL_PLANS = 'LOAD_MEAL_PLANS';
