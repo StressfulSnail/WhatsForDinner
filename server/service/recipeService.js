@@ -102,7 +102,7 @@ class RecipeService {
     }
 
     async saveRecipe(Recipe) {
-        const recipeData = this._modelToTable(Recipe);
+        const recipeData = this._recipeModelToTable(Recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction(async (transaction) => {

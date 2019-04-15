@@ -7,7 +7,7 @@ const recipeController = require('../controller/recipeController');
 
 /**
  * GET /api/recipe/
- * Get account details
+ * Get recipe details
  * Returns {
  *      name: string
  *      imageURL: string
@@ -25,7 +25,7 @@ router.get('/', recipeController.getRecipe());
 
 /**
  * POST /api/recipe/
- * Create a new account
+ * Create a new recipe
  * Body {
  *      name: string
  *      imageURL: string
