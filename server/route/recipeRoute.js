@@ -21,7 +21,7 @@ const recipeController = require('../controller/recipeController');
  *      tags: array(Tag)
  * }
  */
-router.get('/', , recipeController.getRecipeById());
+router.get('/', recipeController.getRecipe());
 
 /**
  * POST /api/recipe/
@@ -46,14 +46,14 @@ router.post('/', recipeController.createRecipe);
  * Delete Recipe
  *
  */
-router.delete('/delete', , recipeController.deleteRecipe);
+router.delete('/delete', recipeController.deleteRecipe);
 
 /**
- * POST /api/account/edit
- * Edit Account
+ * POST /api/recipe/edit
+ * Edit Recipe
  *
  */
-router.post('/edit', , recipeController.editRecipe);
+router.post('/edit', recipeController.editRecipe);
 
 
 

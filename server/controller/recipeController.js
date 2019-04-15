@@ -44,27 +44,62 @@ class RecipeController {
 
     async createRecipe(request, response) {
         try {
+            const recipe = new Recipe();
             const name = request.getName();
-            const imageURL = request.getImageURL();
+            recipe.name = name;
+
+            if (request.getImageURL() != null) {
+                const imageURL = request.getImageURL();
+                recipe.imageURL = imageURL;
+            }
 
             //const validImageURL = Fill this in later
 
             //Check for Duplicates here if necessary
-
-            const ingredientList = request.getIngredients();
+            if (request.getIngredients.length != 0 && request.getIngredients != undefined) {
+                const ingredientList = request.getIngredients();
+                recipe.ingredientList = ingredientList;
+            }
             //To be used in a different method.
+            if (request.getPrepInstructions() != null) {
+                const prepInstructions = request.getPrepInstructions();
+                recipe.prepInstructions = prepInstructions;
+            }
 
-            const prepInstructions = request.getPrepInstructions();
-            const prepTime = request.getPrepTime();
-            const cookTime = request.getCookTime();
-            const caloricEstimate = request.getCaloricEstimate();
-            const tasteRating = request.getTasteRating();
-            const difficultyRating = request.getDifficultyRating();
-            const tags = request.getTags();
-            const accountID = request.getAccountID();
-            const note = request.getNote();
+            if (request.getPrepTime()) {
+                const prepTime = request.getPrepTime();
+                recipe.prepTime = prepTime;
+            }
 
-            await recipeService.saveRecipe(request);
+            if (request.getCookTime()) {
+                const cookTime = request.getCookTime();
+                recipe.cookTime = cookTime;
+            }
+
+            if (request.getCaloricEstimate()) {
+                const caloricEstimate = request.getCaloricEstimate();
+                recipe.caloricEstimate = caloricEstimate;
+            }
+
+            if (request.getTasteRating()) {
+                const tasteRating = request.getTasteRating();
+                recipe.tasteRating = tasteRating;
+            }
+
+            if (request.getDifficultyRating()) {
+                const difficultyRating = request.getDifficultyRating();
+                recipe.difficultyRating = difficultyRating;
+            }
+
+            if (request.getTags.length != 0 && request.getTags != undefined) {
+                const tags = request.getTags();
+                recipe.tags = tags;
+            }
+ //           const note = request.getNote();
+
+
+
+            await recipeService.saveRecipe(recipe);
             response.sendStatus(200);
         } catch (e) {
             console.error(e);
