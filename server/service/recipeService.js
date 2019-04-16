@@ -119,12 +119,6 @@ class RecipeService {
                 .into('personal_recipe');
         });
 
-
- /*       await Recipe.getIngredients().forEach(function(element))) {
-            await transaction.insert(recipeID, element)
-                .into('ingredient_count');
-        } */
-
     }
 
 }

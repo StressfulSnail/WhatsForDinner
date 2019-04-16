@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const recipeService = require('../service/recipeService');
 const Recipe = require ('../model/Recipe');
 const PersonalRecipe = require('../model/PersonalRecipe');
-//const Ingredient = require('../model/Ingredient');
-//const IngredientCount = require('../model/IngredientCount');
+const Ingredient = require('../model/Ingredient');
+const IngredientCount = require('../model/IngredientCount');
 //const RecipeBook = require('../model/RecipeBook');
 const errorResponses = require('./errorResponses');
 
