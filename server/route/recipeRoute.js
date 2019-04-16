@@ -1,6 +1,7 @@
 //Keep an eye on this. 100% sure this will change as I familiarize myself with these models. -Duncan
 
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 
 const recipeController = require('../controller/recipeController');
@@ -20,8 +21,10 @@ const recipeController = require('../controller/recipeController');
  *      difficultyRating: int
  *      tags: array(Tag)
  * }
+ *
+ * Passport utilized in case you need to return a ton of personal recipes.
  */
-router.get('/', recipeController.getRecipe());
+//router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipe());
 
 /**
  * POST /api/recipe/
@@ -39,21 +42,21 @@ router.get('/', recipeController.getRecipe());
  *      tags: array(Tag)
  * }
  */
-router.post('/', recipeController.createRecipe);
+router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createRecipe);
 
 /**
  * DELETE /api/recipe/delete
  * Delete Recipe
  *
  */
-router.delete('/delete', recipeController.deleteRecipe);
+router.delete('/delete', passport.authenticate('jwt', { session: false }), recipeController.deleteRecipe);
 
 /**
  * POST /api/recipe/edit
  * Edit Recipe
  *
  */
-router.post('/edit', recipeController.editRecipe);
+router.post('/edit', passport.authenticate('jwt', { session: false }), recipeController.editRecipe);
 
 
 
