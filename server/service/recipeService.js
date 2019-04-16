@@ -3,8 +3,6 @@ const PersonalRecipe = require('../model/PersonalRecipe');
 
 class RecipeService {
 
-    //Am likely going to change this to incorporate some degree of polymorphism- determine if the recipe is personal or shared
-    //and then construct that way.
     _recipeTableToModel(tableObj) {
         const recipe = new PersonalRecipe();
         recipe.recipe_id = tableObj.recipe_id;
@@ -38,6 +36,10 @@ class RecipeService {
         }
     }
 
+    _personalRecipeTable(recipeID, accountID) {
+        return { recipe_id: recipeID, account_id: accountID};
+    }
+
     async getRecipe(recipeID) {
         const recipes= await knex.select()
             .from('Recipe')
@@ -46,12 +48,14 @@ class RecipeService {
         return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
-    async getPersonalRecipe(recipeID, accountID){
+    async getPersonalRecipes(accountID){
         const recipes= await knex.select()
-            .from('personal_recipe')
-            .where({ 'recipe_id': recipeID,
-                            'account_id': accountID});
+            .from('recipe')
+            .joinRaw('personal_recipe')
+            .where({'account_id': accountID});
 
+
+        //Returns an array of recipes eventually, right now only returns the first one found.
         return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
@@ -101,7 +105,7 @@ class RecipeService {
 
     }
 
-    async saveRecipe(Recipe) {
+    async saveRecipe(Recipe, accountID) {
         const recipeData = this._recipeModelToTable(Recipe);
         recipeData.recipe_id = null;
 
@@ -111,7 +115,10 @@ class RecipeService {
                 .returning('recipe_id');
 
             Recipe.setID(recipeID);
-        })
+            await transaction.insert(this._personalRecipeTable(recipeID, accountID))
+                .into('personal_recipe');
+        });
+
 
  /*       await Recipe.getIngredients().forEach(function(element))) {
             await transaction.insert(recipeID, element)

@@ -11,7 +11,9 @@ class RecipeController {
 
     async getRecipe(request, response) {
         try {
-            const recipe = await recipeService.getRecipe(request.body.recipe_id);
+            const account = request.user;
+            const recipeID = request.body.recipe_id;
+            const recipe = await recipeService.getRecipe(recipeID);
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -24,7 +26,8 @@ class RecipeController {
 
     async searchPersonalRecipes(request, response) {
         try {
-            const recipe = await recipeService.getPersonalRecipe(request.body.recipe_id);
+            const account = request.user;
+            const recipe = await recipeService.getPersonalRecipe(account.id);
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -46,7 +49,7 @@ class RecipeController {
     async createRecipe(request, response) {
         try {
             const account = request.user;
-            const recipe = new Recipe();
+            const recipe = new PersonalRecipe();
             const name = request.body.name;
             recipe.name = name;
             const imageURL = request.body.imageURL;
@@ -80,9 +83,8 @@ class RecipeController {
             recipe.tags = tags;
  //           const note = request.getNote();
 
+            await recipeService.saveRecipe(recipe, account.id);
 
-
-            await recipeService.saveRecipe(recipe);
             response.sendStatus(200);
         } catch (e) {
             console.error(e);
@@ -96,7 +98,6 @@ class RecipeController {
             if (!recipe) {
                 return response.sendStatus(404);
             }
-//            recipe.recipe_id = request.recipe_id; Commented out because recipe_id should be immutable.
             recipe.name = request.body.name;
             recipe.imageURL = request.body.imageURL;
             recipe.ingredientList = request.body.ingredientList;

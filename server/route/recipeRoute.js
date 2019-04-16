@@ -9,6 +9,7 @@ const recipeController = require('../controller/recipeController');
 /**
  * GET /api/recipe/
  * Get recipe details
+ * Requires (recipe_id)
  * Returns {
  *      name: string
  *      imageURL: string
@@ -24,7 +25,7 @@ const recipeController = require('../controller/recipeController');
  *
  * Passport utilized in case you need to return a ton of personal recipes.
  */
-//router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipe());
+router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipe);
 
 /**
  * POST /api/recipe/
