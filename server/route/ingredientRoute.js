@@ -8,11 +8,21 @@ const ingredientController = require('../controller/ingredientController');
  * GET /api/ingredient/
  * Get ingredient details
  * Returns {
+ *      ingredient_id: int
  *      name: string
  * }
  */
 router.get('/', ingredientController.getIngredientByID);
 
+/**
+ * GET /api/ingredient/measurement
+ * Get measurement details
+ * Returns {
+ *      measurement_id: int
+ *      name: string
+ * }
+ */
+router.get('/measurement', ingredientController.getMeasurementByID);
 
 /**
  * POST /api/ingredient/
@@ -22,5 +32,14 @@ router.get('/', ingredientController.getIngredientByID);
  * }
  */
 router.post('/', ingredientController.createIngredient);
+
+/**
+ * POST /api/ingredient/measurement/
+ * Create a new measurement unit
+ * Body {
+ *      name: string
+ * }
+ */
+router.post('/measurement', ingredientController.createMeasurement);
 
 module.exports = router;
