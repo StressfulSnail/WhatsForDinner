@@ -24,4 +24,4 @@ class MeasurementUnit {
     }
 }
 
-module.exports = new MeasurementUnit();
+module.exports = MeasurementUnit;

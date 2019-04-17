@@ -10,25 +10,11 @@ class ingredientController {
 
     async getIngredientByID(request, response) {
         try {
-            const ingredient = await ingredientService.getIngredient(request.body.id);
+            const ingredient = await ingredientService.getIngredient(request.body.ingredient_id);
             if (!ingredient) {
                 return response.sendStatus(404);
             }
-            console.log(ingredient.name);
             response.send(ingredient);
-        } catch (e) {
-            console.error(e);
-            response.sendStatus(500);
-        }
-    }
-
-    async getMeasurementByID(request, response) {
-        try {
-            const measurement = await ingredientService.getMeasurement(request.body.id);
-            if (!measurement) {
-                return response.sendStatus(404);
-            }
-            response.send(measurement);
         } catch (e) {
             console.error(e);
             response.sendStatus(500);
@@ -54,6 +40,20 @@ class ingredientController {
         }
     }
 
+
+    async getMeasurementByID(request, response) {
+        try {
+            const measurement = await ingredientService.getMeasurement(request.body.measurement_id);
+            if (!measurement) {
+                return response.sendStatus(404);
+            }
+            response.send(measurement);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
     async createMeasurement(request, response) {
         try {
             const measurement = new MeasurementUnit();
@@ -66,8 +66,34 @@ class ingredientController {
             }
 
             await ingredientService.saveMeasurement(measurement);
-            response.sendStatus(200):
+            response.sendStatus(200);
 
+        }catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+
+    //Created an ingredient count by pulling a measurement and ingredient.
+    async createIngredientCountByID(request, response) {
+        try {
+            const ingredient = await ingredientService.getIngredient(request.body.ingredient_id);
+            if (!ingredient) {
+                return response.sendStatus(404);
+            }
+            const measurementUnit = await ingredientService.getMeasurement(request.body.measurement_id);
+            if (!measurement) {
+                return response.sendStatus(404);
+            }
+            const recipe_id = request.body.recipe_id;
+            const ingredientCount = new IngredientCount();
+            ingredientCount.measurement = request.body.measurement;
+            ingredientCount.setIngredient(ingredient);
+            ingredientCount.setMeasurementUnit(measurementUnit)
+
+            await ingredientService.saveIngredientCount(ingredientCount, recipe_id);
+            response.sendStatus(200);
         }catch (e) {
             console.error(e);
             response.sendStatus(500);

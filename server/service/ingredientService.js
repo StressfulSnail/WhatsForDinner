@@ -11,13 +11,6 @@ class ingredientService {
         return ingredient;
     }
 
-    _measurementTableToModel(tableObj) {
-        const measurement = new MeasurementUnit();
-        measurement.setID(tableObj.unit_id);
-        measurement.setName(tableObj.unit_name);
-        return measurement;
-    }
-
 
     _ingredientModelToTable(ingredientModel) {
             return {
@@ -26,10 +19,30 @@ class ingredientService {
             }
     }
 
+    _measurementTableToModel(tableObj) {
+        const measurement = new MeasurementUnit();
+        measurement.setID(tableObj.unit_id);
+        measurement.setName(tableObj.unit_name);
+        return measurement;
+    }
+
     _measurementModelToTable(measurementModel) {
         return {
             unit_id : measurementModel.measurement_id,
             unit_name: measurementModel.name
+        }
+    }
+
+    //Pondering this one over while I think about how to do this without passing a ton of information around.
+    _ingredientCountTableToModel(tableObj) {
+    }
+
+    _ingredientCountModelToTable(ingredientCountModel, recipeID) {
+        return {
+            recipe_id: recipeID,
+            ingredient_id: ingredientCount.getIngredient.getID(),
+            unit_id: ingredientCount.getMeasurementUnit().getID(),
+            measurement: ingredientCount.getMeasurement()
         }
     }
 
@@ -43,28 +56,12 @@ class ingredientService {
         return ingredients.length === 0 ? null : this._ingredientTableToModel(ingredients[0]);
     }
 
-    async getMeasurement(measurementID) {
-        const measurements = await knex.select()
-            .from('measurement_unit')
-            .where({'unit_id': measurementID});
-
-        return measurements.length === 0 ? null : this._measurementTableToModel(measurements[0]);
-    }
-
     async getIngredientByName(ingredientName) {
         const ingredients = await knex.select()
             .from('ingredient')
             .where({'name' : ingredientName});
 
         return ingredients.length === 0 ? null : this._ingredientTableToModel(ingredients[0]);
-    }
-
-    async getMeasurementByName(measurementName) {
-        const measurements = await knex.select()
-            .from('measurement_unit')
-            .where({'unit_name' : measurementName});
-
-        return measurements.length === 0 ? null : this._ingredientTableToModel(measurements[0]);
     }
 
     async saveIngredient(ingredient) {
@@ -80,17 +77,42 @@ class ingredientService {
         });
     }
 
+
+    async getMeasurement(measurementID) {
+        const measurements = await knex.select()
+            .from('measurement_unit')
+            .where({'unit_id': measurementID});
+
+        return measurements.length === 0 ? null : this._measurementTableToModel(measurements[0]);
+    }
+
+    async getMeasurementByName(measurementName) {
+        const measurements = await knex.select()
+            .from('measurement_unit')
+            .where({'unit_name' : measurementName});
+
+        return measurements.length === 0 ? null : this._ingredientTableToModel(measurements[0]);
+    }
+
     async saveMeasurement(measurement) {
         const measurementData = this._measurementModelToTable(measurement);
         measurementData.unit_id = null;
 
         await knex.transaction( async(transaction) => {
             const measurementID = await transaction.insert(measurementData)
-                .int('measurement_unit')
+                .into('measurement_unit')
                 .returning('unit_id');
 
             measurement.setID(measurementID);
         });
+    }
+
+
+    async saveIngredientCount(ingredientCount, recipeID) {
+        const ingredientCountData = this._ingredientCountModelToTable(ingredientCount, recipeID);
+
+        await knex.insert(ingredientCountData)
+            .into('ingredient_count');
     }
 }
 

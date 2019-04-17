@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 const recipeService = require('../service/recipeService');
+const ingredientService = require('../service/ingredientService');
 const Recipe = require ('../model/Recipe');
 const PersonalRecipe = require('../model/PersonalRecipe');
 const Ingredient = require('../model/Ingredient');
+const MeasurementUnit = requre('../model/MeasurementUnit');
 const IngredientCount = require('../model/IngredientCount');
 //const RecipeBook = require('../model/RecipeBook');
 const errorResponses = require('./errorResponses');
@@ -130,6 +132,8 @@ class RecipeController {
             response.sendStatus(500);
         }
     }
+
+    async addIngredientToRecipe()
 
 }
 
