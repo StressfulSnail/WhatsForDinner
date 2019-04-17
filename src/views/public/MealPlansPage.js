@@ -21,6 +21,7 @@ import mealPlanService from "../../services/mealPlanService";
 import {LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
 import DateFormat from "../../components/common/DateFormat";
 import { Link } from 'react-router-dom';
+import CreateMealPlanModal from "../../components/mealPlans/CreateMealPlanModal";
 
 const styles = {
     grid: {
@@ -33,6 +34,7 @@ class MealPlansPage extends React.Component {
         super(props);
         this.state = {
             visiblePlans: this.props.mealPlans,
+            createMealPlanOpen: false,
         }
     }
 
@@ -57,10 +59,17 @@ class MealPlansPage extends React.Component {
         });
     };
 
+    openCreateModal = () => this.setState({ createMealPlanOpen: true });
+    closeCreateModal = () => this.setState({ createMealPlanOpen: false });
+
     render() {
         const { classes } = this.props;
         const { visiblePlans } = this.state;
         return <div>
+            <CreateMealPlanModal open={this.state.createMealPlanOpen}
+                                 onSave={() => console.log('yeet')}
+                                 onCancel={this.closeCreateModal} />
+
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" color="inherit">
@@ -90,7 +99,9 @@ class MealPlansPage extends React.Component {
                     </Grid>
                     <Grid item xs={6}>
                         <div align="right">
-                            <Button color="primary" variant="contained">NEW MEAL PLAN</Button>
+                            <Button color="primary"
+                                    variant="contained"
+                                    onClick={this.openCreateModal}>NEW MEAL PLAN</Button>
                         </div>
                     </Grid>
                 </Grid>
