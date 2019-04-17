@@ -5,8 +5,8 @@ const router = express.Router();
 const ingredientController = require('../controller/ingredientController');
 
 /**
- * GET /api/account/
- * Get account details
+ * GET /api/ingredient/
+ * Get ingredient details
  * Returns {
  *      name: string
  * }
@@ -16,7 +16,7 @@ router.get('/', ingredientController.getIngredientByID);
 
 /**
  * POST /api/ingredient/
- * Create a new account
+ * Create a new ingredient
  * Body {
  *      name: string
  * }

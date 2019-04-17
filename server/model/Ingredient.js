@@ -4,12 +4,12 @@
 class Ingredient {
 
     constructor(){
-        this.ingredient_ID = null;
+        this.ingredient_id = 0;
         this.name = null;
     }
 
     getID() {
-        return this.ingredient_ID;
+        return this.ingredient_id;
     }
 
     getName(){
@@ -17,7 +17,7 @@ class Ingredient {
     }
 
     setID(newID){
-        this.ingredient_ID = newID;
+        this.ingredient_id = newID;
     }
 
     setName(newName){

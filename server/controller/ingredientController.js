@@ -1,18 +1,19 @@
 const jwt = require('jsonwebtoken');
-const recipeService = require('../service/recipeService');
 const Ingredient = require('../model/Ingredient');
+const ingredientService = require('../service/ingredientService');
 const IngredientCount = require('../model/IngredientCount');
 //const RecipeBook = require('../model/RecipeBook');
 const errorResponses = require('./errorResponses');
 
-class IngredientController {
+class ingredientController {
 
     async getIngredientByID(request, response) {
         try {
-            const ingredient = IngredientService.getIngredient(request.body.id);
+            const ingredient = await ingredientService.getIngredient(request.body.id);
             if (!ingredient) {
                 return response.sendStatus(404);
             }
+            console.log(ingredient.name);
             response.send(ingredient);
         } catch (e) {
             console.error(e);
@@ -24,7 +25,7 @@ class IngredientController {
         try {
             const ingredient = new Ingredient();
             ingredient.name = request.body.name;
-            const duplicateName = await ingredientService.findByName(ingredient.name);
+            const duplicateName = await ingredientService.getIngredientByName(ingredient.name);
 
             if(duplicateName) {
                 const {status, message} = errorResponses.duplicateName;
@@ -40,4 +41,4 @@ class IngredientController {
     }
 }
 
-module.exports = new IngredientController();
+module.exports = new ingredientController();
