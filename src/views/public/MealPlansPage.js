@@ -91,6 +91,8 @@ class MealPlansPage extends React.Component {
     render() {
         const { classes } = this.props;
         const { visiblePlans } = this.state;
+        // sorting by newest end date to oldest end date
+        visiblePlans.sort((plan1, plan2) => plan2.endDate - plan1.endDate);
         return <div>
             <CreateMealPlanModal open={this.state.createMealPlanOpen}
                                  onSave={this.createMealPlan}
