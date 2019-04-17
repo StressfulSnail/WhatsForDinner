@@ -54,9 +54,9 @@ class MealPlansPage extends React.Component {
     }
 
     searchPlans = (event) => {
-        const searchText = event.target.value;
+        const searchText = event.target.value.toLowerCase();
         this.setState({
-            visiblePlans: this.props.mealPlans.filter(meal => meal.name.indexOf(searchText) > -1),
+            visiblePlans: this.props.mealPlans.filter(meal => meal.name.toLowerCase().indexOf(searchText) > -1),
         });
     };
 
