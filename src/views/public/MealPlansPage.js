@@ -82,6 +82,9 @@ class MealPlansPage extends React.Component {
                                     </InputAdornment>
                                 ),
                             }}
+                            inputProps={{
+                                maxLength: 50,
+                            }}
                             onChange={this.searchPlans}
                         />
                     </Grid>
