@@ -11,7 +11,7 @@ const isSameDay = (date1, date2) => {
 };
 
 const createCalendarDay = (meals) => (date, index) =>
-    <Grid item xs={12} md={12} lg={1} key={index}>
+    <Grid item xs={12} md={4} lg={2} key={index}>
         <PlanCalendarDay date={date}
                          meals={meals.filter(meal => isSameDay(date, meal.dateTime))}/>
     </Grid>;
@@ -20,10 +20,7 @@ const styles = {
     calendar: {
         paddingLeft: '1em',
         paddingRight: '1em',
-    },
-    bottomWeek: {
-        marginTop: '5px',
-    },
+    }
 };
 
 const PlanCalendar = function (props) {
@@ -35,10 +32,7 @@ const PlanCalendar = function (props) {
     }
 
     return <div className={classes.calendar}>
-        <Grid container spacing={8} justify="center">
-            {dates.splice(0, 7).map(createCalendarDay(meals))}
-        </Grid>
-        <Grid container spacing={8} justify="center" className={classes.bottomWeek}>
+        <Grid container spacing={8} justify="left">
             {dates.map(createCalendarDay(meals))}
         </Grid>
     </div>
