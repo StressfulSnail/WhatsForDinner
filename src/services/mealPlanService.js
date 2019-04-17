@@ -27,6 +27,20 @@ class MealPlanService extends BaseService {
         });
     }
 
+    async createMealPlan(token, { name, startDate, endDate }) {
+        const response = await fetch(`${host}/api/mealplan`, {
+            headers: super.getHeaders(token),
+            method: 'POST',
+            body: JSON.stringify({ name, startDate, endDate }),
+        });
+
+        if(!response.ok) {
+            throw new Error(await response.text());
+        }
+
+        return Number(await response.text());
+    }
+
     async getMeals(token, mealPlanId) {
         const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals`, {
             headers: super.getHeaders(token),

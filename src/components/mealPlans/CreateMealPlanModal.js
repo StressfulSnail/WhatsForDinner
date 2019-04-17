@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Dialog, DialogContent, DialogTitle, withStyles} from "@material-ui/core";
+import {Dialog, DialogContent, DialogTitle, Typography, withStyles} from "@material-ui/core";
 import TextField from "@material-ui/core/es/TextField/TextField";
 import Button from "@material-ui/core/Button";
 
@@ -15,30 +15,35 @@ const CreateMealPlanModal = function (props) {
     const today = todayDate.toISOString().split('T')[0];
     const oneYearFromNow = oneYearFromNowDate.toISOString().split('T')[0];
 
-    const create = () => props.onSave();
+    const [startDate, setStartDate] = useState(today);
+    const [endDate, setEndDate] = useState(today);
+    const create = () => props.onSave({ startDate, endDate });
 
-    return <Dialog open={props.open}>
+    return <Dialog open={props.open} onClose={props.onCancel}>
         <DialogTitle>Create New Meal Plan</DialogTitle>
         <DialogContent>
+            { props.error ? <Typography color="error">Oh No! Something went wrong! Please try again.</Typography> : '' }
             <TextField
                 label="Start Date"
                 type="date"
                 id="start"
-                defaultValue={today}
+                defaultValue={startDate}
                 inputProps={{
                     min: today,
                     max: oneYearFromNow,
                 }}
+                onChange={({ target }) => setStartDate(target.value)}
                 fullWidth/>
             <TextField
                 label="End Date"
                 type="date"
                 id="end"
-                defaultValue={today}
+                defaultValue={endDate}
                 inputProps={{
                     min: today,
                     max: oneYearFromNow,
                 }}
+                onChange={({ target }) => setEndDate(target.value)}
                 fullWidth/>
         </DialogContent>
         <DialogContent>
@@ -50,6 +55,7 @@ const CreateMealPlanModal = function (props) {
 
 CreateMealPlanModal.propTypes = {
     open: PropTypes.bool,
+    error: PropTypes.bool,
     onSave: PropTypes.func,
     onCancel: PropTypes.func,
 };

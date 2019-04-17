@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/core";
 
 const styles = {
     loading: {
-        zIndex: 100,
+        zIndex: 100000,
         position: 'absolute',
         backgroundColor: '#33333355',
         width: '100vw',

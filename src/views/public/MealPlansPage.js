@@ -18,8 +18,8 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
 import mealPlanService from "../../services/mealPlanService";
-import {LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
-import DateFormat from "../../components/common/DateFormat";
+import {CREATE_MEAL_PLAN, LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
+import DateFormat, {dateFormat, inputDateToDateObject} from "../../components/common/DateFormat";
 import { Link } from 'react-router-dom';
 import CreateMealPlanModal from "../../components/mealPlans/CreateMealPlanModal";
 
@@ -35,6 +35,7 @@ class MealPlansPage extends React.Component {
         this.state = {
             visiblePlans: this.props.mealPlans,
             createMealPlanOpen: false,
+            createError: false,
         }
     }
 
@@ -62,13 +63,39 @@ class MealPlansPage extends React.Component {
     openCreateModal = () => this.setState({ createMealPlanOpen: true });
     closeCreateModal = () => this.setState({ createMealPlanOpen: false });
 
+    createMealPlan = ({ startDate, endDate }) => {
+        const startDateObj = inputDateToDateObject(startDate);
+        const endDateObj = inputDateToDateObject(endDate);
+        const name = `Meal Plan for ${dateFormat(startDateObj)} to ${dateFormat(endDateObj)}`;
+
+        const mealPlan = {
+            name: name,
+            startDate: startDateObj,
+            endDate: endDateObj,
+        };
+
+        this.props.loadingStart();
+        mealPlanService.createMealPlan(this.props.token, mealPlan)
+            .then((mealPlanId) => {
+                this.props.createPlan({ id: mealPlanId, ...mealPlan });
+                this.props.history.push(`/meal-plans/${mealPlanId}`);
+                this.props.loadingComplete();
+            })
+            .catch((err) => {
+                this.props.loadingComplete();
+                console.error(err);
+                this.setState({ createError: true });
+            });
+    };
+
     render() {
         const { classes } = this.props;
         const { visiblePlans } = this.state;
         return <div>
             <CreateMealPlanModal open={this.state.createMealPlanOpen}
-                                 onSave={() => console.log('yeet')}
-                                 onCancel={this.closeCreateModal} />
+                                 onSave={this.createMealPlan}
+                                 onCancel={this.closeCreateModal}
+                                 error={this.state.createError}/>
 
             <AppBar position="static">
                 <Toolbar>
@@ -158,6 +185,7 @@ const mapActionsToProps = (dispatch) => {
         loadingStart: () => dispatch({ type: LOADING_STARTED }),
         loadingComplete: () => dispatch({ type: LOADING_COMPLETE }),
         loadMealPlans: (plans) => dispatch({ type: LOAD_MEAL_PLANS, payload: { plans } }),
+        createPlan: (plan) => dispatch({ type: CREATE_MEAL_PLAN, payload: { plan } }),
     }
 };
 

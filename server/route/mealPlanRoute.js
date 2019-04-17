@@ -25,6 +25,7 @@ const mealPlanController = require('../controller/mealPlanController');
  *          }
  *      ]
  * }
+ * Response mealPlanId: int
  */
 router.post('/', passport.authenticate('jwt', { session: false }), mealPlanController.createMealPlan);
 
