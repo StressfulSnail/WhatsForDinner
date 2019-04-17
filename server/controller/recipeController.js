@@ -133,8 +133,29 @@ class RecipeController {
         }
     }
 
-    async addIngredientToRecipe()
+    /**Adds an ingredientCount to a currently existing recipe.
+     *
+     * params needed
+     * "ingredient_id"
+     * "measurement_id"
+     * "measurement"
+     * "recipe_id"
+     */
+    async addIngredientCountToRecipe(request, response) {
+        try{
+            const ingredientCount = await ingredientService.getIngredientCount(request.ingredient_id,
+                    request.measurement_id, request.measurement);
 
+            const recipe = await recipeService.getRecipe(request.recipe_id)
+
+            recipe.addIngredient(ingredientCount);
+
+            await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
+        }catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new RecipeController();

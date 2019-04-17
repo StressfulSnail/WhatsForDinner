@@ -35,7 +35,8 @@ class Recipe {
     }
 
 
-    addIngredient(ingredientName, ingredientAmount){
+    addIngredient(ingredientCount){
+        this.ingredientList.push(ingredientCount);
     }
 
 

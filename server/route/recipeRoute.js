@@ -45,6 +45,17 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  */
 router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createRecipe);
 
+
+/**Adds an ingredientCount to a currently existing recipe.
+ *
+ * params needed
+ * "ingredient_id"
+ * "measurement_id"
+ * "measurement"
+ * "recipe_id"
+ */
+router.post('/addCount', passport.authenticate('jwt', { session: false }), recipeController.addIngredientCountToRecipe);
+
 /**
  * DELETE /api/recipe/delete
  * Delete Recipe

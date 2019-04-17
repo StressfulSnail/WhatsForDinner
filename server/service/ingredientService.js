@@ -33,7 +33,6 @@ class ingredientService {
         }
     }
 
-    //Pondering this one over while I think about how to do this without passing a ton of information around.
     _ingredientCountTableToModel(tableObj) {
     }
 
@@ -105,6 +104,18 @@ class ingredientService {
 
             measurement.setID(measurementID);
         });
+    }
+
+    async getIngredientCount(ingredientID, measurementID, measurement) {
+        const measurementUnit = this.getMeasurement(measurementID);
+        const ingredient = this.getIngredient(ingredientID);
+        const ingredientCount = new IngredientCount();
+
+        ingredientCount.setIngredient(ingredient);
+        ingredientCount.setMeasurementUnit(measurementUnit);
+        ingredientCount.setMeasurement(measurement);
+
+        return ingredientCount;
     }
 
 
