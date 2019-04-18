@@ -41,6 +41,29 @@ class MealPlanService extends BaseService {
         return Number(await response.text());
     }
 
+    async savePlan(token, plan) {
+        const response = await fetch(`${host}/api/mealplan/${plan.id}`, {
+            headers: super.getHeaders(token),
+            method: 'PUT',
+            body: JSON.stringify(plan),
+        });
+
+        if(!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
+
+    async deletePlan(token, plan) {
+        const response = await fetch(`${host}/api/mealplan/${plan.id}`, {
+            headers: super.getHeaders(token),
+            method: 'DELETE',
+        });
+
+        if(!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
+
     async getMeals(token, mealPlanId) {
         const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals`, {
             headers: super.getHeaders(token),
@@ -79,6 +102,17 @@ class MealPlanService extends BaseService {
         });
 
         if(!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
+
+    async deleteMeal(token, mealPlanId, meal) {
+        const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals/${meal.id}`, {
+            headers: super.getHeaders(token),
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
             throw new Error(await response.text());
         }
     }
