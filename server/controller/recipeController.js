@@ -151,6 +151,7 @@ class RecipeController {
             recipe.addIngredient(ingredientCount);
 
             await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
+            response.sendStatus(200);
         }catch (e) {
             console.error(e);
             response.sendStatus(500);

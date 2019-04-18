@@ -1,9 +1,12 @@
+const Ingredient = require('../model/Ingredient');
+const MeasurementUnit = require('../model/MeasurementUnit');
+
 class IngredientCount {
 
     constructor(){
         this.measurementUnit = null;
         this.measurement = 0.0;
-        this.Ingredient = null;
+        this.ingredient = null;
     }
 
     //getters
@@ -17,13 +20,24 @@ class IngredientCount {
     }
 
     getIngredient(){
-        return this.Ingredient;
+        return this.ingredient;
+    }
+
+    getIngredientID() {
+        return this.ingredient.ingredient_id;
+    }
+
+    getMeasurementID(){
+        return this.measurementUnit.measurement_id;
     }
 
     //setters
 
     setMeasurementUnit(newMeasurementUnit){
+        this.measurementUnit = new MeasurementUnit();
         this.measurementUnit = newMeasurementUnit;
+        console.log(this.measurementUnit.name);
+        console.log(this.measurementUnit.measurement_id);
     }
 
     setMeasurement(newMeasurement){
@@ -31,7 +45,8 @@ class IngredientCount {
     }
 
     setIngredient(newIngredient) {
-        this.Ingredient = newIngredient;
+        this.ingredient = new Ingredient();
+        this.ingredient = newIngredient;
     }
 }
 

@@ -45,9 +45,9 @@ class ingredientService {
     _ingredientCountModelToTable(ingredientCountModel, recipeID) {
         return {
             recipe_id: recipeID,
-            ingredient_id: ingredientCount.getIngredient.getID(),
-            unit_id: ingredientCount.getMeasurementUnit().getID(),
-            measurement: ingredientCount.getMeasurement()
+            ingredient_id: ingredientCountModel.getIngredientID(),
+            unit_id: ingredientCountModel.getMeasurementID(),
+            measurement: ingredientCountModel.getMeasurement()
         }
     }
 
@@ -113,8 +113,8 @@ class ingredientService {
     }
 
     async getIngredientCount(ingredientID, measurementID, measurement) {
-        const measurementUnit = this.getMeasurement(measurementID);
-        const ingredient = this.getIngredient(ingredientID);
+        const measurementUnit = await this.getMeasurement(measurementID);
+        const ingredient = await this.getIngredient(ingredientID);
         const ingredientCount = new IngredientCount();
 
         ingredientCount.setIngredient(ingredient);
@@ -125,8 +125,8 @@ class ingredientService {
     }
 
     async getIngredientCountByName(ingredient_name, measurement_name, measurement) {
-        const measurementUnit = this.getMeasurementByName(measurement_name);
-        const ingredient = this.getIngredientByName(ingredient_name);
+        const measurementUnit = await this.getMeasurementByName(measurement_name);
+        const ingredient = await this.getIngredientByName(ingredient_name);
         const ingredientCount = new IngredientCount();
 
         ingredientCount.setIngredient(ingredient);
