@@ -14,6 +14,7 @@ import AddRecipeModal from "../../components/mealPlans/AddRecipeModal";
 import { Link } from 'react-router-dom';
 import MealTimeSelectionModal from "../../components/mealPlans/MealTimeSelectionModal";
 import EditMealModal from "../../components/mealPlans/EditMealModal";
+import EditPlanModal from "../../components/mealPlans/EditPlanModal";
 
 const styles = {
     mealTitle: {
@@ -38,6 +39,7 @@ class MealPlanPage extends React.Component {
             recipeModalOpen: false,
             selectTimeModalOpen: false,
             editMealModalOpen: false,
+            editPlanModalOpen: false,
             selectedRecipe: null,
             mealToEdit: null,
         }
@@ -135,12 +137,25 @@ class MealPlanPage extends React.Component {
             this.props.loadingStart();
             await mealPlanService.saveMeal(this.props.token, this.props.selectedPlan.id, meal);
             await this.loadMeals();
-            this.closeEditMealModal()
+            this.closeEditMealModal();
         } catch (e) {
             console.error(e);
             this.loadingError();
         }
     };
+
+    savePlanChanges = async (plan) => {
+        try {
+            this.props.loadingStart();
+            this.setState({ ...this.state, selectedPlan: plan });
+            await mealPlanService.savePlan(this.props.token, plan);
+            this.closeEditPlanModal();
+            this.props.loadingComplete();
+        } catch (e) {
+            console.error(e);
+            this.loadingError();
+        }
+    }
 
     selectMealToEdit = (meal) => this.setState({ ...this.state, mealToEdit: meal, editMealModalOpen: true });
 
@@ -152,13 +167,16 @@ class MealPlanPage extends React.Component {
             recipeModalOpen: false,
             selectTimeModalOpen: false,
             editMealModalOpen: false,
+            editPlanModalOpen: false,
         });
     };
 
     openRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: true });
+    openEditPlanModal = () => this.setState({ ...this.state, editPlanModalOpen: true });
     closeRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: false });
     closeMealTimeModal = () => this.setState({ ...this.state, selectTimeModalOpen: false });
     closeEditMealModal = () => this.setState({ ...this.state, editMealModalOpen: false });
+    closeEditPlanModal = () => this.setState({ ...this.state, editPlanModalOpen: false });
 
     render() {
         const { classes, selectedPlan, meals } = this.props;
@@ -177,6 +195,10 @@ class MealPlanPage extends React.Component {
                            meal={this.state.mealToEdit}
                            onSave={this.saveMealChanges}
                            onCancel={this.closeEditMealModal} />
+            <EditPlanModal open={this.state.editPlanModalOpen}
+                           plan={selectedPlan}
+                           onSave={this.savePlanChanges}
+                           onCancel={this.closeEditPlanModal} />
 
             <AppBar position="static">
                 <Toolbar>
@@ -206,6 +228,7 @@ class MealPlanPage extends React.Component {
                         <Button color="primary"
                                 variant="contained"
                                 className={classes.button}
+                                onClick={this.openEditPlanModal}
                                 fullWidth>Change Name</Button>
                         <br/>
                         <Button color="primary"
