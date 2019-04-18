@@ -18,9 +18,10 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
 import mealPlanService from "../../services/mealPlanService";
-import {LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
-import DateFormat from "../../components/common/DateFormat";
+import {CREATE_MEAL_PLAN, LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
+import DateFormat, {dateFormat, inputDateToDateObject} from "../../components/common/DateFormat";
 import { Link } from 'react-router-dom';
+import CreateMealPlanModal from "../../components/mealPlans/CreateMealPlanModal";
 
 const styles = {
     grid: {
@@ -33,6 +34,8 @@ class MealPlansPage extends React.Component {
         super(props);
         this.state = {
             visiblePlans: this.props.mealPlans,
+            createMealPlanOpen: false,
+            createError: false,
         }
     }
 
@@ -44,23 +47,59 @@ class MealPlansPage extends React.Component {
                 .then((mealPlans) => {
                     loadingComplete();
                     loadMealPlans(mealPlans);
-                    this.setState({ visiblePlans: mealPlans });
+                    this.setState({ ...this.state, visiblePlans: mealPlans });
                 })
                 .catch(console.err);
         }
     }
 
     searchPlans = (event) => {
-        const searchText = event.target.value;
+        const searchText = event.target.value.toLowerCase();
         this.setState({
-            visiblePlans: this.props.mealPlans.filter(meal => meal.name.indexOf(searchText) > -1),
+            ...this.state,
+            visiblePlans: this.props.mealPlans.filter(meal => meal.name.toLowerCase().indexOf(searchText) > -1),
         });
+    };
+
+    openCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: true });
+    closeCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: false });
+
+    createMealPlan = ({ startDate, endDate }) => {
+        const startDateObj = inputDateToDateObject(startDate);
+        const endDateObj = inputDateToDateObject(endDate);
+        const name = `Meal Plan for ${dateFormat(startDateObj)} to ${dateFormat(endDateObj)}`;
+
+        const mealPlan = {
+            name: name,
+            startDate: startDateObj,
+            endDate: endDateObj,
+        };
+
+        this.props.loadingStart();
+        mealPlanService.createMealPlan(this.props.token, mealPlan)
+            .then((mealPlanId) => {
+                this.props.createPlan({ id: mealPlanId, ...mealPlan });
+                this.props.history.push(`/meal-plans/${mealPlanId}`);
+                this.props.loadingComplete();
+            })
+            .catch((err) => {
+                this.props.loadingComplete();
+                console.error(err);
+                this.setState({ ...this.state, createError: true });
+            });
     };
 
     render() {
         const { classes } = this.props;
         const { visiblePlans } = this.state;
+        // sorting by newest end date to oldest end date
+        visiblePlans.sort((plan1, plan2) => plan2.endDate - plan1.endDate);
         return <div>
+            <CreateMealPlanModal open={this.state.createMealPlanOpen}
+                                 onSave={this.createMealPlan}
+                                 onCancel={this.closeCreateModal}
+                                 error={this.state.createError}/>
+
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" color="inherit">
@@ -82,12 +121,17 @@ class MealPlansPage extends React.Component {
                                     </InputAdornment>
                                 ),
                             }}
+                            inputProps={{
+                                maxLength: 50,
+                            }}
                             onChange={this.searchPlans}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <div align="right">
-                            <Button color="primary" variant="contained">NEW MEAL PLAN</Button>
+                            <Button color="primary"
+                                    variant="contained"
+                                    onClick={this.openCreateModal}>NEW MEAL PLAN</Button>
                         </div>
                     </Grid>
                 </Grid>
@@ -144,6 +188,7 @@ const mapActionsToProps = (dispatch) => {
         loadingStart: () => dispatch({ type: LOADING_STARTED }),
         loadingComplete: () => dispatch({ type: LOADING_COMPLETE }),
         loadMealPlans: (plans) => dispatch({ type: LOAD_MEAL_PLANS, payload: { plans } }),
+        createPlan: (plan) => dispatch({ type: CREATE_MEAL_PLAN, payload: { plan } }),
     }
 };
 

@@ -3,39 +3,41 @@ const PersonalRecipe = require('../model/PersonalRecipe');
 
 class RecipeService {
 
-    //Am likely going to change this to incorporate some degree of polymorphism- determine if the recipe is personal or shared
-    //and then construct that way.
-    _tableToModel(tableObj) {
+    _recipeTableToModel(tableObj) {
         const recipe = new PersonalRecipe();
-        recipe.recipeID = tableObj.recipe_id;
+        recipe.recipe_id = tableObj.recipe_id;
         recipe.name = tableObj.name;
-        recipe.imageURL = tableObj.imageURL;
-        //recipe.ingredientList = tableObj.ingredientList; (unsure as to array implementation)
-        recipe.prepInstructions = tableObj.prepInstructions;
-        recipe.prepTime = tableObj.prepTime;
-        recipe.cookTime = tableObj.cookTime;
-        recipe.caloricEstimate = tableObj.caloricEstimate;
-        recipe.tasteRating = tableObj.tasteRating;
-        recipe.difficultyRating = tableObj.difficultyRating;
-        //recipe.tags = tableObj.tags;
+        recipe.imageURL = tableObj.image_url;
+        //recipe.ingredientList = tableObj.ingredientList; would not be on the Recipe table. Check Ingredient_Count
+        recipe.prepInstructions = tableObj.prep_instructions;
+        recipe.prepTime = tableObj.prep_time;
+        recipe.cookTime = tableObj.cook_time;
+        recipe.caloric_est = tableObj.caloric_est;
+        recipe.tasteRating = tableObj.taste_rating;
+        recipe.difficultyRating = tableObj.difficulty_rating;
+        //recipe.tags = tableObj.tags;      Would be on the recipe_tag table.
         return recipe;
     }
 
-    _modelToTable(recipeModel) {
+    _recipeModelToTable(recipeModel) {
         return {
             recipe_id: recipeModel.recipe_id,
             name: recipeModel.name,
-            imageURL: recipeModel.imageURL,
+            image_url: recipeModel.imageURL,
 //            ingredientList: recipeModel.ingredientList,   Commented out because it's difficult to put an array into a table
-            prepInstructions: recipeModel.prepInstructions,
-            prepTime: recipeModel.prepTime,
-            cookTime: recipeModel.cookTime,
-            caloricEstimate: recipeModel.caloricEstimate,
-            tasteRating: recipeModel.tasteRating,
-            difficultyRating: recipeModel.difficultyRating,
+            prep_instructions: recipeModel.prepInstructions,
+            prep_time: recipeModel.prepTime,
+            cook_time: recipeModel.cookTime,
+            caloric_est: recipeModel.caloric_est,
+            taste_rating: recipeModel.tasteRating,
+            difficulty_rating: recipeModel.difficultyRating,
 //            tags: recipeModel.tags,                       See above
-            note: recipeModel.note
+//            note: recipeModel.note                        Specific to PersonalRecipe
         }
+    }
+
+    _personalRecipeTable(recipeID, accountID) {
+        return { recipe_id: recipeID, account_id: accountID};
     }
 
     async getRecipe(recipeID) {
@@ -43,16 +45,18 @@ class RecipeService {
             .from('Recipe')
             .where({ 'recipe_id': recipeID });
 
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
-    async getPersonalRecipe(recipeID, accountID){
+    async getPersonalRecipes(accountID){
         const recipes= await knex.select()
-            .from('personal_recipe')
-            .where({ 'recipe_id': recipeID,
-                            'account_id': accountID});
+            .from('recipe')
+            .joinRaw('personal_recipe')
+            .where({'account_id': accountID});
 
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+
+        //Returns an array of recipes eventually, right now only returns the first one found.
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
     /**
@@ -88,7 +92,7 @@ class RecipeService {
         const recipes = await knex.select()
             .from('personal_recipe')
             .where({ 'name': recipeName });
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
     }
 
     async findPersonalRecipeByName(recipeName, accountID) {
@@ -97,19 +101,24 @@ class RecipeService {
             .joinRaw('personal_recipe')
             .where({'name': recipeName, 'account_id': accountID});
 
-        return recipes.length === 0 ? null : this._tableToModel(recipes[0]);
+        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
 
     }
 
-    async saveRecipe(Recipe) {
-        const recipeData = this._modelToTable(Recipe);
+    async saveRecipe(Recipe, accountID) {
+        const recipeData = this._recipeModelToTable(Recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction(async (transaction) => {
             const recipeID = await transaction.insert(recipeData)
                 .into( 'Recipe')
                 .returning('recipe_id');
+
+            Recipe.setID(recipeID);
+            await transaction.insert(this._personalRecipeTable(recipeID, accountID))
+                .into('personal_recipe');
         });
+
     }
 
 }
