@@ -18,10 +18,11 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
 import mealPlanService from "../../services/mealPlanService";
-import {CREATE_MEAL_PLAN, LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
+import {CREATE_MEAL_PLAN, DELETE_MEAL_PLAN, LOAD_MEAL_PLANS} from "../../actions/mealPlanActions";
 import DateFormat, {dateFormat, inputDateToDateObject} from "../../components/common/DateFormat";
 import { Link } from 'react-router-dom';
 import CreateMealPlanModal from "../../components/mealPlans/CreateMealPlanModal";
+import ConfirmDeleteModal from "../../components/common/ConfirmDeleteModal";
 
 const styles = {
     grid: {
@@ -35,6 +36,8 @@ class MealPlansPage extends React.Component {
         this.state = {
             visiblePlans: this.props.mealPlans,
             createMealPlanOpen: false,
+            confirmDeleteOpen: false,
+            selectedPlanToDelete: null,
             createError: false,
         }
     }
@@ -63,6 +66,8 @@ class MealPlansPage extends React.Component {
 
     openCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: true });
     closeCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: false });
+    openDeleteModal = () => this.setState({ ...this.state, confirmDeleteOpen: true });
+    closeDeleteModal = () => this.setState({ ...this.state, confirmDeleteOpen: false });
 
     createMealPlan = ({ startDate, endDate }) => {
         const startDateObj = inputDateToDateObject(startDate);
@@ -89,6 +94,23 @@ class MealPlansPage extends React.Component {
             });
     };
 
+    handleDeleteMealPlan = (plan) => {
+        this.setState({ ...this.state, selectedPlanToDelete: plan }, this.openDeleteModal);
+    };
+
+    deleteMealPlan = async () => {
+        try {
+            this.props.loadingStart();
+            await mealPlanService.deletePlan(this.props.token, this.state.selectedPlanToDelete);
+            this.props.deletePlan(this.state.selectedPlanToDelete);
+            this.setState({ ...this.state, visiblePlans: this.props.mealPlans });
+        } catch (e) {
+            console.error(e);
+        }
+        this.props.loadingComplete();
+        this.closeDeleteModal();
+    };
+
     render() {
         const { classes } = this.props;
         const { visiblePlans } = this.state;
@@ -99,6 +121,10 @@ class MealPlansPage extends React.Component {
                                  onSave={this.createMealPlan}
                                  onCancel={this.closeCreateModal}
                                  error={this.state.createError}/>
+            <ConfirmDeleteModal open={this.state.confirmDeleteOpen}
+                                onCancel={this.closeDeleteModal}
+                                itemName={this.state.selectedPlanToDelete && this.state.selectedPlanToDelete.name}
+                                onConfirm={this.deleteMealPlan} />
 
             <AppBar position="static">
                 <Toolbar>
@@ -159,7 +185,8 @@ class MealPlansPage extends React.Component {
                                         <Button color="primary"
                                                 component={Link}
                                                 to={`/meal-plans/${plan.id}`}>VIEW</Button>
-                                        <Button color="secondary">DELETE</Button>
+                                        <Button color="secondary"
+                                                onClick={() => this.handleDeleteMealPlan(plan)}>DELETE</Button>
                                     </TableCell>
                                 </TableRow>))
                             }
@@ -189,6 +216,7 @@ const mapActionsToProps = (dispatch) => {
         loadingComplete: () => dispatch({ type: LOADING_COMPLETE }),
         loadMealPlans: (plans) => dispatch({ type: LOAD_MEAL_PLANS, payload: { plans } }),
         createPlan: (plan) => dispatch({ type: CREATE_MEAL_PLAN, payload: { plan } }),
+        deletePlan: (plan) => dispatch({ type: DELETE_MEAL_PLAN, payload: { plan } }),
     }
 };
 
