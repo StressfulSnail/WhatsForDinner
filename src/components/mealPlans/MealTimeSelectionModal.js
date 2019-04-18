@@ -16,7 +16,7 @@ const MealTimeSelectionModal = function (props) {
     const minDate = props.startDate ? props.startDate.toISOString().replace('Z', '') : '';
     const maxDate = props.endDate ? props.endDate.toISOString().replace('Z', '') : '';
 
-    const [state, setState] = useState({
+    const initState = {
         meal: null,
         newMealDateTime: minDate,
         newMealServingsRequired: 1,
@@ -24,21 +24,23 @@ const MealTimeSelectionModal = function (props) {
         showInitialDialog: true,
         showMealSelection: false,
         showDateTimeSelection: false,
-    });
-    const select = () => props.onSelect(state.meal);
-    const create = () => props.onCreate({
-        dateTime: state.newMealDateTime,
-        servingsRequired: state.newMealServingsRequired,
-        note: state.newMealNote,
-    });
+    };
+    const [state, setState] = useState(initState);
+    const select = () => {
+        props.onSelect(state.meal);
+        setState(initState); // reset state
+    };
+    const create = () => {
+        props.onCreate({
+            dateTime: state.newMealDateTime,
+            servingsRequired: state.newMealServingsRequired,
+            note: state.newMealNote,
+        });
+        setState(initState); // reset state
+    };
     const cancel = () => {
         props.onCancel();
-        setState({
-            ...state,
-            showInitialDialog: true,
-            showMealSelection: false,
-            showDateTimeSelection: false,
-        })
+        setState(initState); // reset state
     };
 
     const handleListSelection = (meal) => () => {
