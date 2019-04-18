@@ -49,10 +49,12 @@ router.post('/', passport.authenticate('jwt', { session: false }), recipeControl
 /**Adds an ingredientCount to a currently existing recipe.
  *
  * params needed
- * "ingredient_id"
- * "measurement_id"
- * "measurement"
- * "recipe_id"
+ * Body{
+ * "ingredient_id" : int
+ * "measurement_id": int
+ * "measurement" : double
+ * "recipe_id" : int
+ * }
  */
 router.post('/addCount', passport.authenticate('jwt', { session: false }), recipeController.addIngredientCountToRecipe);
 

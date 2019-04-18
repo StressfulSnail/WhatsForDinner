@@ -1,5 +1,6 @@
 const knex = require('../db');
 const Ingredient = require('../model/Ingredient');
+const IngredientCount = require('../model/IngredientCount');
 const MeasurementUnit = require('../model/MeasurementUnit');
 
 class ingredientService {
@@ -34,6 +35,11 @@ class ingredientService {
     }
 
     _ingredientCountTableToModel(tableObj) {
+        const ingredientCount = new IngredientCount();
+        ingredientCount.setIngredient(this.getIngredient(tableObj.ingredient_id));
+        ingredientCount.setMeasurementUnit(this.getIngredient(tableObj.unit_id));
+        ingredientCount.setMeasurement(tableObj.measurement);
+        return ingredientCount;
     }
 
     _ingredientCountModelToTable(ingredientCountModel, recipeID) {
@@ -109,6 +115,18 @@ class ingredientService {
     async getIngredientCount(ingredientID, measurementID, measurement) {
         const measurementUnit = this.getMeasurement(measurementID);
         const ingredient = this.getIngredient(ingredientID);
+        const ingredientCount = new IngredientCount();
+
+        ingredientCount.setIngredient(ingredient);
+        ingredientCount.setMeasurementUnit(measurementUnit);
+        ingredientCount.setMeasurement(measurement);
+
+        return ingredientCount;
+    }
+
+    async getIngredientCountByName(ingredient_name, measurement_name, measurement) {
+        const measurementUnit = this.getMeasurementByName(measurement_name);
+        const ingredient = this.getIngredientByName(ingredient_name);
         const ingredientCount = new IngredientCount();
 
         ingredientCount.setIngredient(ingredient);

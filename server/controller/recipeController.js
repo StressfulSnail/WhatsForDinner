@@ -4,7 +4,7 @@ const ingredientService = require('../service/ingredientService');
 const Recipe = require ('../model/Recipe');
 const PersonalRecipe = require('../model/PersonalRecipe');
 const Ingredient = require('../model/Ingredient');
-const MeasurementUnit = requre('../model/MeasurementUnit');
+const MeasurementUnit = require('../model/MeasurementUnit');
 const IngredientCount = require('../model/IngredientCount');
 //const RecipeBook = require('../model/RecipeBook');
 const errorResponses = require('./errorResponses');
@@ -29,7 +29,7 @@ class RecipeController {
     async searchPersonalRecipes(request, response) {
         try {
             const account = request.user;
-            const recipe = await recipeService.getPersonalRecipe(account.id);
+            const recipe = await recipeService.getPersonalRecipes(account.id);
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -121,7 +121,7 @@ class RecipeController {
 
     async deleteRecipe(request, response) {
         try {
-            const recipe = await recipeService.getRecipe(request.recipe_id);
+            const recipe = await recipeService.getRecipe(request.body.recipe_id);
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -143,10 +143,10 @@ class RecipeController {
      */
     async addIngredientCountToRecipe(request, response) {
         try{
-            const ingredientCount = await ingredientService.getIngredientCount(request.ingredient_id,
-                    request.measurement_id, request.measurement);
+            const ingredientCount = await ingredientService.getIngredientCount(request.body.ingredient_id,
+                    request.body.measurement_id, request.body.measurement);
 
-            const recipe = await recipeService.getRecipe(request.recipe_id)
+            const recipe = await recipeService.getRecipe(request.body.recipe_id)
 
             recipe.addIngredient(ingredientCount);
 
