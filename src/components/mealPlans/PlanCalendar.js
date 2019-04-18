@@ -32,7 +32,7 @@ const PlanCalendar = function (props) {
     }
 
     return <div className={classes.calendar}>
-        <Grid container spacing={8} justify="left">
+        <Grid container spacing={8}>
             {dates.map(createCalendarDay(meals))}
         </Grid>
     </div>

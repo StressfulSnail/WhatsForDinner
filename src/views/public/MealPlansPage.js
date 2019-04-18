@@ -47,7 +47,7 @@ class MealPlansPage extends React.Component {
                 .then((mealPlans) => {
                     loadingComplete();
                     loadMealPlans(mealPlans);
-                    this.setState({ visiblePlans: mealPlans });
+                    this.setState({ ...this.state, visiblePlans: mealPlans });
                 })
                 .catch(console.err);
         }
@@ -56,12 +56,13 @@ class MealPlansPage extends React.Component {
     searchPlans = (event) => {
         const searchText = event.target.value.toLowerCase();
         this.setState({
+            ...this.state,
             visiblePlans: this.props.mealPlans.filter(meal => meal.name.toLowerCase().indexOf(searchText) > -1),
         });
     };
 
-    openCreateModal = () => this.setState({ createMealPlanOpen: true });
-    closeCreateModal = () => this.setState({ createMealPlanOpen: false });
+    openCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: true });
+    closeCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: false });
 
     createMealPlan = ({ startDate, endDate }) => {
         const startDateObj = inputDateToDateObject(startDate);
@@ -84,7 +85,7 @@ class MealPlansPage extends React.Component {
             .catch((err) => {
                 this.props.loadingComplete();
                 console.error(err);
-                this.setState({ createError: true });
+                this.setState({ ...this.state, createError: true });
             });
     };
 

@@ -58,6 +58,18 @@ class MealPlanService extends BaseService {
             };
         });
     }
+
+    async saveMeal(token, mealPlanId, meal) {
+        const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals/${meal.id}`, {
+            headers: super.getHeaders(token),
+            method: 'PUT',
+            body: JSON.stringify(meal),
+        });
+
+        if(!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
 }
 
 export default new MealPlanService();

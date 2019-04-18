@@ -46,9 +46,7 @@ class MealPlanPage extends React.Component {
             match,
             loadingStart,
             loadMealPlans,
-            selectMealPlan,
-            loadMeals,
-            loadingComplete } = this.props;
+            selectMealPlan } = this.props;
 
        loadingStart();
        Promise.resolve()
@@ -63,25 +61,42 @@ class MealPlanPage extends React.Component {
            })
            .then(() => {
                selectMealPlan(Number(match.params.id));
-               return mealPlanService.getMeals(token, Number(match.params.id));
-           })
-           .then((meals) => {
-               loadMeals(meals);
-               loadingComplete();
-           })
-           .catch(console.err);
+               return this.loadMeals();
+           });
     }
 
-    selectRecipe = (recipe) => {
-        this.setState({ selectedRecipe: recipe });
-        this.closeRecipeModal();
-        this.openMealTimeModal();
+    loadMeals = async () => {
+        const { token, match, mealsLoaded, loadingComplete } = this.props;
+        try {
+            const meals = await mealPlanService.getMeals(token, Number(match.params.id));
+            mealsLoaded(meals);
+            loadingComplete();
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    openRecipeModal = () => this.setState({ recipeModalOpen: true });
-    closeRecipeModal = () => this.setState({ recipeModalOpen: false });
-    openMealTimeModal = () => this.setState({ selectTimeModalOpen: true });
-    closeMealTimeModal = () => this.setState({ selectTimeModalOpen: false });
+    selectRecipe = (recipe) => {
+        this.setState({ ...this.state, recipeModalOpen: false, selectTimeModalOpen: true, selectedRecipe: recipe });
+    };
+
+    selectMealTime = async (meal) => {
+        this.props.loadingStart();
+        meal.recipes.push(this.state.selectedRecipe);
+        await mealPlanService.saveMeal(this.props.token, this.props.selectedPlan.id, meal);
+        await this.loadMeals();
+        this.closeMealTimeModal();
+    };
+
+    createMealTime = async ({ dateTime, servings, description }) => {
+        // this.props.loadingStart();
+        await this.loadMeals();
+        this.closeMealTimeModal();
+    };
+
+    openRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: true });
+    closeRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: false });
+    closeMealTimeModal = () => this.setState({ ...this.state, selectTimeModalOpen: false });
 
     render() {
         const { classes, selectedPlan, meals } = this.props;
@@ -91,6 +106,8 @@ class MealPlanPage extends React.Component {
                             onSelect={this.selectRecipe}/>
             <MealTimeSelectionModal open={this.state.selectTimeModalOpen}
                                     meals={meals}
+                                    onSelect={this.selectMealTime}
+                                    onCreate={this.createMealTime}
                                     onCancel={this.closeMealTimeModal}/>
 
             <AppBar position="static">
@@ -114,14 +131,19 @@ class MealPlanPage extends React.Component {
                                 variant="contained"
                                 className={classes.button}
                                 component={Link}
-                                to="/meal-plans">All Meal Plans</Button>
-                        <br/>
-                        <Button color="primary" variant="contained" className={classes.button}>Change Name</Button>
+                                to="/meal-plans"
+                                fullWidth>All Meal Plans</Button>
                         <br/>
                         <Button color="primary"
                                 variant="contained"
                                 className={classes.button}
-                                onClick={this.openRecipeModal}>Add Recipe</Button>
+                                fullWidth>Change Name</Button>
+                        <br/>
+                        <Button color="primary"
+                                variant="contained"
+                                className={classes.button}
+                                onClick={this.openRecipeModal}
+                                fullWidth>Add Recipe</Button>
                     </Grid>
                 </Grid>
             </div>
@@ -144,7 +166,7 @@ const mapActionsToProps = (dispatch) => {
         loadingStart: () => dispatch({ type: LOADING_STARTED }),
         loadingComplete: () => dispatch({ type: LOADING_COMPLETE }),
         loadMealPlans: (plans) => dispatch({ type: LOAD_MEAL_PLANS, payload: { plans } }),
-        loadMeals: (meals) => dispatch({ type: LOAD_MEALS, payload: { meals } }),
+        mealsLoaded: (meals) => dispatch({ type: LOAD_MEALS, payload: { meals } }),
         selectMealPlan: (id) => dispatch({ type: MEAL_PLAN_SELECTED, payload: { id } }),
     }
 };
