@@ -109,6 +109,18 @@ class MealPlanPage extends React.Component {
         }
     };
 
+    deleteRecipe = async (meal, recipeId) => {
+        meal.recipes = meal.recipes.filter(recipe => recipe.id !== recipeId);
+
+        if (meal.recipes.length === 0) {
+            await mealPlanService.deleteMeal(this.props.token, this.props.selectedPlan.id, meal);
+        } else {
+            await mealPlanService.saveMeal(this.props.token, this.props.selectedPlan.id, meal);
+        }
+
+        await this.loadMeals();
+    };
+
     loadingError = () => {
         this.props.loadingComplete();
         this.setState({
@@ -175,7 +187,11 @@ class MealPlanPage extends React.Component {
                     </Grid>
                 </Grid>
             </div>
-            <PlanCalendar meals={meals} startDate={selectedPlan.startDate} endDate={selectedPlan.endDate}/>
+            <PlanCalendar
+                meals={meals}
+                onRecipeDelete={this.deleteRecipe}
+                startDate={selectedPlan.startDate}
+                endDate={selectedPlan.endDate} />
         </div>
     }
 }

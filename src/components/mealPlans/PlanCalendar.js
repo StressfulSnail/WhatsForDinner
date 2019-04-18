@@ -10,12 +10,6 @@ const isSameDay = (date1, date2) => {
         date1.getFullYear() === date2.getFullYear();
 };
 
-const createCalendarDay = (meals) => (date, index) =>
-    <Grid item xs={12} md={4} lg={2} key={index}>
-        <PlanCalendarDay date={date}
-                         meals={meals.filter(meal => isSameDay(date, meal.dateTime))}/>
-    </Grid>;
-
 const styles = {
     calendar: {
         paddingLeft: '1em',
@@ -33,13 +27,20 @@ const PlanCalendar = function (props) {
 
     return <div className={classes.calendar}>
         <Grid container spacing={8}>
-            {dates.map(createCalendarDay(meals))}
+            {dates.map((date, index) =>
+                <Grid item xs={12} md={4} lg={2} key={index}>
+                    <PlanCalendarDay date={date}
+                                     onRecipeDelete={props.onRecipeDelete}
+                                     meals={meals.filter(meal => isSameDay(date, meal.dateTime))}/>
+                </Grid>
+            )}
         </Grid>
     </div>
 };
 
 PlanCalendar.propTypes = {
     meals: PropTypes.array,
+    onRecipeDelete: PropTypes.func,
     startDate: PropTypes.object,
     endDate: PropTypes.object,
 };

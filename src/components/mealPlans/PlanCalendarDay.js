@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardContent, Typography, withStyles} from "@material-ui/core";
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import TimeFormat from "../common/TimeFormat";
 
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT'];
@@ -19,7 +20,11 @@ const styles = {
     },
     mealInfoItem: {
         marginTop: '-1em',
-    }
+    },
+    deleteIcon: {
+        position: 'absolute',
+        marginLeft: '5px',
+    },
 };
 
 const PlanCalendarDay = function (props) {
@@ -38,7 +43,12 @@ const PlanCalendarDay = function (props) {
                         { meal.note ? <p className={classes.mealInfoItem} >Note: {meal.note}</p> : '' }
                     </Typography>
                     { meal.recipes.map((recipe, index) =>
-                        <p className={classes.mealItem} key={index}>- {recipe.name}</p>) } {/* TODO link to recipe */}
+                        <p className={classes.mealItem} key={index}> {/* TODO link to recipe */}
+                            - {recipe.name} <DeleteOutlinedIcon color="secondary"
+                                                                className={classes.deleteIcon}
+                                                                onClick={() => props.onRecipeDelete(meal, recipe.id)} />
+                        </p>
+                    )}
                 </div>
             )}
         </CardContent>
@@ -48,6 +58,7 @@ const PlanCalendarDay = function (props) {
 PlanCalendarDay.propTypes = {
     date: PropTypes.object,
     meals: PropTypes.array,
+    onRecipeDelete: PropTypes.func,
 };
 
 export default withStyles(styles)(PlanCalendarDay);

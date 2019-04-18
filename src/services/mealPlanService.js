@@ -82,6 +82,17 @@ class MealPlanService extends BaseService {
             throw new Error(await response.text());
         }
     }
+
+    async deleteMeal(token, mealPlanId, meal) {
+        const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals/${meal.id}`, {
+            headers: super.getHeaders(token),
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
 }
 
 export default new MealPlanService();
