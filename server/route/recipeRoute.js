@@ -1,12 +1,15 @@
+//Keep an eye on this. 100% sure this will change as I familiarize myself with these models. -Duncan
+
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-const recipeController = require('../controller/accountController');
+const recipeController = require('../controller/recipeController');
 
 /**
  * GET /api/recipe/
- * Get account details
+ * Get recipe details
+ * Requires (recipe_id)
  * Returns {
  *      name: string
  *      imageURL: string
@@ -19,12 +22,14 @@ const recipeController = require('../controller/accountController');
  *      difficultyRating: int
  *      tags: array(Tag)
  * }
+ *
+ * Passport utilized in case you need to return a ton of personal recipes.
  */
-router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipeById());
+router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipe);
 
 /**
  * POST /api/recipe/
- * Create a new account
+ * Create a new recipe
  * Body {
  *      name: string
  *      imageURL: string
@@ -38,21 +43,32 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  *      tags: array(Tag)
  * }
  */
-router.post('/', recipeController.createRecipe);
+router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createRecipe);
+
+
+/**Adds an ingredientCount to a currently existing recipe.
+ *
+ * params needed
+ * "ingredient_id"
+ * "measurement_id"
+ * "measurement"
+ * "recipe_id"
+ */
+router.post('/addCount', passport.authenticate('jwt', { session: false }), recipeController.addIngredientCountToRecipe);
 
 /**
  * DELETE /api/recipe/delete
  * Delete Recipe
  *
  */
-router.delete('/delete', passport.authenticate ('jwt', {session: false }), accountController.deleteAccount);
+router.delete('/delete', passport.authenticate('jwt', { session: false }), recipeController.deleteRecipe);
 
 /**
- * POST /api/account/edit
- * Edit Account
+ * POST /api/recipe/edit
+ * Edit Recipe
  *
  */
-router.post('/edit', passport.authenticate ('jwt', {session: false }), accountController.editAccount);
+router.post('/edit', passport.authenticate('jwt', { session: false }), recipeController.editRecipe);
 
 
 
