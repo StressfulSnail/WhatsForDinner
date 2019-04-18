@@ -29,6 +29,10 @@ class MealPlanController {
         try {
             const account = request.user;
             const {body} = request;
+
+            // if no meals are passed in, use empty array
+            body.meals = body.meals || [];
+
             for (let m = 0; m < body.meals.length; m++) {
                 const meal = body.meals[m];
                 if (!await MealPlanController._validateRecipeAccess(account, meal.recipes)) {
@@ -71,7 +75,7 @@ class MealPlanController {
                 meal.id = mealId;
             }
 
-            return response.sendStatus(200);
+            return response.json(mealPlan.id);
         } catch (e) {
             console.error(e);
             response.sendStatus(500);
@@ -201,6 +205,10 @@ class MealPlanController {
             const account = request.user;
             const {mealPlanId, mealId} = request.params;
             const body = request.body;
+
+            if (!await MealPlanController._validateRecipeAccess(account, body.recipes)) {
+                return response.sendStatus(400);
+            }
 
             const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
             if (!mealPlan) { // make sure meal plan exists

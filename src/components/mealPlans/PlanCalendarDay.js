@@ -13,6 +13,13 @@ const styles = {
     mealItem: {
         marginTop: '-1em',
     },
+    mealInfo: {
+        marginTop: '-1.5em',
+        marginBottom: '2em',
+    },
+    mealInfoItem: {
+        marginTop: '-1em',
+    }
 };
 
 const PlanCalendarDay = function (props) {
@@ -26,6 +33,10 @@ const PlanCalendarDay = function (props) {
             { meals.sort(sortMeals).map((meal, index) =>
                 <div key={index}>
                     <h5><TimeFormat value={meal.dateTime} /></h5>
+                    <Typography variant="caption" className={classes.mealInfo} >
+                        <p className={classes.mealInfoItem} >Serving: {meal.servingsRequired}</p>
+                        { meal.note ? <p className={classes.mealInfoItem} >Note: {meal.note}</p> : '' }
+                    </Typography>
                     { meal.recipes.map((recipe, index) =>
                         <p className={classes.mealItem} key={index}>- {recipe.name}</p>) } {/* TODO link to recipe */}
                 </div>
