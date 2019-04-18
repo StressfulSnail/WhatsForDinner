@@ -33,6 +33,7 @@ class MealPlanPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            error: false,
             recipeModalOpen: false,
             selectTimeModalOpen: false,
             selectedRecipe: null,
@@ -73,6 +74,7 @@ class MealPlanPage extends React.Component {
             loadingComplete();
         } catch (err) {
             console.error(err);
+            this.loadingError();
         }
     };
 
@@ -81,17 +83,40 @@ class MealPlanPage extends React.Component {
     };
 
     selectMealTime = async (meal) => {
-        this.props.loadingStart();
-        meal.recipes.push(this.state.selectedRecipe);
-        await mealPlanService.saveMeal(this.props.token, this.props.selectedPlan.id, meal);
-        await this.loadMeals();
-        this.closeMealTimeModal();
+        try {
+            this.props.loadingStart();
+            meal.recipes.push(this.state.selectedRecipe);
+            await mealPlanService.saveMeal(this.props.token, this.props.selectedPlan.id, meal);
+            await this.loadMeals();
+            this.closeMealTimeModal();
+        } catch (e) {
+            console.error(e);
+            this.loadingError();
+        }
     };
 
-    createMealTime = async ({ dateTime, servings, description }) => {
-        // this.props.loadingStart();
-        await this.loadMeals();
-        this.closeMealTimeModal();
+    createMealTime = async (meal) => {
+        try {
+            this.props.loadingStart();
+            meal.dateTime = new Date(meal.dateTime);
+            meal.recipes = [this.state.selectedRecipe];
+            await mealPlanService.createMeal(this.props.token, this.props.selectedPlan.id, meal);
+            await this.loadMeals();
+            this.closeMealTimeModal();
+        } catch (e) {
+            console.error(e);
+            this.loadingError();
+        }
+    };
+
+    loadingError = () => {
+        this.props.loadingComplete();
+        this.setState({
+            ...this.state,
+            error: true,
+            recipeModalOpen: false,
+            selectTimeModalOpen: false,
+        });
     };
 
     openRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: true });
@@ -106,6 +131,8 @@ class MealPlanPage extends React.Component {
                             onSelect={this.selectRecipe}/>
             <MealTimeSelectionModal open={this.state.selectTimeModalOpen}
                                     meals={meals}
+                                    startDate={selectedPlan.startDate}
+                                    endDate={selectedPlan.endDate}
                                     onSelect={this.selectMealTime}
                                     onCreate={this.createMealTime}
                                     onCancel={this.closeMealTimeModal}/>
@@ -125,6 +152,7 @@ class MealPlanPage extends React.Component {
                         <Typography color="textSecondary" className={classes.dateRange}>
                             <DateFormat value={selectedPlan.startDate} /> through <DateFormat value={selectedPlan.endDate} />
                         </Typography>
+                        { this.state.error ? <Typography color="error">Something went wrong! Please try again.</Typography> : '' }
                     </Grid>
                     <Grid item xs={2} md={2}>
                         <Button color="default"

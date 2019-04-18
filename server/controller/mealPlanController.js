@@ -206,6 +206,10 @@ class MealPlanController {
             const {mealPlanId, mealId} = request.params;
             const body = request.body;
 
+            if (!await MealPlanController._validateRecipeAccess(account, body.recipes)) {
+                return response.sendStatus(400);
+            }
+
             const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
             if (!mealPlan) { // make sure meal plan exists
                 return response.sendStatus(404);

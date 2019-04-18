@@ -7,18 +7,30 @@ import TimeFormat from "../common/TimeFormat";
 import DateFormat from "../common/DateFormat";
 
 const styles = {
+    mealsList: {
+        maxHeight: '50vh',
+    },
 };
 
 const MealTimeSelectionModal = function (props) {
+    const minDate = props.startDate ? props.startDate.toISOString().replace('Z', '') : '';
+    const maxDate = props.endDate ? props.endDate.toISOString().replace('Z', '') : '';
+
     const [state, setState] = useState({
         meal: null,
-        newMeal: null,
+        newMealDateTime: minDate,
+        newMealServingsRequired: 1,
+        newMealNote: null,
         showInitialDialog: true,
         showMealSelection: false,
         showDateTimeSelection: false,
     });
     const select = () => props.onSelect(state.meal);
-    const create = () => props.onSelect(state.newMeal);
+    const create = () => props.onCreate({
+        dateTime: state.newMealDateTime,
+        servingsRequired: state.newMealServingsRequired,
+        note: state.newMealNote,
+    });
     const cancel = () => {
         props.onCancel();
         setState({
@@ -48,8 +60,8 @@ const MealTimeSelectionModal = function (props) {
                 </div> : '' }
             { state.showMealSelection ?
                 <div>
-                    <List>
-                        {props.meals.map(meal =>
+                    <List className={props.classes.mealsList}>
+                        {props.meals.sort((m1, m2) => m1.dateTime - m2.dateTime).map(meal =>
                             <ListItem key={meal.id}
                                       onClick={handleListSelection(meal)}
                                       button
@@ -61,7 +73,25 @@ const MealTimeSelectionModal = function (props) {
                 </div> : '' }
             { state.showDateTimeSelection ?
                 <div>
-                    date time
+                    <TextField
+                        label="Meal Date/Time"
+                        type="datetime-local"
+                        defaultValue={minDate}
+                        inputProps={{
+                            min: minDate,
+                            max: maxDate,
+                        }}
+                        onChange={({ target }) => setState({ ...state, newMealDateTime: target.value })}
+                        fullWidth />
+                        <TextField label="Servings Required"
+                                   type="number"
+                                   defaultValue={1}
+                                   onChange={({ target }) => setState({ ...state, newMealServingsRequired: target.value })}
+                                   fullWidth />
+                        <TextField label="Notes"
+                                   inputProps={{ maxLength: 50 }}
+                                   onChange={({ target }) => setState({ ...state, newMealNote: target.value })}
+                                   fullWidth />
                 </div> : '' }
         </DialogContent>
         <DialogContent>
@@ -74,6 +104,8 @@ const MealTimeSelectionModal = function (props) {
 MealTimeSelectionModal.propTypes = {
     open: PropTypes.bool,
     meals: PropTypes.array,
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
     onSelect: PropTypes.func,
     onCreate: PropTypes.func,
     onCancel: PropTypes.func,
