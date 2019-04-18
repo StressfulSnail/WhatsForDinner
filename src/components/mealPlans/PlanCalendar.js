@@ -31,6 +31,7 @@ const PlanCalendar = function (props) {
                 <Grid item xs={12} md={4} lg={2} key={index}>
                     <PlanCalendarDay date={date}
                                      onRecipeDelete={props.onRecipeDelete}
+                                     onMealEdit={props.onMealEdit}
                                      meals={meals.filter(meal => isSameDay(date, meal.dateTime))}/>
                 </Grid>
             )}
@@ -41,6 +42,7 @@ const PlanCalendar = function (props) {
 PlanCalendar.propTypes = {
     meals: PropTypes.array,
     onRecipeDelete: PropTypes.func,
+    onMealEdit: PropTypes.func,
     startDate: PropTypes.object,
     endDate: PropTypes.object,
 };

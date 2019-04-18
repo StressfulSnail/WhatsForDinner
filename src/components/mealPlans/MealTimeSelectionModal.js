@@ -86,6 +86,7 @@ const MealTimeSelectionModal = function (props) {
                         <TextField label="Servings Required"
                                    type="number"
                                    defaultValue={1}
+                                   inputProps={{ min: 1 }}
                                    onChange={({ target }) => setState({ ...state, newMealServingsRequired: target.value })}
                                    fullWidth />
                         <TextField label="Notes"
