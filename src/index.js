@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import './index.css';
 import Routes from './UIRoutes';
+import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import green from "@material-ui/core/colors/green";
-import deepOrange from "@material-ui/core/colors/deepOrange";
+import { green, deepOrange } from "@material-ui/core/colors";
+
 import * as serviceWorker from './serviceWorker';
 import rootReducer from './reducers/rootReducer';
 
@@ -23,6 +24,9 @@ const theme = createMuiTheme({
         },
         secondary: {
             main: darkOrange
+        },
+        background: {
+            default: darkOrange
         }
     }
 });
@@ -30,6 +34,7 @@ const theme = createMuiTheme({
 ReactDOM.render(
     <Provider store={store}>
         <MuiThemeProvider theme={theme}>
+            <CssBaseline />
             <Router>
                 <Routes />
             </Router>
