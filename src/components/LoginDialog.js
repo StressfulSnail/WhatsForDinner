@@ -1,15 +1,10 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import {
+    Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Paper
+} from "@material-ui/core";
 import accountService from "../services/accountService";
-import {LOGIN} from "../actions/accountActions";
-import {connect} from "react-redux";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { LOGIN } from "../actions/accountActions";
+import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 class LoginDialog extends React.Component {
@@ -20,7 +15,8 @@ class LoginDialog extends React.Component {
             error: false,
             loading: false,
             username: '',
-            password: ''
+            password: '',
+            attempts: 0
         };
     }
 
@@ -34,17 +30,26 @@ class LoginDialog extends React.Component {
     };
 
     login = () => {
-        this.setState({ loading: true });
+        if (this.state.attempts >= 5) {
+            this.setState({
+                error: true,
+                loading: false,
+            });
+            return;
+        }
+        this.setState({ loading: true, attempts: this.state.attempts + 1 });
         accountService.validateAccount(this.state.username, this.state.password)
-            .then((token) => {
+            .then( (token) => {
                 this.props.dispatchLogin(token);
+                this.setState({ attempts: 0});
                 this.handleClose();
                 this.props.history.push("/home");
             })
-            .catch(() => {
+            .catch( () => {
+
                 this.setState({
                     error: true,
-                    loading: false
+                    loading: false,
                 });
             }); // should show message to user instead
     };
@@ -57,7 +62,7 @@ class LoginDialog extends React.Component {
         this.setState({
             open: false,
             error: false,
-            loading: false
+            loading: false,
         });
     };
 
@@ -116,6 +121,7 @@ class LoginDialog extends React.Component {
                         >
                             Login
                         </Button>
+                        {(this.state.attempts >= 5) && <Paper>You have tried to log on more than 5 times</Paper>}
                     </DialogActions>
                 </Dialog>
             </div>

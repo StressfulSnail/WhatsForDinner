@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import { AppBar, Toolbar, Typography, Button, Grid, withStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
+
 import LoginDialog from '../../components/LoginDialog.js';
 import image from '../../static/images/foodiesfeed.com_summer-barbeque-feast.jpg';
 import { LOAD_ACCOUNT, LOGIN, LOGOUT } from "../../actions/accountActions";

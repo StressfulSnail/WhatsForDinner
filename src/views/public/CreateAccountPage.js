@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 import AccountForm from "../../components/AccountForm";
+import AccountService from "../../services/accountService";
 
 const styles = theme => ({
     root: {
@@ -23,6 +24,19 @@ const styles = theme => ({
         margin: theme.spacing.unit
     }
 });
+
+const submit = (values) => {
+    const { username, password, email, firstName, lastName, middleName } = values;
+    AccountService.createAccount(username, password, email, firstName, lastName, middleName)
+        .then( () => {
+            // TODO: check email
+            console.log("check ur email");
+        })
+        .catch( (error) => {
+            // TODO: Error Reporting
+            console.log(error);
+        });
+};
 
 // Avoid properties collisions
 const HomeLink = props => <Link to="/" {...props} />;
@@ -41,7 +55,7 @@ function CreateAccountPage(props) {
                     </Button>
                 </Toolbar>
             </AppBar>
-            <AccountForm />
+            <AccountForm onSubmit={submit}/>
         </div>
     );
 }
@@ -49,5 +63,7 @@ function CreateAccountPage(props) {
 CreateAccountPage.propTypes = {
     classes: PropTypes.object.isRequired
 };
+
+
 
 export default withStyles(styles)(CreateAccountPage);

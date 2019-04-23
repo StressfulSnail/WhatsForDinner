@@ -21,6 +21,18 @@ class AccountService {
         const json = await response.json();
         return json.token;
     }
+
+    async createAccount(username, password, email, firstName, lastName, middleName) {
+        const response = await fetch(`${host}/api/account`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, firstName, lastName, middleName })
+        });
+
+        if (!response.ok) {
+            throw new Error('Account not created');
+        }
+    }
 }
 
 export default new AccountService();
