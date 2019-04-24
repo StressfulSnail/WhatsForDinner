@@ -76,7 +76,7 @@ class AccountController {
                 return response.sendStatus(404);
             }
             await accountService.confirmAccount(invitationId);
-            response.sendStatus(200);
+            response.redirect('/');
         } catch (e) {
             console.error(e);
             response.sendStatus(500);

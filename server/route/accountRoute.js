@@ -36,10 +36,10 @@ router.get('/', passport.authenticate('jwt', { session: false }), accountControl
 router.post('/', accountController.createAccount);
 
 /**
- * POST /api/account/confirm/:invitationId
+ * Get /api/account/confirm/:invitationId
  * Confirm account with invitation key
  */
-router.post('/confirm/:invitationId', accountController.confirmAccount);
+router.get('/confirm/:invitationId', accountController.confirmAccount);
 
 /**
  * POST /api/account/validate
