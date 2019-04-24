@@ -1,5 +1,6 @@
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const uuidv4 = require('uuid/v4');
 const accountService = require('../service/accountService');
 const emailService = require('../service/emailService');
 const Account = require('../model/Account');
@@ -99,6 +100,26 @@ class AccountController {
                 return response.json({ token });
             });
         })(request, response, done);
+    }
+
+    async recoverUser(request, response) {
+        try {
+            const account = await accountService.findByEmail(request.body.email);
+
+            if (!account) {
+                return response.sendStatus(404);
+            }
+
+            const newPassword = uuidv4(); // generate random password
+            account.setHashedPassword(newPassword);
+            await accountService.editAccount(account);
+            emailService.sendRecovery(account.email, newPassword);
+
+            return response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
     }
 
     async deleteAccount(request, response) {

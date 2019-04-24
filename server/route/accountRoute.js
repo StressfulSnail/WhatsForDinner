@@ -52,6 +52,15 @@ router.get('/confirm/:invitationId', accountController.confirmAccount);
 router.post('/validate', accountController.validateUser);
 
 /**
+ * POST /api/account/recover
+ * Recover password, sets password to random string and emails it to user
+ * Body {
+ *     email: string
+ * }
+ */
+router.post('/recover', accountController.recoverUser);
+
+/**
  * DELETE /api/account/delete
  * Delete Account
  *
