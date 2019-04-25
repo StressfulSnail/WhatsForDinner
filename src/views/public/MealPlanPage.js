@@ -144,18 +144,46 @@ class MealPlanPage extends React.Component {
         }
     };
 
-    savePlanChanges = async (plan) => {
+    savePlanChanges = async (planName, dateOffset) => {
+        const { token, meals, selectedPlan } = this.props;
+
+        if (planName) {
+            selectedPlan.name = planName;
+        }
+
+        if (dateOffset) {
+            const startDate = new Date(selectedPlan.startDate);
+            startDate.setDate(selectedPlan.startDate.getDate() + dateOffset);
+            const endDate = new Date(selectedPlan.endDate);
+            endDate.setDate(selectedPlan.endDate.getDate() + dateOffset);
+
+            selectedPlan.startDate = startDate;
+            selectedPlan.endDate = endDate;
+
+            for (let meal of meals) {
+                const dateTime = new Date(meal.dateTime);
+                dateTime.setDate(meal.dateTime.getDate() + dateOffset);
+                meal.dateTime = dateTime;
+            }
+        }
+
         try {
             this.props.loadingStart();
-            this.setState({ ...this.state, selectedPlan: plan });
-            await mealPlanService.savePlan(this.props.token, plan);
+            this.setState({ ...this.state, selectedPlan: selectedPlan });
+
+            await mealPlanService.savePlan(this.props.token, selectedPlan);
+            await Promise.all(
+                meals.map(meal => mealPlanService.saveMeal(token, selectedPlan.id, meal))
+            );
+            await this.loadMeals();
+
             this.closeEditPlanModal();
             this.props.loadingComplete();
         } catch (e) {
             console.error(e);
             this.loadingError();
         }
-    }
+    };
 
     selectMealToEdit = (meal) => this.setState({ ...this.state, mealToEdit: meal, editMealModalOpen: true });
 
@@ -229,7 +257,7 @@ class MealPlanPage extends React.Component {
                                 variant="contained"
                                 className={classes.button}
                                 onClick={this.openEditPlanModal}
-                                fullWidth>Change Name</Button>
+                                fullWidth>Edit Plan</Button>
                         <br/>
                         <Button color="primary"
                                 variant="contained"
