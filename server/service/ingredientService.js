@@ -96,7 +96,7 @@ class ingredientService {
             .from('measurement_unit')
             .where({'unit_name' : measurementName});
 
-        return measurements.length === 0 ? null : this._ingredientTableToModel(measurements[0]);
+        return measurements.length === 0 ? null : this._measurementTableToModel(measurements[0]);
     }
 
     async saveMeasurement(measurement) {

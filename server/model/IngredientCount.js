@@ -24,11 +24,11 @@ class IngredientCount {
     }
 
     getIngredientID() {
-        return this.ingredient.ingredient_id;
+        return this.ingredient.getID();
     }
 
     getMeasurementID(){
-        return this.measurementUnit.measurement_id;
+        return this.measurementUnit.getID();
     }
 
     //setters
@@ -36,8 +36,6 @@ class IngredientCount {
     setMeasurementUnit(newMeasurementUnit){
         this.measurementUnit = new MeasurementUnit();
         this.measurementUnit = newMeasurementUnit;
-        console.log(this.measurementUnit.name);
-        console.log(this.measurementUnit.measurement_id);
     }
 
     setMeasurement(newMeasurement){

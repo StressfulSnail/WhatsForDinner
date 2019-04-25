@@ -51,41 +51,71 @@ class RecipeController {
     async createRecipe(request, response) {
         try {
             const account = request.user;
+            const {body} = request;
             const recipe = new PersonalRecipe();
-            const name = request.body.name;
+            const name = body.name;
             recipe.name = name;
-            const imageURL = request.body.imageURL;
+            const imageURL = body.imageURL;
             recipe.imageURL = imageURL;
             //const validImageURL = Fill this in later
 
             //Check for Duplicates here if necessary
-            const ingredientList = request.body.ingredientList;
-            recipe.ingredientList = ingredientList;
+            const ingredientList = new Array();
 
-            //To be used in a different method.
-            const prepInstructions = request.body.prepInstructions;
+            for(let x = 0; x < body.ingredientList.length; x++) {
+                const ingredient = await ingredientService.getIngredientByName(body.ingredientList[x].ingredient_name);
+                if (!ingredient) {
+                    ingredient.setName(body.ingredientList[x].ingredient_name);
+                    await ingredientService.saveIngredient(ingredient);
+                }
+                const measurementUnit = await ingredientService.getMeasurementByName(body.ingredientList[x].measurementUnit);
+                console.log(measurementUnit.getID());
+                if (!measurementUnit) {
+                    response.sendStatus(404);
+                }
+                const ingredientCount = new IngredientCount();
+
+                await ingredientCount.setIngredient(ingredient);
+                await ingredientCount.setMeasurement(body.ingredientList[x].measurement);
+                await ingredientCount.setMeasurementUnit(measurementUnit);
+
+                console.log(measurementUnit.getID());
+                await ingredientList.push(ingredientCount);
+            }
+
+            const prepInstructions = body.prepInstructions;
             recipe.prepInstructions = prepInstructions;
 
-            const prepTime = request.body.prepTime;
+            const prepTime = body.prepTime;
             recipe.prepTime = prepTime;
 
-            const cookTime = request.body.cookTime;
+            const cookTime = body.cookTime;
             recipe.cookTime = cookTime;
 
-            const caloric_est = request.body.caloric_est;
-            recipe.caloric_est = caloric_est;
+            const caloric_est = body.caloricEstimate;
+            recipe.caloricEstimate = caloric_est;
 
-            const tasteRating = request.body.tasteRating;
+            const tasteRating = body.tasteRating;
             recipe.tasteRating = tasteRating;
 
-            const difficultyRating = request.body.difficultyRating;
+            const difficultyRating = body.difficultyRating;
             recipe.difficultyRating = difficultyRating;
 
-            const tags = request.body.tags;
-            recipe.tags = tags;
- //           const note = request.getNote();
+
+            /* Tag method, to fill in later.
+            for(let x = 0; x < body.tags.length; x++) {
+
+            }
+            */
+
+            //const note =
 
             await recipeService.saveRecipe(recipe, account.id);
+
+            for (let x = 0; x < ingredientList.length; x++) {
+                const ingredientCount = ingredientList[x];
+                await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
+            }
 
             response.sendStatus(200);
         } catch (e) {

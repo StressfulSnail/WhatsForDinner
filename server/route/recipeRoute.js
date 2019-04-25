@@ -13,14 +13,26 @@ const recipeController = require('../controller/recipeController');
  * Returns {
  *      name: string
  *      imageURL: string
- *      ingredientList: Array(Ingredient)
+ *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
  *      prepInstructions: string
  *      prepTime: int
  *      cookTime: int
  *      caloricEstimate: int
  *      tasteRating: int
  *      difficultyRating: int
- *      tags: array(Tag)
+ *      tags: [
+ *          {
+ *              tag_id: int
+ *              tag_name: string
+ *          }
+ *      ]
  * }
  *
  * Passport utilized in case you need to return a ton of personal recipes.
@@ -33,14 +45,27 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  * Body {
  *      name: string
  *      imageURL: string
- *      ingredientList: Array(Ingredient)
+ *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
+ *
  *      prepInstructions: string
  *      prepTime: int
  *      cookTime: int
  *      caloricEstimate: int
  *      tasteRating: int
  *      difficultyRating: int
- *      tags: array(Tag)
+ *      tags: [
+ *          {
+ *              tag_id: int
+ *              tag_name: string
+ *          }
+ *      ]
  * }
  */
 router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createRecipe);
