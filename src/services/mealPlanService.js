@@ -116,6 +116,10 @@ class MealPlanService extends BaseService {
             throw new Error(await response.text());
         }
     }
+
+    async getShoppingList(token, mealPlanId) {
+        return [{ name: 'Milk', unit: 'oz', measurement: 5 }, { name: 'Carrots', unit: 'whole', measurement: 15 }, { name: 'Apple Sauce', unit: 'cups', measurement: 2 }]; // TODO get real data from server
+    }
 }
 
 export default new MealPlanService();

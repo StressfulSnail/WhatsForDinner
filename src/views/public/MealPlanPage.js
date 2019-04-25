@@ -172,7 +172,17 @@ class MealPlanPage extends React.Component {
         });
     };
 
-    generateShoppingList = () => ShoppingList({ mealPlan: this.props.selectedPlan, listItems: [{ name: 'Milk', unit: 'oz', measurement: 5 }, { name: 'Carrots', unit: 'whole', measurement: 15 }] });
+    generateShoppingList = async () => {
+        try {
+            this.props.loadingStart();
+            const listItems = await mealPlanService.getShoppingList(this.props.token, this.props.selectedPlan.id);
+            this.props.loadingComplete();
+            ShoppingList({mealPlan: this.props.selectedPlan, listItems});
+        } catch (e) {
+            console.error(e);
+            this.loadingError();
+        }
+    };
 
     openRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: true });
     openEditPlanModal = () => this.setState({ ...this.state, editPlanModalOpen: true });
