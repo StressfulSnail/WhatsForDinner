@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import MealTimeSelectionModal from "../../components/mealPlans/MealTimeSelectionModal";
 import EditMealModal from "../../components/mealPlans/EditMealModal";
 import EditPlanModal from "../../components/mealPlans/EditPlanModal";
+import ShoppingList from "../../components/mealPlans/ShoppingList";
 
 const styles = {
     mealTitle: {
@@ -199,6 +200,18 @@ class MealPlanPage extends React.Component {
         });
     };
 
+    generateShoppingList = async () => {
+        try {
+            this.props.loadingStart();
+            const listItems = await mealPlanService.getShoppingList(this.props.token, this.props.selectedPlan.id);
+            this.props.loadingComplete();
+            ShoppingList({mealPlan: this.props.selectedPlan, listItems});
+        } catch (e) {
+            console.error(e);
+            this.loadingError();
+        }
+    };
+
     openRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: true });
     openEditPlanModal = () => this.setState({ ...this.state, editPlanModalOpen: true });
     closeRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: false });
@@ -252,6 +265,12 @@ class MealPlanPage extends React.Component {
                                 component={Link}
                                 to="/meal-plans"
                                 fullWidth>All Meal Plans</Button>
+                        <br/>
+                        <Button color="default"
+                                variant="contained"
+                                className={classes.button}
+                                onClick={this.generateShoppingList}
+                                fullWidth>Generate Shopping List</Button>
                         <br/>
                         <Button color="primary"
                                 variant="contained"
