@@ -37,10 +37,6 @@ delete from personal_recipe where recipe_id='1';
 delete from personal_recipe where recipe_id='2';
 delete from personal_recipe where recipe_id='3';
 
-delete from recipe where recipe_id='1';
-delete from recipe where recipe_id='2';
-delete from recipe where recipe_id='3';
-
 delete from account_invitation where invitation_id='1';
 delete from account_invitation where invitation_id='2';
 delete from account_invitation where invitation_id='3';
@@ -73,6 +69,13 @@ delete from account where account_id='1';
 delete from account where account_id='2';
 delete from account where account_id='3';
 
+delete from shared_recipe where recipe_id='1';
+delete from shared_recipe where recipe_id='2';
+delete from shared_recipe where recipe_id='3';
+
+delete from recipe where recipe_id='1';
+delete from recipe where recipe_id='2';
+delete from recipe where recipe_id='3';
 
 
 -- ======================================
@@ -152,7 +155,7 @@ delete from account where account_id='3';
 	insert into recipe_tag VALUES('3','3','2019-04-01 03:03:03', '2019-04-03 03:03:03');    
     
 -- Entering Shared Recipe Data...
-	insert into recipe_tag VALUES('1','2019-04-01 01:01:01', '2019-04-01 01:01:01');
-	insert into recipe_tag VALUES('2','2019-04-02 02:02:02', '2019-04-02 02:02:02');
-	insert into recipe_tag VALUES('3','2019-04-01 03:03:03', '2019-04-03 03:03:03');    
+	insert into shared_recipe VALUES('1','2019-04-01 01:01:01', '2019-04-01 01:01:01');
+	insert into shared_recipe VALUES('2','2019-04-02 02:02:02', '2019-04-02 02:02:02');
+	insert into shared_recipe VALUES('3','2019-04-01 03:03:03', '2019-04-03 03:03:03');    
 
