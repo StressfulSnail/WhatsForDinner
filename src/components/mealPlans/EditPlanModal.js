@@ -64,8 +64,8 @@ const EditPlanModal = function (props) {
                 type="date"
                 defaultValue={plan.startDate}
                 inputProps={{
-                    min: today,
-                    max: todayInOneYear,
+                    min: today.toISOString().split('T')[0],
+                    max: todayInOneYear.toISOString().split('T')[0],
                 }}
                 onChange={handleDateChange}
                 fullWidth/>
