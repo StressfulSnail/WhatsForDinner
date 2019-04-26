@@ -7,6 +7,7 @@ import AccountRecoveryPage from './views/public/AccountRecoveryPage.js';
 import HomePage from './views/public/HomePage.js';
 import MealPlansPage from './views/public/MealPlansPage';
 import MealPlanPage from './views/public/MealPlanPage';
+import RecipePage from './views/public/MyCookbook';
 import LoadingIndicator from "./components/common/LoadingIndicator";
 import {connect} from "react-redux";
 
@@ -18,7 +19,8 @@ class UIRoutes extends Component {
                 <Route exact path="/" component={LandingPage} />
                 <Route path="/create-account" component={CreateAccountPage} />
                 <Route path="/recover-account" component={AccountRecoveryPage} />
-                <Route path="/home" compenent={HomePage} />
+                <Route path="/home" component={HomePage} />
+                <Route path="/my-cookbook" component={RecipePage} />
                 <Route exact path="/meal-plans" component={MealPlansPage} />
                 <Route exact path="/meal-plans/:id" component={MealPlanPage} />
             </div>
