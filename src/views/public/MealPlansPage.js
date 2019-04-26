@@ -23,6 +23,7 @@ import DateFormat, {dateFormat, inputDateToDateObject} from "../../components/co
 import { Link } from 'react-router-dom';
 import CreateMealPlanModal from "../../components/mealPlans/CreateMealPlanModal";
 import ConfirmDeleteModal from "../../components/common/ConfirmDeleteModal";
+import ConfirmCopyModal from "../../components/common/ConfirmCopyModal";
 
 const styles = {
     grid: {
@@ -37,24 +38,30 @@ class MealPlansPage extends React.Component {
             visiblePlans: this.props.mealPlans,
             createMealPlanOpen: false,
             confirmDeleteOpen: false,
+            confirmCopyOpen: false,
             selectedPlanToDelete: null,
+            selectedPlanToCopy: null,
             createError: false,
         }
     }
 
     componentDidMount() {
-        const { token, mealPlans, loadingStart, loadingComplete, loadMealPlans } = this.props;
-        if (mealPlans.length < 1) {
-            loadingStart();
-            mealPlanService.getMealPlans(token)
-                .then((mealPlans) => {
-                    loadingComplete();
-                    loadMealPlans(mealPlans);
-                    this.setState({ ...this.state, visiblePlans: mealPlans });
-                })
-                .catch(console.err);
+        if (this.props.mealPlans.length < 1) {
+            this.loadMealPlans();
         }
     }
+
+    loadMealPlans = () => {
+        const { token, loadingStart, loadingComplete, loadMealPlans } = this.props;
+        loadingStart();
+        mealPlanService.getMealPlans(token)
+            .then((mealPlans) => {
+                loadingComplete();
+                loadMealPlans(mealPlans);
+                this.setState({ ...this.state, visiblePlans: mealPlans });
+            })
+            .catch(console.err);
+    };
 
     searchPlans = (event) => {
         const searchText = event.target.value.toLowerCase();
@@ -68,6 +75,8 @@ class MealPlansPage extends React.Component {
     closeCreateModal = () => this.setState({ ...this.state, createMealPlanOpen: false });
     openDeleteModal = () => this.setState({ ...this.state, confirmDeleteOpen: true });
     closeDeleteModal = () => this.setState({ ...this.state, confirmDeleteOpen: false });
+    openCopyModal = () => this.setState({ ...this.state, confirmCopyOpen: true });
+    closeCopyModal = () => this.setState({ ...this.state, confirmCopyOpen: false });
 
     createMealPlan = ({ startDate, endDate }) => {
         const startDateObj = inputDateToDateObject(startDate);
@@ -111,6 +120,22 @@ class MealPlansPage extends React.Component {
         this.closeDeleteModal();
     };
 
+    handleCopyMealPlan = (plan) => {
+        this.setState({ ...this.state, selectedPlanToCopy: plan }, this.openCopyModal);
+    };
+
+    copyMealPlan = async () => {
+        try {
+            this.props.loadingStart();
+            await mealPlanService.copyPlan(this.props.token, this.state.selectedPlanToCopy);
+            this.loadMealPlans();
+        } catch (e) {
+            console.error(e);
+        }
+        this.props.loadingComplete();
+        this.closeCopyModal();
+    };
+
     render() {
         const { classes } = this.props;
         const { visiblePlans } = this.state;
@@ -125,6 +150,10 @@ class MealPlansPage extends React.Component {
                                 onCancel={this.closeDeleteModal}
                                 itemName={this.state.selectedPlanToDelete && this.state.selectedPlanToDelete.name}
                                 onConfirm={this.deleteMealPlan} />
+            <ConfirmCopyModal open={this.state.confirmCopyOpen}
+                              onCancel={this.closeCopyModal}
+                              itemName={this.state.selectedPlanToCopy && this.state.selectedPlanToCopy.name}
+                              onConfirm={this.copyMealPlan} />
 
             <AppBar position="static">
                 <Toolbar>
@@ -185,6 +214,8 @@ class MealPlansPage extends React.Component {
                                         <Button color="primary"
                                                 component={Link}
                                                 to={`/meal-plans/${plan.id}`}>VIEW</Button>
+                                        <Button color="default"
+                                                onClick={() => this.handleCopyMealPlan(plan)}>COPY</Button>
                                         <Button color="secondary"
                                                 onClick={() => this.handleDeleteMealPlan(plan)}>DELETE</Button>
                                     </TableCell>
