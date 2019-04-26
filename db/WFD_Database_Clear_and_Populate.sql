@@ -85,9 +85,10 @@ delete from recipe where recipe_id='3';
 
 
 -- Entering Account Data...
-	INSERT into account VALUES ('1', 'Todd@gmail.com', 'Todd', 'ToddTheCook', 'Debit Ending in 123', 'Todd', 'Michael', 'Silvert', '1', '1', '2019-04-07 01:01:01', '2019-04-01 01:01:01');
-	INSERT into account VALUES ('2', 'Bill@gmail.com', 'Bill', 'BillTheChecf', 'MC Ending in 234', 'Bill', 'Alan', 'Skoggs', '2', '1', '2019-04-07 01:01:01', '2019-04-02 02:02:02');
-	INSERT into account VALUES ('3', 'Jen@gmail.com', 'Jen', 'JenForShort', 'Not On File', 'Jen', 'Marie', 'Martin', '3', '0', '2019-04-07 01:01:01', '2019-04-02 02:02:02');
+	-- all passwords are:  Scala#2k$
+	INSERT into account VALUES ('1', 'Todd@gmail.com', 'Todd', '$2a$10$/sETdcazmur5ehq1B/RSuO5NxHee754Ah5.QV/258vCEolgvoxIeG', 'Debit Ending in 123', 'Todd', 'Michael', 'Silvert', '1', '1', '2019-04-07 01:01:01', '2019-04-01 01:01:01');
+	INSERT into account VALUES ('2', 'Bill@gmail.com', 'Bill', '$2a$10$/sETdcazmur5ehq1B/RSuO5NxHee754Ah5.QV/258vCEolgvoxIeG', 'MC Ending in 234', 'Bill', 'Alan', 'Skoggs', '2', '1', '2019-04-07 01:01:01', '2019-04-02 02:02:02');
+	INSERT into account VALUES ('3', 'Jane@gmail.com', 'Jane', '$2a$10$/sETdcazmur5ehq1B/RSuO5NxHee754Ah5.QV/258vCEolgvoxIeG', 'Not On File', 'Jane', 'Marie', 'Martinez', '3', '0', '2019-04-07 01:01:01', '2019-04-02 02:02:02');
 
 -- Entering account_invitations...
 	INSERT into account_invitation VALUES ('1', '1', 'asdf', '2019-04-07 01:01:01', '2019-04-01 01:01:01');
@@ -95,9 +96,9 @@ delete from recipe where recipe_id='3';
 	INSERT into account_invitation VALUES ('3', '3', 'asdh', '2019-04-07 01:01:01', '2019-04-03 01:01:01');
 
 -- Entering Recipies...
-	insert into recipe VALUES('1', 'Eggs', 'www.eggs.com/egg.gif', '1', '1', '100', 'fry egg in butter', '1', '1', '2019-04-01 01:01:01', '2019-04-01 01:01:01');
-	insert into recipe VALUES('2', 'Steak', 'www.steak.com/steak.gif', '2', '2', '100', 'Cook the Steak on a medium high grill', '2', '2', '2019-04-02 02:02:02', '2019-04-02 02:02:02');
-	insert into recipe VALUES('3', 'Tuna', 'www.tuna.com/tuna.gif', '3', '3', '100', 'Cook the tuna steak on a medium high grill', '3', '3', '2019-04-03 03:03:03', '2019-04-03 03:03:03');
+	insert into recipe VALUES('1', 'Eggs', 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Egg.jpg', '1', '1', '100', 'fry egg in butter', '1', '1', '2019-04-01 01:01:01', '2019-04-01 01:01:01');
+	insert into recipe VALUES('2', 'Steak', 'https://upload.wikimedia.org/wikipedia/commons/e/ee/Cut_up_steak.jpg', '2', '2', '100', 'Cook the Steak on a medium high grill', '2', '2', '2019-04-02 02:02:02', '2019-04-02 02:02:02');
+	insert into recipe VALUES('3', 'Tuna', 'https://static1.squarespace.com/static/5773d3b09f745625b2abfe20/5773d856cd0f68f3077d41cf/578a9758bebafb8c8141d8b4/1468700505065/tunasteak.jpg', '3', '3', '100', 'Cook the tuna steak on a medium high grill', '3', '3', '2019-04-03 03:03:03', '2019-04-03 03:03:03');
 
 -- Entering Comments...
 	insert into comment VALUES('1', '1', '1', '2019-04-01 01:01:01', 'This egg recipe is great!','2019-04-01 01:01:01','2019-04-01 01:01:01');
@@ -120,14 +121,14 @@ delete from recipe where recipe_id='3';
 	insert into ingredient_count VALUES('3','3','2','16','2019-04-03 03:03:03', '2019-04-03 03:03:03');
 
 -- Entering Meal Plans...
-	insert into meal_plan VALUES('1','1','2019-04-21','2019-05-04','2019-04-01 01:01:01', '2019-04-01 01:01:01');
-	insert into meal_plan VALUES('2','2','2019-04-21','2019-05-04','2019-04-02 02:02:02', '2019-04-02 02:02:02');
-	insert into meal_plan VALUES('3','2','2019-04-21','2019-05-04','2019-04-03 03:03:03', '2019-04-03 03:03:03');
+	insert into meal_plan VALUES('1','1','Steak','2019-04-21','2019-05-04','2019-04-01 01:01:01', '2019-04-01 01:01:01');
+	insert into meal_plan VALUES('2','2','Eggs','2019-04-21','2019-05-04','2019-04-02 02:02:02', '2019-04-02 02:02:02');
+	insert into meal_plan VALUES('3','2','Tuna','2019-04-21','2019-05-04','2019-04-03 03:03:03', '2019-04-03 03:03:03');
 
 -- Entering Meals...
-	insert into meal VALUES('1','1','2019-04-11','083000','1','Eggs for breakfast!','2019-04-01 01:01:01', '2019-04-01 01:01:01');
-	insert into meal VALUES('2','2','2019-04-11','133000','2','Steak for lunch!','2019-04-02 02:02:02', '2019-02-02 02:02:02');
-	insert into meal VALUES('3','2','2019-04-11','163000','2','Tuna for dinner!','2019-04-03 03:03:03', '2019-03-03 03:03:03');
+	insert into meal VALUES('1','1','2019-04-11 08:30:00','1','Eggs for breakfast!','2019-04-01 01:01:01', '2019-04-01 01:01:01');
+	insert into meal VALUES('2','2','2019-04-11 13:30:00','2','Steak for lunch!','2019-04-02 02:02:02', '2019-02-02 02:02:02');
+	insert into meal VALUES('3','2','2019-04-11 16:30:00','2','Tuna for dinner!','2019-04-03 03:03:03', '2019-03-03 03:03:03');
 
 -- Entering Meal Recipes...
 	insert into meal_recipe VALUES('1','1','2019-04-01 01:01:01', '2019-04-01 01:01:01');
