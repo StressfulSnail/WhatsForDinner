@@ -295,6 +295,40 @@ class MealPlanController {
             response.sendStatus(500);
         }
     }
+
+    async copyMealPlan(request, response) {
+        try {
+            const account = request.user;
+            const mealPlanId = request.params.mealPlanId;
+
+            const mealPlan = await mealPlanService.getMealPlan(mealPlanId);
+            if (!mealPlan) { // make sure meal plan exists
+                return response.sendStatus(404);
+            }
+            if (mealPlan.account.id !== account.id) { // make sure they are authorized to access meal plan
+                return response.sendStatus(401);
+            }
+
+            // remove id and change name
+            mealPlan.id = null;
+            mealPlan.name = `COPY OF ${mealPlan.name}`.slice(0, 50);
+            const newMealPlanId = await mealPlanService.saveMealPlan(mealPlan);
+            mealPlan.id = newMealPlanId;
+
+            const meals = await mealService.getMealPlanMeals(mealPlanId);
+            for (let meal of meals) {
+                // remove id and change parent meal plan
+                meal.id = null;
+                meal.mealPlan = mealPlan;
+                await mealService.saveMeal(meal);
+            }
+
+            return response.sendStatus(200);
+        } catch(e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
 }
 
 module.exports = new MealPlanController();

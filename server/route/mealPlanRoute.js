@@ -122,6 +122,12 @@ router.put('/:mealPlanId/meals/:mealId', passport.authenticate('jwt', { session:
  */
 router.delete('/:mealPlanId/meals/:mealId', passport.authenticate('jwt', { session: false }), mealPlanController.deleteMeal);
 
+/**
+ * POST /api/mealplan/:mealPlanId/copy
+ * Make a copy of the meal plan
+ */
+router.post('/:mealPlanId/copy', passport.authenticate('jwt', { session: false }), mealPlanController.copyMealPlan);
+
 
 
 module.exports = router;

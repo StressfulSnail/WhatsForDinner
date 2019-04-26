@@ -154,16 +154,16 @@ class MealPlanPage extends React.Component {
 
         if (dateOffset) {
             const startDate = new Date(selectedPlan.startDate);
-            startDate.setDate(selectedPlan.startDate.getDate() + dateOffset);
+            startDate.setTime(selectedPlan.startDate.getTime() + dateOffset);
             const endDate = new Date(selectedPlan.endDate);
-            endDate.setDate(selectedPlan.endDate.getDate() + dateOffset);
+            endDate.setTime(selectedPlan.endDate.getTime() + dateOffset);
 
             selectedPlan.startDate = startDate;
             selectedPlan.endDate = endDate;
 
             for (let meal of meals) {
                 const dateTime = new Date(meal.dateTime);
-                dateTime.setDate(meal.dateTime.getDate() + dateOffset);
+                dateTime.setTime(meal.dateTime.getTime() + dateOffset);
                 meal.dateTime = dateTime;
             }
         }

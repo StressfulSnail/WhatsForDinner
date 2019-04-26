@@ -42,10 +42,10 @@ const EditPlanModal = function (props) {
     const handleDateChange = ({ target }) => {
         const selectedDate = inputDateToDateObject(target.value);
 
-        const offset = selectedDate.getDate() - props.plan.startDate.getDate();
+        const offset = selectedDate.getTime() - props.plan.startDate.getTime();
 
         const endDate = new Date(props.plan.endDate);
-        endDate.setDate(props.plan.endDate.getDate() + offset);
+        endDate.setTime(props.plan.endDate.getTime() + offset);
 
         setPlan({ ...plan, offset, endDate: endDate.toISOString().split('T')[0] });
     };
@@ -64,8 +64,8 @@ const EditPlanModal = function (props) {
                 type="date"
                 defaultValue={plan.startDate}
                 inputProps={{
-                    min: today,
-                    max: todayInOneYear,
+                    min: today.toISOString().split('T')[0],
+                    max: todayInOneYear.toISOString().split('T')[0],
                 }}
                 onChange={handleDateChange}
                 fullWidth/>

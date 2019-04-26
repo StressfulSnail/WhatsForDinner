@@ -117,6 +117,17 @@ class MealPlanService extends BaseService {
         }
     }
 
+    async copyPlan(token, plan) {
+        const response = await fetch(`${host}/api/mealplan/${plan.id}/copy`, {
+            headers: super.getHeaders(token),
+            method: 'POST',
+        });
+
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
+
     async getShoppingList(token, mealPlanId) {
         return [{ name: 'Milk', unit: 'oz', measurement: 5 }, { name: 'Carrots', unit: 'whole', measurement: 15 }, { name: 'Apple Sauce', unit: 'cups', measurement: 2 }]; // TODO get real data from server
     }
