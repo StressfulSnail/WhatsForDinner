@@ -124,6 +124,17 @@ class ingredientService {
         return ingredientCount;
     }
 
+    async getRecipeIngredientCounts(recipe) {
+        const ingredientCounts = await knex.select()
+            .from('ingredient_count')
+            .where( {'recipe_id' : recipe.getID()});
+
+        for (let x = 0; x < ingredientCounts.length; x++) {
+            const ingredientCount = this._ingredientCountTableToModel(ingredientCounts[x]);
+            recipe.addIngredient(ingredientCount);
+        }
+    }
+
     async getIngredientCountByName(ingredient_name, measurement_name, measurement) {
         const measurementUnit = await this.getMeasurementByName(measurement_name);
         const ingredient = await this.getIngredientByName(ingredient_name);

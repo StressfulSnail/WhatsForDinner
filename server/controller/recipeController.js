@@ -19,6 +19,7 @@ class RecipeController {
             if (!recipe) {
                 return response.sendStatus(404);
             }
+            await ingredientService.getRecipeIngredientCounts(recipe);
             response.send(recipe);
         } catch (e) {
             console.error(e);
@@ -48,7 +49,7 @@ class RecipeController {
 
     }
 
-    async createRecipe(request, response) {
+    async createPersonalRecipe(request, response) {
         try {
             const account = request.user;
             const {body} = request;
@@ -79,7 +80,6 @@ class RecipeController {
                 await ingredientCount.setMeasurement(body.ingredientList[x].measurement);
                 await ingredientCount.setMeasurementUnit(measurementUnit);
 
-                console.log(measurementUnit.getID());
                 await ingredientList.push(ingredientCount);
             }
 
@@ -92,8 +92,8 @@ class RecipeController {
             const cookTime = body.cookTime;
             recipe.cookTime = cookTime;
 
-            const caloric_est = body.caloricEstimate;
-            recipe.caloricEstimate = caloric_est;
+            const caloricEstimate = body.caloricEstimate;
+            recipe.caloricEstimate = caloricEstimate;
 
             const tasteRating = body.tasteRating;
             recipe.tasteRating = tasteRating;
@@ -132,14 +132,13 @@ class RecipeController {
             }
             recipe.name = request.body.name;
             recipe.imageURL = request.body.imageURL;
-            recipe.ingredientList = request.body.ingredientList;
+
             recipe.prepInstructions = request.body.prepInstructions;
             recipe.prepTime = request.body.prepTime;
             recipe.cookTime = request.body.cookTime;
             recipe.caloricEstimate = request.body.caloricEstimate;
             recipe.tasteRating = request.body.tasteRating;
             recipe.difficultyRating = request.body.difficultyRating;
-            recipe.tags = request.body.tags;
 
             await recipeService.editRecipe(recipe);
             response.sendStatus(200);
@@ -153,6 +152,10 @@ class RecipeController {
         try {
             const recipe = await recipeService.getRecipe(request.body.recipe_id);
             if (!recipe) {
+                return response.sendStatus(404);
+            }
+            if (recipeService.getRecipeCreatorID(recipe.getID()) != request.account_id)
+            {
                 return response.sendStatus(404);
             }
             await recipeService.deleteRecipe(recipe.recipe_id);

@@ -60,18 +60,21 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  *      caloricEstimate: int
  *      tasteRating: int
  *      difficultyRating: int
+ *
  *      tags: [
  *          {
  *              tag_id: int
  *              tag_name: string
  *          }
  *      ]
+ *
+ *      note: string
  * }
  */
-router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createRecipe);
+router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createPersonalRecipe);
 
 
-/**Adds an ingredientCount to a currently existing recipe.
+/**Adds an ingredientCount to a currently existing recipe. This is in here for testing purposes.
  *
  * params needed
  * Body{
