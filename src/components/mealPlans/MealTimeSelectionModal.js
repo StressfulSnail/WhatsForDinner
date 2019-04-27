@@ -26,11 +26,27 @@ const MealTimeSelectionModal = function (props) {
         showDateTimeSelection: false,
     };
     const [state, setState] = useState(initState);
+    const [isValid, setValid] = useState(true);
     const select = () => {
         props.onSelect(state.meal);
         setState(initState); // reset state
     };
     const create = () => {
+        const minDateObj = new Date(props.startDate);
+        minDateObj.setHours(0, 0, 0, 0);
+        const maxDateObj = new Date(props.endDate);
+        maxDateObj.setHours(0, 0, 0, 0);
+
+        const selectedDateTime = new Date(state.newMealDateTime);
+
+        if (!state.newMealDateTime || !state.newMealServingsRequired || // required fields
+            selectedDateTime < minDateObj || selectedDateTime > maxDateObj ||
+            state.newMealServingsRequired > 100 ||
+            (state.newMealNote && state.newMealServingsRequired.length > 50)) {
+            return setValid(false);
+        }
+
+        setValid(true);
         props.onCreate({
             dateTime: state.newMealDateTime,
             servingsRequired: state.newMealServingsRequired,
@@ -88,7 +104,7 @@ const MealTimeSelectionModal = function (props) {
                         <TextField label="Servings Required"
                                    type="number"
                                    defaultValue={1}
-                                   inputProps={{ min: 1 }}
+                                   inputProps={{ min: 1, max: 99 }}
                                    onChange={({ target }) => setState({ ...state, newMealServingsRequired: target.value })}
                                    fullWidth />
                         <TextField label="Notes"

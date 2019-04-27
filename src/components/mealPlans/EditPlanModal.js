@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Dialog, DialogContent, DialogTitle, withStyles} from "@material-ui/core";
+import {Dialog, DialogContent, DialogTitle, Typography, withStyles} from "@material-ui/core";
 import TextField from "@material-ui/core/es/TextField/TextField";
 import Button from "@material-ui/core/Button";
 import {inputDateToDateObject} from "../common/DateFormat";
@@ -21,6 +21,7 @@ const EditPlanModal = function (props) {
     };
 
     const [plan, setPlan] = useState(initialState);
+    const [isValid, setValid] = useState(true);
 
     if (props.plan.startDate && !plan.startDate) {
         setPlan({
@@ -31,6 +32,10 @@ const EditPlanModal = function (props) {
     }
 
     const save = () => {
+        if (plan.name && plan.name.length > 50) {
+            return setValid(false);
+        }
+        setValid(true);
         props.onSave(plan.name, plan.offset);
         setPlan(initialState);
     };
@@ -53,6 +58,7 @@ const EditPlanModal = function (props) {
     return <Dialog open={props.open} onClose={close}>
         <DialogTitle>Edit Meal Plan</DialogTitle>
         <DialogContent>
+            { !isValid ? <Typography color="error">Oops! That's invalid! Please make sure that Name is under 50 characters!</Typography> : '' }
             <TextField
                 label="Name"
                 defaultValue={props.plan && props.plan.name}
