@@ -9,6 +9,7 @@ import MealPlansPage from './views/public/MealPlansPage';
 import MealPlanPage from './views/public/MealPlanPage';
 import LoadingIndicator from "./components/common/LoadingIndicator";
 import {connect} from "react-redux";
+import CookbookPage from "./views/public/CookbookPage";
 
 class UIRoutes extends Component {
     render() {
@@ -18,9 +19,11 @@ class UIRoutes extends Component {
                 <Route exact path="/" component={LandingPage} />
                 <Route path="/create-account" component={CreateAccountPage} />
                 <Route path="/recover-account" component={AccountRecoveryPage} />
-                <Route path="/home" compenent={HomePage} />
+                <Route path="/home" component={HomePage} />
                 <Route exact path="/meal-plans" component={MealPlansPage} />
                 <Route exact path="/meal-plans/:id" component={MealPlanPage} />
+                <Route exact path="/cookbook" component={CookbookPage} />
+                <Route exact path="/cookbook/recipe/:id" component={MealPlansPage} />
             </div>
         )
     }
