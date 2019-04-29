@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Dialog, DialogContent, DialogTitle, withStyles} from "@material-ui/core";
+import {Dialog, DialogContent, DialogTitle, Typography, withStyles} from "@material-ui/core";
 import TextField from "@material-ui/core/es/TextField/TextField";
 import Button from "@material-ui/core/Button";
 
@@ -12,7 +12,15 @@ const EditMealModal = function (props) {
         servingsRequired: null,
         note: null,
     });
+    const [isValid, setValid] = useState(true);
     const save = () => {
+
+        if ((meal.servingsRequired && meal.servingsRequired > 100) ||
+            ( meal.note && meal.note.length > 50)) {
+            return setValid(false);
+        }
+
+        setValid(true);
         if (meal.servingsRequired) {
             props.meal.servingsRequired = meal.servingsRequired;
         }
@@ -25,10 +33,11 @@ const EditMealModal = function (props) {
     return <Dialog open={props.open} onClose={props.onCancel}>
         <DialogTitle>Edit Meal Details</DialogTitle>
         <DialogContent>
+            { !isValid ? <Typography color="error">Oops! That's invalid! Please make sure that Servings is under 99 and Note is under 50 characters!</Typography> : '' }
             <TextField
                 label="Servings"
                 type="number"
-                inputProps={{ min: 1 }}
+                inputProps={{ min: 1, max: 99 }}
                 defaultValue={props.meal && props.meal.servingsRequired}
                 onChange={({ target }) => setMeal( { ...meal, servingsRequired: Number(target.value) })}
                 fullWidth/>

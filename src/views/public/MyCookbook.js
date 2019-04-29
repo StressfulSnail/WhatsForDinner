@@ -1,9 +1,9 @@
 import React from "react";
 
-import "../../resources/css/jquery-ui-themes.css";
-import "../../resources/css/axure_rp_page.css";
-import "../../resources/data/styles.css";
-import "../../resources/files/styles.css";
+// import "../../resources/css/jquery-ui-themes.css";
+// import "../../resources/css/axure_rp_page.css";
+// import "../../resources/data/styles.css";
+// import "../../resources/files/styles.css";
 import { $ } from "jquery";
 import "jquery-ui";
 
