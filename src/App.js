@@ -1,28 +1,48 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Switch } from 'react-router';
+import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
+import customStore, { history } from './customStore';
+import Routes from './UIRoutes';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { green, deepOrange } from "@material-ui/core/colors";
+import React from "react";
 
-class App extends Component {
+const store = customStore();
+
+const darkGreen = green[900];
+const darkOrange = deepOrange[600];
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: darkGreen
+        },
+        secondary: {
+            main: darkOrange
+        },
+        background: {
+            default: darkOrange
+        }
+    }
+});
+
+class App extends React.Component {
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+      return (
+          <Provider store={store}>
+              <MuiThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <ConnectedRouter history={history}>
+                      <Switch>
+                          <Routes />
+                      </Switch>
+                  </ConnectedRouter>
+              </MuiThemeProvider>
+          </Provider>
+      );
   }
+
 }
 
 export default App;

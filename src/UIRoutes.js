@@ -34,4 +34,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default withRouter(connect(mapStateToProps)(UIRoutes));
+export default connect(mapStateToProps)(UIRoutes);

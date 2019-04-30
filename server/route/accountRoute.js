@@ -21,6 +21,8 @@ const accountController = require('../controller/accountController');
  */
 router.get('/', passport.authenticate('jwt', { session: false }), accountController.getAccountById);
 
+router.get('/find', passport.authenticate('jwt', { session: false }), accountController.getAccountByUserName);
+
 /**
  * POST /api/account/
  * Create a new account

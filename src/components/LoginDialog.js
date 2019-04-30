@@ -3,9 +3,9 @@ import {
     Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Paper
 } from "@material-ui/core";
 import accountService from "../services/accountService";
-import { LOGIN } from "../actions/accountActions";
+import { LOGIN, LOAD_ACCOUNT } from "../actions/accountActions";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 
 class LoginDialog extends React.Component {
     constructor(props) {
@@ -29,30 +29,41 @@ class LoginDialog extends React.Component {
         this.setState({password: event.target.value });
     };
 
+    // validate
+
     login = () => {
-        if (this.state.attempts >= 5) {
+        const { attempts, username, password } = this.state;
+        if (attempts >= 5) {
             this.setState({
                 error: true,
                 loading: false,
             });
             return;
         }
-        this.setState({ loading: true, attempts: this.state.attempts + 1 });
-        accountService.validateAccount(this.state.username, this.state.password)
+        this.setState({ loading: true, attempts: attempts + 1 });
+        accountService.validateAccount(username, password)
             .then( (token) => {
                 this.props.dispatchLogin(token);
                 this.setState({ attempts: 0});
-                this.handleClose();
-                this.props.history.push("/home");
-            })
-            .catch( () => {
+                return accountService.getAccountByUsername(token, username);
 
+            })
+            .then( (account) => {
+                this.props.dispatchLoadAccount(account);
+                this.handleClose();
+                this.props.history.push('/home');
+            })
+            .catch( (error) => {
+                console.log('error loading account');
                 this.setState({
                     error: true,
                     loading: false,
                 });
-            }); // should show message to user instead
+            }); // TODO: should show message to user instead
+
     };
+
+
 
     handleClickOpen = () => {
         this.setState({ open: true });
@@ -67,7 +78,10 @@ class LoginDialog extends React.Component {
     };
 
     render() {
+
         return (
+
+
             <div>
                 <Button
                     variant="contained"
@@ -127,7 +141,7 @@ class LoginDialog extends React.Component {
             </div>
         );
     }
-}
+};
 
 /**
  *
@@ -137,6 +151,7 @@ class LoginDialog extends React.Component {
 const mapStateToProps = (state) => {
     return {
         token: state.account.token,
+        isAuthenticated: state.account.isAuthenticated
     }
 };
 
@@ -148,6 +163,7 @@ const mapStateToProps = (state) => {
 const mapActionsToProps = (dispatch) => {
     return {
         dispatchLogin: (token) => dispatch({ type: LOGIN, payload: { token } }),
+        dispatchLoadAccount: (accountData) => dispatch({type: LOAD_ACCOUNT, payload: { accountData } })
     }
 };
 
