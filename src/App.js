@@ -7,6 +7,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { green, deepOrange } from "@material-ui/core/colors";
 import React from "react";
+import LoadingIndicator from "./components/common/LoadingIndicator";
 
 const store = customStore();
 
@@ -33,6 +34,7 @@ class App extends React.Component {
           <Provider store={store}>
               <MuiThemeProvider theme={theme}>
                   <CssBaseline />
+                  <LoadingIndicator isLoading={this.props.isLoading}/>
                   <ConnectedRouter history={history}>
                       <Switch>
                           <Routes />
