@@ -21,6 +21,10 @@ module.exports = {
     cantFindEmail: {
         status: 400,
         message: 'ERROR_CANNOT_FIND_EMAIL',
-    }
+    },
 
+    serverError: {
+        status: 500,
+        message: 'ERROR_SERVER_ANSYC_FAILED'
+    }
 };

@@ -1,6 +1,8 @@
+import BaseService from './BaseService';
+
 const host = 'http://localhost:3001';
 
-class AccountService {
+class AccountService extends BaseService {
     /**
      * Validates account
      * @param username
@@ -15,11 +17,30 @@ class AccountService {
         });
 
         if (!response.ok) {
-            throw new Error('Account not authenticated!');
+            throw new Error(await response.text());
         }
 
         const json = await response.json();
         return json.token;
+    }
+
+    async getAccountByUsername(token, username) {
+        const response = await fetch(`${host}/api/account/find`, {
+            method: 'GET',
+            headers: super.getHeaders(token),
+            user: JSON.stringify(username)
+        });
+
+        if (!response.ok) {
+            console.log('get by username failed');
+            throw new Error(await response.text());
+
+        }
+        const json = await response.json();
+        console.log(json);
+        let item = JSON.parse(json);
+        console.log("parsed");
+        return item;
     }
 
     async createAccount(username, password, email, firstName, lastName, middleName) {

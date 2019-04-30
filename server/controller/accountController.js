@@ -23,6 +23,28 @@ class AccountController {
         }
     }
 
+    async getAccountByUserName(request, response) {
+        try {
+            const account = await accountService.findByUsername(request.user.username);
+            if (!account) {
+                const { status, message } = errorResponses.cantFindUsername;
+                return response.status(status).send(message);
+            }
+            account.password = "";
+            const json = JSON.stringify(account, (key, value) => {
+                if (value === null) {
+                    return "";
+                }
+                return value;
+            });
+            return response.json(json);
+        } catch (e) {
+            console.error(e);
+            const { status, message } = errorResponses.serverError;
+            response.status(status).send(message);
+        }
+    }
+
     async createAccount(request, response) {
         try {
             const email = request.body.email;
