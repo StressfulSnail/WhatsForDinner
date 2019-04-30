@@ -16,6 +16,8 @@ import MealTimeSelectionModal from "../../components/mealPlans/MealTimeSelection
 import EditMealModal from "../../components/mealPlans/EditMealModal";
 import EditPlanModal from "../../components/mealPlans/EditPlanModal";
 import ShoppingList from "../../components/mealPlans/ShoppingList";
+import {HOME, MEAL_PLANS} from "../../UIRoutes";
+import UserNavBar from "../../components/common/UserNavBar";
 
 const styles = {
     mealTitle: {
@@ -222,6 +224,9 @@ class MealPlanPage extends React.Component {
     render() {
         const { classes, selectedPlan, meals } = this.props;
         return <div>
+
+            <UserNavBar pageName="Meal Plan" currentPath={MEAL_PLANS}/>
+
             <AddRecipeModal open={this.state.recipeModalOpen}
                             onCancel={this.closeRecipeModal}
                             onSelect={this.selectRecipe}/>
@@ -240,14 +245,6 @@ class MealPlanPage extends React.Component {
                            plan={selectedPlan}
                            onSave={this.savePlanChanges}
                            onCancel={this.closeEditPlanModal} />
-
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" color="inherit">
-                        Meal Plans
-                    </Typography>
-                </Toolbar>
-            </AppBar>
 
             <div className={classes.mealTitle}>
                 <Grid justify="center" container>

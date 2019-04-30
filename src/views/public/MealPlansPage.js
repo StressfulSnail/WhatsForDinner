@@ -24,6 +24,8 @@ import { Link } from 'react-router-dom';
 import CreateMealPlanModal from "../../components/mealPlans/CreateMealPlanModal";
 import ConfirmDeleteModal from "../../components/common/ConfirmDeleteModal";
 import ConfirmCopyModal from "../../components/common/ConfirmCopyModal";
+import UserNavBar from '../../components/common/UserNavBar';
+import {MEAL_PLANS} from "../../UIRoutes";
 
 const styles = {
     grid: {
@@ -155,13 +157,7 @@ class MealPlansPage extends React.Component {
                               itemName={this.state.selectedPlanToCopy && this.state.selectedPlanToCopy.name}
                               onConfirm={this.copyMealPlan} />
 
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" color="inherit">
-                        Meal Plans
-                    </Typography>
-                </Toolbar>
-            </AppBar>
+            <UserNavBar pageName={"Meal Plans"} currentPath={MEAL_PLANS}/>
 
             <Grid container spacing={24} className={classes.grid} justify="center" alignItems="center">
             <Grid item xs={12} md={10}>

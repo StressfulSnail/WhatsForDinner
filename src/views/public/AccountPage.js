@@ -35,7 +35,7 @@ const HomeLink = (props) => <Link to="/" {...props} />;
  * @returns {*}
  * @constructor
  */
-class HomePage extends React.Component {
+class AccountPage extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -47,7 +47,7 @@ class HomePage extends React.Component {
         return (
 
             <div className={classes.root}>
-                <UserNavBar pageName={`Welcome, ${account.firstName}!`} currentPath={HOME}/>
+                <UserNavBar pageName={`${account.firstName}'s Account`} currentPath={HOME}/>
                 {Object.values(account).map( (item) => {
                     return <Paper>{item}</Paper>;
                 }) }
@@ -70,11 +70,11 @@ const mapActionsToProps = (dispatch) => {
     }
 };
 
-HomePage.propTypes = {
+AccountPage.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-const connected = connect(mapStateToProps, mapActionsToProps)(HomePage);
+const connected = connect(mapStateToProps, mapActionsToProps)(AccountPage);
 
 export default withStyles(styles)(connected);

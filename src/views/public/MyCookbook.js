@@ -6,6 +6,8 @@ import React from "react";
 // import "../../resources/files/styles.css";
 import { $ } from "jquery";
 import "jquery-ui";
+import UserNavBar from "../../components/common/UserNavBar";
+import {MY_COOKBOOK} from "../../UIRoutes";
 
 
 const samplerecipes = {
@@ -28,6 +30,7 @@ class RecipeBuilder extends React.Component {
 
         return (
             <div>
+
                 <button class="collapsible"> {question.name}</button>
                 <div class = "content">
                     <div class="RecipePage">
@@ -146,6 +149,7 @@ class RecipePage extends React.Component {
 
         return <div id="base" ref={mycookbook => this.mycookbook = mycookbook} class="">
 
+            <UserNavBar pageName={"My Cookbook"} currentPath={MY_COOKBOOK}/>
 
             <div id="u407" className="ax_default box_3">
                 <div id="u407_div" class=""></div>
