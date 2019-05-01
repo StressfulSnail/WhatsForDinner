@@ -6,6 +6,6 @@ class SharedRecipe extends Recipe{
 
     constructor(){
         super();
-        this.commentTree = null;
+        this.commentTree = new Array();
     }
 }

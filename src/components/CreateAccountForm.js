@@ -1,9 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Paper, Button, Checkbox, FormControlLabel, TextField, withStyles } from "@material-ui/core";
+import { Paper, Button, withStyles } from "@material-ui/core";
 import { Field, reduxForm } from 'redux-form';
-// import { required, maxLength, validateEmail, validatePassword } from "../services/AccountInputValidation.js";
 import TermsOfService from "./TermsOfService.js";
+import { renderTextField, renderPasswordField, renderCheckbox } from "./common/InputFields";
+import {
+    requiredFields, maxFields, validatePasswords, validateEmail, MAX_NAME, MAX_PASSWORD, MAX_EMAIL
+} from "../services/AccountInputValidation";
 
 
 const styles = (theme) => ({
@@ -16,43 +19,9 @@ const styles = (theme) => ({
     }
 });
 
-const requiredFields = (fields, values, errors) => {
-    fields.forEach( (field) => {
-        if ( !values[field] ) {
-            errors[field] = 'Required'
-        }
-    });
-}
-
-const maxFields = (max, fields, values, errors) => {
-    fields.forEach( (field) => {
-        if (values[field] && values[field].length > max) {
-            errors[field] = `Cannot be more than ${max} characters`;
-        }
-    });
-}
-
-const validatePasswords = (fields, values, errors) => {
-    fields.forEach( (field) => {
-        let password = values[field];
-        if ( password && (
-            password.length < 8             // verify length
-            || !password.match(/[^a-zA-Z0-9]/)  // verify at least 1 special character
-            || !password.match(/[A-Z]/)         // verify at least 1 capital letter
-            || !password.match(/[0-9]/)
-        )
-        ) {
-            errors[field] = `Must be at least 8 characters and contain 1 capital letter, number, and special character`;
-        }
-    });
-}
 
 const validate = (values) => {
     const errors = {};
-
-    const MAX_NAME = 50;
-    const MAX_EMAIL = 255;
-    const MAX_PASSWORD = 255;
 
     requiredFields(
         [
@@ -81,10 +50,7 @@ const validate = (values) => {
         errors
     );
 
-    if (
-        values.email &&
-        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    ) {
+    if ( validateEmail(values.email) ) {
         errors.email = 'Invalid email address'
     }
 
@@ -111,73 +77,12 @@ const validate = (values) => {
     }
 
     return errors;
-}
+};
 
-const renderTextField = ({
-                             label,
-                             input,
-                             meta: { touched, invalid, error },
-                             ...custom
-                         }) => (
-    <TextField
-        label={label}
-        placeholder={label}
-        error={touched && invalid}
-        helperText={touched && error}
-        variant="filled"
-        margin="normal"
-        {...input}
-        {...custom}
-    />
-)
 
-const renderPasswordField = ({
-                                 label,
-                                 input,
-                                 meta: { touched, invalid, error },
-                                 ...custom
-                             }) => (
-    <TextField
-        label={label}
-        placeholder={label}
-        error={touched && invalid}
-        helperText={touched && error}
-        type="password"
-        variant="filled"
-        margin="normal"
-        {...input}
-        {...custom}
-    />
-)
+const CreateAccountForm = (props) => {
 
-const renderCheckbox = ({
-                            input,
-                            label,
-                            meta: {
-                                touched,
-                                invalid,
-                                error
-                            }
-                        }) => (
-    <div>
-        <FormControlLabel
-            control={
-                <Checkbox
-                    color="primary"
-                    checked={input.value ? true : false}
-                    onChange={input.onChange}
-                />
-            }
-            label={label}
-
-        />
-        {touched && invalid && <Paper>You must agree to terms of service</Paper>}
-    </div>
-)
-
-const AccountForm = (props) => {
-
-    const { handleSubmit, pristine, reset, submitting, valid, classes } = props
+    const { handleSubmit, pristine, reset, submitting, valid, classes } = props;
 
     return (
         <Paper>
@@ -199,6 +104,9 @@ const AccountForm = (props) => {
                     label="Last Name"
                     component={renderTextField}
                 />
+
+                <br/>
+
                 <Field
                     name="middleName"
                     label="Middle (Optional)"
@@ -216,6 +124,8 @@ const AccountForm = (props) => {
                     label="Password"
                     component={renderPasswordField}
                 />
+
+                <br/>
 
                 <Field
                     name="confirmPassword"
@@ -245,9 +155,9 @@ const AccountForm = (props) => {
         </Paper>
     );
 
-}
+};
 
-AccountForm.propTypes = {
+CreateAccountForm.propTypes = {
     classes: PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired
 };
@@ -255,6 +165,6 @@ AccountForm.propTypes = {
 const form = reduxForm({
     form: "createAccountForm",
     validate
-})(AccountForm);
+})(CreateAccountForm);
 
 export default withStyles(styles)(form);

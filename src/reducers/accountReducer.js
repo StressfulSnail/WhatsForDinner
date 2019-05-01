@@ -19,7 +19,31 @@ export default function (state = initialState, action) {
             window.localStorage.setItem('token', null);
             return initialState;
         case LOAD_ACCOUNT:
-            return { ...state, accountData: action.payload.accountData };
+            // extract necessary fields
+            const {
+                id,
+                username,
+                email,
+                firstName,
+                lastName,
+                middleName,
+                paymentInfo,
+                subscriptionLevel,
+                confirmed
+            } = action.payload.accountData;
+            console.log(username);
+            return { ...state, accountData: {
+                    id: id,
+                    username: username,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    middleName: middleName ? middleName : "N/A",
+                    paymentInfo: paymentInfo,
+                    subscriptionLevel: subscriptionLevel,
+                    confirmed: confirmed
+                }
+            };
         default:
             return state;
     }

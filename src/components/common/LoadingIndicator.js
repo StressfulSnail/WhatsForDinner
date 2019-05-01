@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from "@material-ui/core";
+import { connect } from 'react-redux';
 
 const styles = {
     loading: {
@@ -22,9 +23,16 @@ const LoadingIndicator = function (props) {
     </div>
 };
 
-LoadingIndicator.propTypes = {
-    classes: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired,
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.main.isLoading,
+    }
 };
 
-export default withStyles(styles)(LoadingIndicator);
+LoadingIndicator.propTypes = {
+    classes: PropTypes.object.isRequired
+};
+
+const connected = connect(mapStateToProps, null)(LoadingIndicator);
+
+export default withStyles(styles)(connected);

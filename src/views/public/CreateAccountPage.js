@@ -6,7 +6,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
-import AccountForm from "../../components/AccountForm";
+import AccountForm from "../../components/CreateAccountForm";
 import AccountService from "../../services/accountService";
 
 const styles = theme => ({

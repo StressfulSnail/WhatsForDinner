@@ -8,7 +8,6 @@ class RecipeService {
         recipe.recipe_id = tableObj.recipe_id;
         recipe.name = tableObj.name;
         recipe.imageURL = tableObj.image_url;
-        //recipe.ingredientList = tableObj.ingredientList; would not be on the Recipe table. Check Ingredient_Count
         recipe.prepInstructions = tableObj.prep_instructions;
         recipe.prepTime = tableObj.prep_time;
         recipe.cookTime = tableObj.cook_time;
@@ -24,14 +23,12 @@ class RecipeService {
             recipe_id: recipeModel.recipe_id,
             name: recipeModel.name,
             image_url: recipeModel.imageURL,
-//            ingredientList: recipeModel.ingredientList,   Commented out because it's difficult to put an array into a table
             prep_instructions: recipeModel.prepInstructions,
             prep_time: recipeModel.prepTime,
             cook_time: recipeModel.cookTime,
-            caloric_est: recipeModel.caloric_est,
+            caloric_est: recipeModel.caloricEstimate,
             taste_rating: recipeModel.tasteRating,
             difficulty_rating: recipeModel.difficultyRating,
-//            tags: recipeModel.tags,                       See above
 //            note: recipeModel.note                        Specific to PersonalRecipe
         }
     }
@@ -56,7 +53,7 @@ class RecipeService {
 
 
         //Returns an array of recipes eventually, right now only returns the first one found.
-        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
+        return recipes.length === 0 ? null : recipes;
     }
 
     /**
@@ -105,6 +102,14 @@ class RecipeService {
 
     }
 
+    async checkValidRecipeCreator(recipe_id, accountID) {
+        const recipes = await knex.select()
+            .from('personal_recipe')
+            .where({'recipe_id': recipe_id});
+
+        return recipes.account_id === accountID;
+    }
+
     async saveRecipe(Recipe, accountID) {
         const recipeData = this._recipeModelToTable(Recipe);
         recipeData.recipe_id = null;
@@ -120,6 +125,33 @@ class RecipeService {
         });
 
     }
+
+    async savePublicRecipe(Recipe) {
+        const recipeData = this._recipeModelToTable(Recipe);
+        recipeData.recipe_id = null;
+
+        await knex.transaction( async(transaction) => {
+            const recipeID = await transaction.insert(recipeData)
+                .into('Recipe')
+                .returning('recipe_id');
+        })
+    }
+
+    async deleteRecipe(Recipe, accountID) {
+        await knex.delete()
+            .from('personal_recipe')
+            .where({'recipe_id' : Recipe.getID()});
+
+        await knex.delete()
+            .from('ingredient_count')
+            .where({'recipe_id' : Recipe.getID()});
+
+        await knex.delete()
+            .from('recipe')
+            .where({'recipe_id' : Recipe.getID()});
+
+    }
+
 
 }
 
