@@ -16,6 +16,11 @@ class RecipeController {
             const account = request.user;
             const recipeID = request.body.recipe_id;
             const recipe = await recipeService.getRecipe(recipeID);
+
+            if(!recipeService.checkValidRecipeCreator(recipe.getID(), account.getID())) {
+                return response.sendStatus(404);
+            }
+
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -99,13 +104,32 @@ class RecipeController {
         }
     }
 
-    async getSharedRecipes(request, response) {
+    async getSharedRecipe(request, response) {
+        try {
+            const recipeID = request.body.recipe_id;
+            const recipe = await recipeService.getRecipe(recipeID);
 
+            if (!recipe) {
+                return response.sendStatus(404);
+            }
+            await ingredientService.getRecipeIngredientCounts(recipe);
+            response.send(recipe);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
     }
 
     async searchSharedRecipes(request, response){
 
     }
+
+    /**
+     * Pretty much the same thing as createPersonalRecipe. Doesn't require an account to use.
+     * @param request
+     * @param response
+     * @returns {Promise<void>}
+     */
 
     async createSharedRecipe(request, response){
         const {body} = request;

@@ -32,3 +32,5 @@ class Tag {
         this.name = newName;
     }
 }
+
+module.exports = Tag;
