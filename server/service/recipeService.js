@@ -39,7 +39,7 @@ class RecipeService {
 
     async getRecipe(recipeID) {
         const recipes= await knex.select()
-            .from('Recipe')
+            .from('recipe')
             .where({ 'recipe_id': recipeID });
 
         return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
@@ -48,12 +48,9 @@ class RecipeService {
     async getPersonalRecipes(accountID){
         const recipes= await knex.select()
             .from('recipe')
-            .joinRaw('personal_recipe')
-            .where({'account_id': accountID});
-
-
-        //Returns an array of recipes eventually, right now only returns the first one found.
-        return recipes.length === 0 ? null : recipes;
+            .join('personal_recipe', 'recipe.recipe_id', '=', 'personal_recipe.recipe_id')
+            .where({ 'account_id': accountID });
+        return recipes.map(this._recipeTableToModel);
     }
 
     /**
@@ -116,7 +113,7 @@ class RecipeService {
 
         await knex.transaction(async (transaction) => {
             const recipeID = await transaction.insert(recipeData)
-                .into( 'Recipe')
+                .into( 'recipe')
                 .returning('recipe_id');
 
             Recipe.setID(recipeID);
@@ -132,7 +129,7 @@ class RecipeService {
 
         await knex.transaction( async(transaction) => {
             const recipeID = await transaction.insert(recipeData)
-                .into('Recipe')
+                .into('recipe')
                 .returning('recipe_id');
         })
     }

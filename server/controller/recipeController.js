@@ -14,13 +14,29 @@ class RecipeController {
     async getRecipe(request, response) {
         try {
             const account = request.user;
-            const recipeID = request.body.recipe_id;
+            const recipeID = request.param.id;
             const recipe = await recipeService.getRecipe(recipeID);
             if (!recipe) {
                 return response.sendStatus(404);
             }
             await ingredientService.getRecipeIngredientCounts(recipe);
             response.send(recipe);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
+    }
+
+    async getPersonalRecipes(request, response) {
+        try {
+            const account = request.user;
+            const recipes = await recipeService.getPersonalRecipes(account.id);
+
+            for (let recipe of recipes) {
+                await ingredientService.getRecipeIngredientCounts(recipe);
+            }
+
+            response.send(recipes);
         } catch (e) {
             console.error(e);
             response.sendStatus(500);
