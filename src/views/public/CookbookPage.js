@@ -2,12 +2,11 @@ import React from 'react';
 import {LOADING_COMPLETE, LOADING_STARTED} from "../../actions/mainActions";
 import {connect} from "react-redux";
 import {withStyles} from "@material-ui/core";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
 import RecipeSearch from "../../components/recipes/RecipeSearch";
 import {RECIPES_LOADED} from "../../actions/recipeActions";
 import recipeService from "../../services/recipeService";
+import UserNavBar from "../../components/common/UserNavBar";
+import {MY_COOKBOOK} from "../../UIRoutes";
 
 const styles = {};
 
@@ -28,13 +27,7 @@ class CookbookPage extends React.Component {
     render() {
         return (
             <div>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" color="inherit">
-                            MyCookbook
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
+                <UserNavBar pageName={"My sCookbook"} currentPath={MY_COOKBOOK}/>
 
                 <RecipeSearch recipes={this.props.recipes} />
             </div>
