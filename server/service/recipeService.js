@@ -134,6 +134,8 @@ class RecipeService {
             const recipeID = await transaction.insert(recipeData)
                 .into('Recipe')
                 .returning('recipe_id');
+
+            Recipe.setID(recipeID);
         })
     }
 
