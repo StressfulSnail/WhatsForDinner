@@ -73,6 +73,39 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  */
 router.post('/', passport.authenticate('jwt', { session: false }), recipeController.createPersonalRecipe);
 
+/**
+ * POST /api/recipe/shared
+ * Create a new shared recipe
+ * Body {
+ *      name: string
+ *      imageURL: string
+ *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
+ *
+ *      prepInstructions: string
+ *      prepTime: int
+ *      cookTime: int
+ *      caloricEstimate: int
+ *      tasteRating: int
+ *      difficultyRating: int
+ *
+ *      tags: [
+ *          {
+ *              tag_id: int
+ *              tag_name: string
+ *          }
+ *      ]
+ *
+ * }
+ */
+router.post('/shared', recipeController.createSharedRecipe);
+
 
 /**Adds an ingredientCount to a currently existing recipe. This is in here for testing purposes.
  *

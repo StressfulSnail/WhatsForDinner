@@ -53,7 +53,7 @@ class RecipeService {
 
 
         //Returns an array of recipes eventually, right now only returns the first one found.
-        return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
+        return recipes.length === 0 ? null : recipes;
     }
 
     /**
@@ -102,12 +102,12 @@ class RecipeService {
 
     }
 
-    async getRecipeCreatorID(recipe_id) {
+    async checkValidRecipeCreator(recipe_id, accountID) {
         const recipes = await knex.select()
             .from('personal_recipe')
             .where({'recipe_id': recipe_id});
 
-        return recipes.account_id;
+        return recipes.account_id === accountID;
     }
 
     async saveRecipe(Recipe, accountID) {
@@ -124,6 +124,17 @@ class RecipeService {
                 .into('personal_recipe');
         });
 
+    }
+
+    async savePublicRecipe(Recipe) {
+        const recipeData = this._recipeModelToTable(Recipe);
+        recipeData.recipe_id = null;
+
+        await knex.transaction( async(transaction) => {
+            const recipeID = await transaction.insert(recipeData)
+                .into('Recipe')
+                .returning('recipe_id');
+        })
     }
 
     async deleteRecipe(Recipe, accountID) {
