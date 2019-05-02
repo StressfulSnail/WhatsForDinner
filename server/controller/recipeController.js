@@ -109,8 +109,6 @@ class RecipeController {
                     tag = new Tag();
                     await tag.setName(body.tags[x].name);
                     await tag.setTagType(body.tags[x].tag_type);
-                    console.log(tag.getName());
-                    console.log(tag.getTagType());
                     await tagService.saveTag(tag);
                 }
                 await tagList.push(tag);
@@ -179,8 +177,6 @@ class RecipeController {
         const otherIngredientList = body.ingredientList;
 
         ingredientList = await RecipeController.readIngredientList(ingredientList, otherIngredientList, response);
-
-        console.log(ingredientList);
 
             const prepInstructions = body.prepInstructions;
             recipe.prepInstructions = prepInstructions;

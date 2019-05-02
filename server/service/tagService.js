@@ -64,7 +64,6 @@ class TagService {
 
     async saveTag(tag) {
         let tagTypeID = await this.getTagTypeByName(tag.getTagType());
-        console.log(tagTypeID);
             if(tagTypeID === 0 || tagTypeID === null)
                 tagTypeID = await this.saveTagType(tag.getTagType());
         const tagData = await this._tagModelToTable(tag,tagTypeID);
@@ -103,7 +102,6 @@ class TagService {
             .from('tag_type')
             .where({'type_name' : tagTypeName})
             .returning('tag_type_id');
-        console.log(tagType);
         const tagTypeID = await this._tagTypeTableToModel(tagType[0]);
         return tagType.length === 0 ? null : tagTypeID;
         }

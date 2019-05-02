@@ -106,8 +106,6 @@ class AccountService {
         await knex.delete()
             .from('account')
             .where({ 'account_id': id }); //not a lot of discussion here, just do it.
-
-        console.log("deletion performed");
     }
 
     async editAccount(account)
@@ -115,8 +113,6 @@ class AccountService {
         await knex.from('account')
             .where({ account_id: account.id })
             .update(this._modelToTable(account));
-
-        console.log("update attempt performed");
     }
 }
 
