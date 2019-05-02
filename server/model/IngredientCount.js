@@ -46,6 +46,17 @@ class IngredientCount {
         this.ingredient = new Ingredient();
         this.ingredient = newIngredient;
     }
+
+    /**
+     * Method that will be called when generating JSON to send to client
+     */
+    toJSON() {
+        return {
+            ingredient: this.ingredient.getName(),
+            measurementUnit: this.measurementUnit.getName(),
+            measurement: this.measurement,
+        }
+    }
 }
 
 module.exports = IngredientCount;

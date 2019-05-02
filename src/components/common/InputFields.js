@@ -19,6 +19,45 @@ const renderTextField = ({
     />
 );
 
+const renderNumberField = ({
+                             label,
+                             input,
+                             meta: { touched, invalid, error },
+                             ...custom
+                         }) => (
+    <TextField
+        type="number"
+        label={label}
+        placeholder={label}
+        error={touched && invalid}
+        helperText={touched && error}
+        variant="filled"
+        margin="normal"
+        {...input}
+        {...custom}
+    />
+);
+
+const renderTextArea = ({
+                               label,
+                               input,
+                               meta: { touched, invalid, error },
+                               ...custom
+                           }) => (
+    <TextField
+        multiline
+        rows={3}
+        label={label}
+        placeholder={label}
+        error={touched && invalid}
+        helperText={touched && error}
+        variant="filled"
+        margin="normal"
+        {...input}
+        {...custom}
+    />
+);
+
 const renderPasswordField = ({
                                  label,
                                  input,
@@ -66,5 +105,7 @@ const renderCheckbox = ({
 export {
     renderCheckbox,
     renderPasswordField,
-    renderTextField
+    renderTextField,
+    renderNumberField,
+    renderTextArea,
 };

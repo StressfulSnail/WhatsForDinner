@@ -7,10 +7,42 @@ const router = express.Router();
 const recipeController = require('../controller/recipeController');
 
 /**
- * GET /api/recipe/
+ * GET /api/recipe/:id
  * Get recipe details
  * Requires (recipe_id)
  * Returns {
+ *      name: string
+ *      imageURL: string
+ *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
+ *      prepInstructions: string
+ *      prepTime: int
+ *      cookTime: int
+ *      caloricEstimate: int
+ *      tasteRating: int
+ *      difficultyRating: int
+ *      tags: [
+ *          {
+ *              tag_type: string
+ *              tag_name: string
+ *          }
+ *      ]
+ * }
+ *
+ * Passport utilized in case you need to return a ton of personal recipes.
+ */
+router.get('/:id', passport.authenticate('jwt', { session: false }), recipeController.getRecipe);
+
+/**
+ * GET /api/recipe
+ * Get all personal recipe details
+ * Returns [{
  *      name: string
  *      imageURL: string
  *
@@ -33,11 +65,9 @@ const recipeController = require('../controller/recipeController');
  *              tag_name: string
  *          }
  *      ]
- * }
- *
- * Passport utilized in case you need to return a ton of personal recipes.
+ * }]
  */
-router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipe);
+router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getPersonalRecipes);
 
 /**
  * POST /api/recipe/
@@ -63,7 +93,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  *
  *      tags: [
  *          {
- *              tag_id: int
+ *              tag_type: string
  *              tag_name: string
  *          }
  *      ]
@@ -102,6 +132,11 @@ router.post('/', passport.authenticate('jwt', { session: false }), recipeControl
  *          }
  *      ]
  *
+ *      commentTree: [
+ *          {
+ *              comment: string
+ *          }
+ *      ]
  * }
  */
 router.post('/shared', recipeController.createSharedRecipe);
@@ -123,13 +158,43 @@ router.post('/addCount', passport.authenticate('jwt', { session: false }), recip
  * DELETE /api/recipe/delete
  * Delete Recipe
  *
+ * Requires: recipe_id
  */
 router.delete('/delete', passport.authenticate('jwt', { session: false }), recipeController.deleteRecipe);
 
 /**
- * POST /api/recipe/edit
- * Edit Recipe
+ * POST /api/recipe/edit'
+ * Create a new shared recipe
+ * Body {
+ *      recipe_id : int
+ *      name: string
+ *      imageURL: string
  *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
+ *
+ *      prepInstructions: string
+ *      prepTime: int
+ *      cookTime: int
+ *      caloricEstimate: int
+ *      tasteRating: int
+ *      difficultyRating: int
+ *
+ *      tags: [
+ *          {
+ *              tag_id: int
+ *              tag_name: string
+ *          }
+ *      ]
+ *
+ * *    note: string
+
+ * }
  */
 router.post('/edit', passport.authenticate('jwt', { session: false }), recipeController.editRecipe);
 
