@@ -136,7 +136,7 @@ class AccountController {
 
     async recoverUser(request, response) {
         try {
-            console.log("start recover")
+            console.log(request.body.email)
             const account = await accountService.findByEmail(request.body.email);
 
             if (!account) {
@@ -148,8 +148,6 @@ class AccountController {
             account.setHashedPassword(newPassword);
             await accountService.editAccount(account);
             emailService.sendRecovery(account.email, newPassword);
-
-            console.log("emailed");
 
             return response.sendStatus(200);
         } catch (e) {

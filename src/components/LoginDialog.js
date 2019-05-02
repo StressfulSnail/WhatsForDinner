@@ -6,6 +6,7 @@ import accountService from "../services/accountService";
 import { LOGIN, LOAD_ACCOUNT } from "../actions/accountActions";
 import { connect } from "react-redux";
 import { withRouter } from 'react-router-dom';
+import { MAX_NAME, MAX_PASSWORD } from "../services/AccountInputValidation";
 
 class LoginDialog extends React.Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class LoginDialog extends React.Component {
         if (attempts >= 5) {
             this.setState({
                 error: true,
-                loading: false,
+                loading: false
             });
             return;
         }
@@ -54,13 +55,12 @@ class LoginDialog extends React.Component {
                 this.props.history.push('/home');
             })
             .catch( (error) => {
-                console.log('error loading account');
                 this.setState({
                     error: true,
                     loading: false,
+                    errorMessage: error.message
                 });
-            }); // TODO: should show message to user instead
-
+            });
     };
 
 
@@ -102,6 +102,7 @@ class LoginDialog extends React.Component {
                         </DialogContentText>
                         <TextField
                             error={this.state.error}
+                            inputProps={{ maxLength: MAX_NAME }}
                             required
                             autoFocus
                             id="username"
@@ -113,6 +114,7 @@ class LoginDialog extends React.Component {
                         />
                         <TextField
                             error={this.state.error}
+                            inputProps={{ maxLength: MAX_PASSWORD }}
                             required
                             id="password"
                             label="password"

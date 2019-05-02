@@ -130,8 +130,6 @@ class AccountPage extends React.Component {
     }
 }
 
-/* TODO: actual account display */
-
 const mapStateToProps = (state) => {
     return {
         account: state.account.accountData

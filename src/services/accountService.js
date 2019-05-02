@@ -32,7 +32,6 @@ class AccountService extends BaseService {
         });
 
         if (!response.ok) {
-            console.log('get by username failed');
             throw new Error(await response.text());
 
         }
@@ -85,7 +84,8 @@ class AccountService extends BaseService {
     async recoverAccount(email) {
         const response = await fetch(`${host}/api/account/recover`, {
             method: 'POST',
-            body: JSON.stringify(email)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
         });
         console.log(email)
 
