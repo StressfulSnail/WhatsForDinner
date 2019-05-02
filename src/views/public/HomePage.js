@@ -48,15 +48,11 @@ class HomePage extends React.Component {
 
             <div className={classes.root}>
                 <UserNavBar pageName={`Welcome, ${account.firstName}!`} currentPath={HOME}/>
-                {Object.values(account).map( (item) => {
-                    return <Paper>{item}</Paper>;
-                }) }
             </div>
         );
     }
 }
 
-/* TODO: actual account display */
 
 const mapStateToProps = (state) => {
     return {
