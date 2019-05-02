@@ -8,4 +8,17 @@ class SharedRecipe extends Recipe{
         super();
         this.commentTree = new Array();
     }
+
+    addComment(newComment) {
+        this.commentTree.push(newComment);
+    }
+
+    removeComment(comment) {
+        for (var x = 0; x < this.commentTree.length; x++) {
+            if (this.commentTree[x].getName() === ingredientName) {
+                this.ingredientList.splice(x-1, 1);
+            }
+        }
+
+    }
 }
