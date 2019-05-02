@@ -34,7 +34,7 @@ beforeEach(() => {
 
 describe('account data converters', () => {
    it('can convert table object to modal', () => {
-      const output = accountService._tableToModel(table);
+      const output = accountService._tagTableToModel(table);
       expect(output.id).toEqual(modal.id);
       expect(output.email).toEqual(modal.email);
       expect(output.username).toEqual(modal.username);
@@ -48,7 +48,7 @@ describe('account data converters', () => {
    });
 
    it('can convert modal to table object', () => {
-      const output = accountService._modelToTable(modal);
+      const output = accountService._tagModelToTable(modal);
       expect(output).toEqual(table);
    });
 });

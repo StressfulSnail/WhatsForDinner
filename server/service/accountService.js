@@ -58,7 +58,6 @@ class AccountService {
     }
 
     async findByEmail(email) {
-        console.log(`serivce ${email}`)
         const accounts = await knex.select()
             .from('account')
             .where({ 'email': email });
@@ -123,17 +122,13 @@ class AccountService {
         await knex.delete()
             .from('account')
             .where({ 'account_id': id }); //not a lot of discussion here, just do it.
-
-        console.log("deletion performed");
     }
 
     async editAccount(account)
     {
         await knex.from('account')
             .where({ account_id: account.id })
-            .update(this._editToTable(account));
-
-        console.log("update attempt performed");
+            .update(this._modelToTable(account));
     }
 
     async changePassword(account)

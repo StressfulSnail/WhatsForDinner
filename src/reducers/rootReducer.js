@@ -4,11 +4,13 @@ import { reducer as reduxFormReducer } from 'redux-form';
 import accountReducer from './accountReducer';
 import mainReducer from "./mainReducer";
 import mealPlanReducer from "./mealPlanReducer";
+import recipeReducer from "./recipeReducer";
 
 export default (history) => combineReducers({
     router: connectRouter(history),
     main: mainReducer,
     account: accountReducer,
     mealPlans: mealPlanReducer,
-    form: reduxFormReducer
+    recipe: recipeReducer,
+    form: reduxFormReducer,
 });

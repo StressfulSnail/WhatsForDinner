@@ -14,9 +14,10 @@ import AccountRecoveryPage from './views/public/AccountRecoveryPage.js';
 import HomePage from './views/public/HomePage.js';
 import MealPlansPage from './views/public/MealPlansPage';
 import MealPlanPage from './views/public/MealPlanPage';
-import RecipePage from './views/public/MyCookbook';
+import RecipePage from './views/public/CookbookPage';
 import AccountPage from './views/public/AccountPage';
 import ErrorPage from './views/public/ErrorPage';
+import NewRecipePage from "./views/public/NewRecipePage";
 
 const LANDING = "/";
 const HOME = "/home";
@@ -65,7 +66,8 @@ class UIRoutes extends Component {
                             <Route path={RECOVER_ACCOUNT} component={AccountRecoveryPage} />
                             <PrivateRoute path={HOME} component={HomePage} />
                             <PrivateRoute path={ACCOUNT} component={AccountPage} />
-                            <PrivateRoute path={MY_COOKBOOK} component={RecipePage} />
+                            <PrivateRoute exact path={MY_COOKBOOK} component={RecipePage} />
+                            <PrivateRoute exact path={`${MY_COOKBOOK}/new-recipe`} component={NewRecipePage} />
                             <PrivateRoute exact path={MEAL_PLANS} component={MealPlansPage} />
                             <PrivateRoute exact path={`${MEAL_PLANS}/:id`} component={MealPlanPage} />
                             <Route component={ErrorPage} />

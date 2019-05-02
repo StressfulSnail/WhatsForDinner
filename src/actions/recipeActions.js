@@ -1,0 +1,2 @@
+
+export const RECIPES_LOADED = 'RECIPES_LOADED';

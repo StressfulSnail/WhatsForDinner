@@ -29,17 +29,17 @@ class RecipeService {
             caloric_est: recipeModel.caloricEstimate,
             taste_rating: recipeModel.tasteRating,
             difficulty_rating: recipeModel.difficultyRating,
-//            note: recipeModel.note                        Specific to PersonalRecipe
+           // note: recipeModel.note                        Specific to PersonalRecipe
         }
     }
 
-    _personalRecipeTable(recipeID, accountID) {
-        return { recipe_id: recipeID, account_id: accountID};
+    _personalRecipeTable(recipeID, accountID, note) {
+        return { recipe_id: recipeID, account_id: accountID, note: note };
     }
 
     async getRecipe(recipeID) {
         const recipes= await knex.select()
-            .from('Recipe')
+            .from('recipe')
             .where({ 'recipe_id': recipeID });
 
         return recipes.length === 0 ? null : this._recipeTableToModel(recipes[0]);
@@ -48,12 +48,13 @@ class RecipeService {
     async getPersonalRecipes(accountID){
         const recipes= await knex.select()
             .from('recipe')
-            .joinRaw('personal_recipe')
-            .where({'account_id': accountID});
-
-
-        //Returns an array of recipes eventually, right now only returns the first one found.
-        return recipes.length === 0 ? null : recipes;
+            .join('personal_recipe', 'recipe.recipe_id', '=', 'personal_recipe.recipe_id')
+            .where({ 'account_id': accountID });
+        return recipes.map(recipe => {
+            const recipeModel = this._recipeTableToModel(recipe);
+            recipeModel.note = recipe.note;
+            return recipeModel;
+        });
     }
 
     /**
@@ -110,45 +111,51 @@ class RecipeService {
         return recipes.account_id === accountID;
     }
 
-    async saveRecipe(Recipe, accountID) {
-        const recipeData = this._recipeModelToTable(Recipe);
+    async saveRecipe(recipe, accountID) {
+        const recipeData = this._recipeModelToTable(recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction(async (transaction) => {
             const recipeID = await transaction.insert(recipeData)
-                .into( 'Recipe')
+                .into( 'recipe')
                 .returning('recipe_id');
 
-            Recipe.setID(recipeID);
-            await transaction.insert(this._personalRecipeTable(recipeID, accountID))
+            recipe.setID(recipeID);
+            await transaction.insert(this._personalRecipeTable(recipeID, accountID, recipe.note))
                 .into('personal_recipe');
         });
 
     }
 
-    async savePublicRecipe(Recipe) {
-        const recipeData = this._recipeModelToTable(Recipe);
+    async savePublicRecipe(recipe) {
+        const recipeData = this._recipeModelToTable(recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction( async(transaction) => {
             const recipeID = await transaction.insert(recipeData)
-                .into('Recipe')
+                .into('recipe')
                 .returning('recipe_id');
+
+            recipe.setID(recipeID);
         })
     }
 
-    async deleteRecipe(Recipe, accountID) {
+    async deleteRecipe(RecipeID) {
+        await knex.delete()
+            .from('recipe_tag')
+            .where({'recipe_id' : RecipeID});
+
         await knex.delete()
             .from('personal_recipe')
-            .where({'recipe_id' : Recipe.getID()});
+            .where({'recipe_id' : RecipeID});
 
         await knex.delete()
             .from('ingredient_count')
-            .where({'recipe_id' : Recipe.getID()});
+            .where({'recipe_id' : RecipeID});
 
         await knex.delete()
             .from('recipe')
-            .where({'recipe_id' : Recipe.getID()});
+            .where({'recipe_id' : RecipeID});
 
     }
 
