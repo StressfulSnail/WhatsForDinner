@@ -84,7 +84,7 @@ class MealPlanService extends BaseService {
 
     async createMeal(token, mealPlanId, meal) {
         meal.recipes = meal.recipes.map(recipe => {
-            recipe.id = recipe.recipe_id;
+            recipe.id = recipe.id ? recipe.id : recipe.recipe_id;
             return recipe;
         });
         const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals`, {
@@ -99,6 +99,10 @@ class MealPlanService extends BaseService {
     }
 
     async saveMeal(token, mealPlanId, meal) {
+        meal.recipes = meal.recipes.map(recipe => {
+            recipe.id = recipe.id ? recipe.id : recipe.recipe_id;
+            return recipe;
+        });
         const response = await fetch(`${host}/api/mealplan/${mealPlanId}/meals/${meal.id}`, {
             headers: super.getHeaders(token),
             method: 'PUT',
