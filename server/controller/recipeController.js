@@ -178,7 +178,7 @@ class RecipeController {
         let ingredientList = new Array();
         const otherIngredientList = body.ingredientList;
 
-        ingredientList = await RecipeController.readIngredientList(ingredientList, otherIngredientList, response);
+        await RecipeController.readIngredientList(ingredientList, otherIngredientList, response);
 
         console.log(ingredientList);
 
@@ -203,20 +203,31 @@ class RecipeController {
             const note = body.note;
             recipe.note = note;
 
-        for(let x = 0; x < body.tags.length; x++) {
-            let tag = tagService.getTagByName(body.tags[x].name);
-            if(!tag) {
-                tag.setName(body.tags[x].name);
-                tag.setTagType(body.tags[x].tag_type);
-                await tagService.saveTag(tag);
+            let tagList = new Array();
+
+            for(let x = 0; x < body.tags.length; x++) {
+                let tag = await tagService.getTagByName(body.tags[x].name);
+                if(!tag) {
+                    tag = new Tag();
+                    await tag.setName(body.tags[x].name);
+                    await tag.setTagType(body.tags[x].tag_type);
+                    console.log(tag.getName());
+                    console.log(tag.getTagType());
+                    await tagService.saveTag(tag);
+                }
+                await tagList.push(tag);
             }
-        }
 
             await recipeService.savePublicRecipe(recipe);
 
             for (let x = 0; x < ingredientList.length; x++) {
                 const ingredientCount = ingredientList[x];
                 await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
+            }
+
+            for (let x = 0; x < tagList.length; x++) {
+                const tag = tagList[x];
+                await tagService.saveRecipeTag(tag.getTagID(), recipe.getID());
             }
 
             response.sendStatus(200);
@@ -228,20 +239,84 @@ class RecipeController {
 
     async editRecipe(request, response) {
         try {
-            const recipe = await recipeService.getRecipe(request.recipe_id);
+            console.log(request.body.recipe_id);
+            const recipeID = request.body.recipe_id;
+            const recipe = await recipeService.getRecipe(recipeID);
             if (!recipe) {
                 return response.sendStatus(404);
             }
-            recipe.name = request.body.name;
-            recipe.imageURL = request.body.imageURL;
+            if (!recipeService.checkValidRecipeCreator(recipe.getID(), request.account_id))
+            {
+                return response.sendStatus(404);
+            }
 
-            recipe.prepInstructions = request.body.prepInstructions;
-            recipe.prepTime = request.body.prepTime;
-            recipe.cookTime = request.body.cookTime;
-            recipe.caloricEstimate = request.body.caloricEstimate;
-            recipe.tasteRating = request.body.tasteRating;
-            recipe.difficultyRating = request.body.difficultyRating;
+            const {body} = request;
 
+            console.log("Past the checks");
+            if(body.name)
+                recipe.name = body.name;
+
+            if(body.imageURL)
+                recipe.imageURL = body.imageURL;
+
+            let ingredientList = new Array();
+            const otherIngredientList = body.ingredientList;
+
+            if(body.ingredientList != null)
+                await RecipeController.readIngredientList(ingredientList, otherIngredientList, response);
+
+
+            let tagList = new Array();
+
+            if(body.tags != null) {
+                for (let x = 0; x < body.tags.length; x++) {
+                    let tag = await tagService.getTagByName(body.tags[x].name);
+                    if (!tag) {
+                        tag = new Tag();
+                        await tag.setName(body.tags[x].name);
+                        await tag.setTagType(body.tags[x].tag_type);
+                        await tagService.saveTag(tag);
+                    }
+                    await tagList.push(tag);
+                }
+            }
+
+            if(body.prepInstructions)
+                recipe.prepInstructions = body.prepInstructions;
+
+            if(body.prepTime)
+                recipe.prepTime = body.prepTime;
+
+            if(body.cookTime)
+                recipe.cookTime = body.cookTime;
+
+            if(body.caloricEstimate)
+                recipe.caloricEstimate = body.caloricEstimate;
+
+            if(body.tasteRating)
+                recipe.tasteRating = body.tasteRating;
+
+            if(body.difficultyRating)
+                recipe.difficultyRating = body.difficultyRating;
+
+
+            await recipe.setIngredients(ingredientList);
+            await recipe.setTags(tagList);
+
+            await recipeService.removeIngredientCounts(recipe.getID());
+            await recipeService.removeTags(recipe.getID());
+
+            for (let x = 0; x < ingredientList.length; x++) {
+                const ingredientCount = ingredientList[x];
+                await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
+            }
+
+            for (let x = 0; x < tagList.length; x++) {
+                const tag = tagList[x];
+                await tagService.saveRecipeTag(tag.getTagID(), recipe.getID());
+            }
+
+            console.log("Entering edit recipe");
             await recipeService.editRecipe(recipe);
             response.sendStatus(200);
         } catch(e) {

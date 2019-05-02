@@ -163,9 +163,38 @@ router.post('/addCount', passport.authenticate('jwt', { session: false }), recip
 router.delete('/delete', passport.authenticate('jwt', { session: false }), recipeController.deleteRecipe);
 
 /**
- * POST /api/recipe/edit
- * Edit Recipe
+ * POST /api/recipe/edit'
+ * Create a new shared recipe
+ * Body {
+ *      recipe_id : int
+ *      name: string
+ *      imageURL: string
  *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
+ *
+ *      prepInstructions: string
+ *      prepTime: int
+ *      cookTime: int
+ *      caloricEstimate: int
+ *      tasteRating: int
+ *      difficultyRating: int
+ *
+ *      tags: [
+ *          {
+ *              tag_id: int
+ *              tag_name: string
+ *          }
+ *      ]
+ *
+ * *    note: string
+
+ * }
  */
 router.post('/edit', passport.authenticate('jwt', { session: false }), recipeController.editRecipe);
 

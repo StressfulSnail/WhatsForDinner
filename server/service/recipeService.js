@@ -38,6 +38,7 @@ class RecipeService {
     }
 
     async getRecipe(recipeID) {
+        console.log(recipeID);
         const recipes= await knex.select()
             .from('recipe')
             .where({ 'recipe_id': recipeID });
@@ -138,6 +139,26 @@ class RecipeService {
 
             recipe.setID(recipeID);
         })
+    }
+
+    async editRecipe(recipe) {
+        await knex.from('recipe')
+            .where({'recipe_id' : recipe.getID()})
+            .update(this._recipeModelToTable(recipe));
+
+        console.log("update attempt performed");
+    }
+
+    async removeIngredientCounts(RecipeID) {
+        await knex.delete()
+            .from('ingredient_count')
+            .where({'recipe_id' : RecipeID});
+    }
+
+    async removeTags(RecipeID) {
+        await knex.delete()
+            .from('recipe_tag')
+            .where({'recipe_id' : RecipeID});
     }
 
     async deleteRecipe(RecipeID) {
