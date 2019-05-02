@@ -1,12 +1,24 @@
 import React from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper } from "@material-ui/core";
-import EditAccountForm from "./EditAccountForm";
 import AccountService from "../services/accountService";
-import { LOAD_ACCOUNT } from "../actions/accountActions";
+import { withRouter } from "react-router-dom";
 import connect from "react-redux/es/connect/connect";
 import SuccessOrErrorDialog from "./common/SuccessOrErrorDialogue";
+import { LOGOUT } from "../actions/accountActions";
+import {LANDING} from "../UIRoutes";
+import { red } from "@material-ui/core/colors";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 
-class EditAccountDialog extends React.Component {
+const styles = {
+    cssRoot: {
+        backgroundColor: red[700],
+        '&:hover': {
+            backgroundColor: [900]
+        }
+    }
+};
+
+class DeleteAccountDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,6 +27,7 @@ class EditAccountDialog extends React.Component {
             error: false,
             resultsHeader: "",
             resultsMessage: "",
+            deleted: false,
         };
     };
 
@@ -28,67 +41,77 @@ class EditAccountDialog extends React.Component {
 
     handleResultsClose = () => {
         this.setState({ resultsOpen: false });
+        if (this.state.deleted === true) {
+            this.props.dispatchLogout();
+            this.props.history.push(LANDING);
+        }
     };
 
-    submit = (values) => {
-        const { username, email, firstName, lastName, middleName } = values;
+    deleteAccount = () => {
+
         const { token, account } = this.props;
 
-        AccountService.editAccount(token, account.id, username, email, firstName, lastName, middleName)
+        AccountService.deleteAccount(token, account.id)
             .then( () => {
-                return AccountService.getAccountByID(token, account.id);
-            })
-            .then( (account) => {
-                this.props.dispatchLoadAccount(account);
-                this.handleClose();
                 this.setState({
                     resultsOpen: true,
                     error: false,
-                    resultsHeader: "Success!",
-                    resultsMessage: "Account updated successfully!"
+                    resultsHeader: "Account Deleted",
+                    resultsMessage: "",
+                    deleted: true
                 });
+                this.handleClose();
             })
             .catch( (error) => {
+                console.log(error.message);
                 this.setState({
                     resultsOpen: true,
                     error: true,
-                    resultsHeader: "Error",
+                    resultsHeader: "Delete Account Failed",
                     resultsMessage: error.message
                 });
+                this.handleClose();
             });
     };
 
     render() {
 
         const { resultsOpen, error, resultsHeader, resultsMessage } = this.state;
+        const { classes } = this.props;
 
         return (
             <div>
                 <Button
                     variant="contained"
                     color="primary"
+                    className={classes.cssRoot}
                     size="small"
                     onClick={this.handleClickOpen}
                 >
-                    Edit Account
+                    Delete Account
                 </Button>
                 <Dialog
                     open={this.state.open}
                     onClose={this.handleClose}
-                    aria-labelledby="edit-account-dialog"
+                    aria-labelledby="delete-account-dialog"
                 >
-                    <DialogTitle id="edit-account-dialog">Edit Account</DialogTitle>
+                    <DialogTitle id="delete-account-dialog">Delete Account</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Change your account details here
+                            Are you sure you want to delete your account?
                         </DialogContentText>
-                        <Paper>
-                            <EditAccountForm onSubmit={this.submit} />
-                        </Paper>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
+                        </Button>
+                        <Button
+                            onClick={this.deleteAccount}
+                            variant="contained"
+                            color="primary"
+                            className={classes.cssRoot}
+                        >
+                            DELETE
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -111,13 +134,14 @@ const mapStateToProps = (state) => {
     }
 };
 
-
 const mapActionsToProps = (dispatch) => {
     return {
-        dispatchLoadAccount: (accountData) => dispatch({type: LOAD_ACCOUNT, payload: { accountData } })
+        dispatchLogout: () => dispatch({ type: LOGOUT })
     }
 };
 
-const connected = connect(mapStateToProps, mapActionsToProps)(EditAccountDialog);
+const styled = withStyles(styles)(DeleteAccountDialog);
 
-export default connected;
+const connected = connect(mapStateToProps, mapActionsToProps)(styled);
+
+export default withRouter(connected);

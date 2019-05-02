@@ -37,9 +37,7 @@ class AccountService extends BaseService {
 
         }
         const json = await response.json();
-        console.log(json);
         let item = JSON.parse(json);
-        console.log("parsed");
         return item;
     }
 
@@ -56,9 +54,7 @@ class AccountService extends BaseService {
 
         }
         const json = await response.json();
-        console.log(json);
         let item = JSON.parse(json);
-        console.log("parsed");
         return item;
     }
 
@@ -70,7 +66,7 @@ class AccountService extends BaseService {
         });
 
         if (!response.ok) {
-            throw new Error('Account not edited');
+            throw new Error(await response.text());
         }
     }
 
@@ -82,7 +78,43 @@ class AccountService extends BaseService {
         });
 
         if (!response.ok) {
-            throw new Error('Account not created');
+            throw new Error(await response.text());
+        }
+    }
+
+    async recoverAccount(email) {
+        const response = await fetch(`${host}/api/account/recover`, {
+            method: 'POST',
+            body: JSON.stringify(email)
+        });
+        console.log(email)
+
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
+
+    async changePassword(token, id, password) {
+        const response = await fetch(`${host}/api/account/change`, {
+            method: 'POST',
+            headers: super.getHeaders(token),
+            body: JSON.stringify({ id, password }),
+        });
+
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
+
+    async deleteAccount(token, id) {
+        const response = await fetch(`${host}/api/account/delete`, {
+            method: 'DELETE',
+            headers: super.getHeaders(token),
+            user: JSON.stringify(id),
+        });
+
+        if (!response.ok) {
+            throw new Error(await response.text());
         }
     }
 }

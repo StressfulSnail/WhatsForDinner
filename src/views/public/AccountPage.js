@@ -8,6 +8,8 @@ import { Card, CardActions, CardContent, Paper, Typography, withStyles } from '@
 import UserNavBar from '../../components/common/UserNavBar';
 import {HOME} from "../../UIRoutes";
 import EditAccountDialog from "../../components/EditAccountDialog";
+import ChangePasswordDialog from "../../components/ChangePasswordDialog";
+import DeleteAccountDialog from "../../components/DeleteAccountDialog";
 
 /**
  * Styles for this component
@@ -118,6 +120,8 @@ class AccountPage extends React.Component {
                         </CardContent>
                         <CardActions>
                             <EditAccountDialog />
+                            <ChangePasswordDialog />
+                            <DeleteAccountDialog />
                         </CardActions>
                     </Card>
                 </Paper>

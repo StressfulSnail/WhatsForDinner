@@ -23,8 +23,13 @@ module.exports = {
         message: 'ERROR_CANNOT_FIND_EMAIL',
     },
 
+    accountNotFound: {
+        status: 404,
+        message: 'ERROR_ACCOUNT_NOT_FOUND',
+    },
+
     serverError: {
         status: 500,
-        message: 'ERROR_SERVER_ANSYC_FAILED'
+        message: 'SERVER_ERROR'
     }
 };

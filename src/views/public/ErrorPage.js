@@ -44,7 +44,7 @@ function ErrorPage(props) {
             </Toolbar>
             <br />
             <Paper>
-                <Typography variant="h6" color="red" className={classes.grow}>
+                <Typography variant="h6" color="error" className={classes.grow}>
                     {errorText ? errorText : "404: Page not found"}
                 </Typography>
             </Paper>

@@ -5,7 +5,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import customStore, { history } from './customStore';
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { green, deepOrange } from "@material-ui/core/colors";
+import { green, deepOrange, red } from "@material-ui/core/colors";
 import LoadingIndicator from "./components/common/LoadingIndicator";
 import PrivateRoute from "./components/common/PrivateRoute";
 import LandingPage from './views/public/LandingPage.js';
@@ -30,6 +30,7 @@ const store = customStore();
 
 const darkGreen = green[900];
 const darkOrange = deepOrange[600];
+const errorRed = red[500];
 
 const theme = createMuiTheme({
     palette: {
@@ -38,6 +39,9 @@ const theme = createMuiTheme({
         },
         secondary: {
             main: darkOrange
+        },
+        error: {
+            main: errorRed
         },
         background: {
             default: darkOrange

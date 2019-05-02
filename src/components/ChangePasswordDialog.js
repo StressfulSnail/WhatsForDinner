@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper } from "@material-ui/core";
-import EditAccountForm from "./EditAccountForm";
+import ChangePasswordForm from "./ChangePasswordForm";
 import AccountService from "../services/accountService";
-import { LOAD_ACCOUNT } from "../actions/accountActions";
+
 import connect from "react-redux/es/connect/connect";
 import SuccessOrErrorDialog from "./common/SuccessOrErrorDialogue";
 
@@ -31,30 +31,28 @@ class EditAccountDialog extends React.Component {
     };
 
     submit = (values) => {
-        const { username, email, firstName, lastName, middleName } = values;
+        const { newPassword } = values;
         const { token, account } = this.props;
 
-        AccountService.editAccount(token, account.id, username, email, firstName, lastName, middleName)
+        AccountService.changePassword(token, account.id, newPassword)
             .then( () => {
-                return AccountService.getAccountByID(token, account.id);
-            })
-            .then( (account) => {
-                this.props.dispatchLoadAccount(account);
-                this.handleClose();
                 this.setState({
                     resultsOpen: true,
                     error: false,
                     resultsHeader: "Success!",
-                    resultsMessage: "Account updated successfully!"
+                    resultsMessage: "Password changed successfully!"
                 });
+               this.handleClose();
             })
             .catch( (error) => {
+                console.log(error.message);
                 this.setState({
                     resultsOpen: true,
                     error: true,
-                    resultsHeader: "Error",
+                    resultsHeader: "Password change failed",
                     resultsMessage: error.message
                 });
+                this.handleClose();
             });
     };
 
@@ -70,20 +68,20 @@ class EditAccountDialog extends React.Component {
                     size="small"
                     onClick={this.handleClickOpen}
                 >
-                    Edit Account
+                    Change Password
                 </Button>
                 <Dialog
                     open={this.state.open}
                     onClose={this.handleClose}
-                    aria-labelledby="edit-account-dialog"
+                    aria-labelledby="change-password-dialog"
                 >
-                    <DialogTitle id="edit-account-dialog">Edit Account</DialogTitle>
+                    <DialogTitle id="change-password-dialog">Edit Account</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Change your account details here
+                            Enter your new password
                         </DialogContentText>
                         <Paper>
-                            <EditAccountForm onSubmit={this.submit} />
+                            <ChangePasswordForm onSubmit={this.submit} />
                         </Paper>
                     </DialogContent>
                     <DialogActions>
@@ -111,13 +109,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-
-const mapActionsToProps = (dispatch) => {
-    return {
-        dispatchLoadAccount: (accountData) => dispatch({type: LOAD_ACCOUNT, payload: { accountData } })
-    }
-};
-
-const connected = connect(mapStateToProps, mapActionsToProps)(EditAccountDialog);
+const connected = connect(mapStateToProps, null)(EditAccountDialog);
 
 export default connected;
