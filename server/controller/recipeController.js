@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
 const recipeService = require('../service/recipeService');
 const ingredientService = require('../service/ingredientService');
+const tagService = require('../service/tagService');
 const Recipe = require ('../model/Recipe');
 const PersonalRecipe = require('../model/PersonalRecipe');
 const Ingredient = require('../model/Ingredient');
 const MeasurementUnit = require('../model/MeasurementUnit');
 const IngredientCount = require('../model/IngredientCount');
+const Tag = require('../model/Tag');
 //const RecipeBook = require('../model/RecipeBook');
 const errorResponses = require('./errorResponses');
 
@@ -16,6 +18,11 @@ class RecipeController {
             const account = request.user;
             const recipeID = request.body.recipe_id;
             const recipe = await recipeService.getRecipe(recipeID);
+
+            if(!recipeService.checkValidRecipeCreator(recipe.getID(), account.getID())) {
+                return response.sendStatus(404);
+            }
+
             if (!recipe) {
                 return response.sendStatus(404);
             }
@@ -53,9 +60,29 @@ class RecipeController {
             //const validImageURL = Fill this in later
 
             //Check for Duplicates here if necessary
-            const ingredientList = new Array();
+            let ingredientList = new Array();
+            const otherIngredientList = body.ingredientList;
 
-            await this.readIngredientList(ingredientList, body.ingredientList, response);
+            for(let x = 0; x < otherIngredientList.length; x++) {
+                const ingredient = await ingredientService.getIngredientByName(otherIngredientList[x].ingredient_name);
+                if (!ingredient) {
+                    ingredient.setName(otherIngredientList[x].ingredient_name);
+                    await ingredientService.saveIngredient(ingredient);
+                }
+
+                const measurementUnit = await ingredientService.getMeasurementByName(otherIngredientList[x].measurementUnit);
+
+                if (!measurementUnit) {
+                    response.sendStatus(404);
+                }
+                const ingredientCount = new IngredientCount();
+
+                await ingredientCount.setIngredient(ingredient);
+                await ingredientCount.setMeasurement(otherIngredientList[x].measurement);
+                await ingredientCount.setMeasurementUnit(measurementUnit);
+
+                await ingredientList.push(ingredientCount);
+            }
 
             const prepInstructions = body.prepInstructions;
             recipe.prepInstructions = prepInstructions;
@@ -75,12 +102,20 @@ class RecipeController {
             const difficultyRating = body.difficultyRating;
             recipe.difficultyRating = difficultyRating;
 
+            const tagList = new Array();
 
-            /* Tag method, to fill in later.
             for(let x = 0; x < body.tags.length; x++) {
-
+                let tag = await tagService.getTagByName(body.tags[x].tag_name)
+                if(!tag) {
+                    tag = new Tag();
+                    await tag.setName(body.tags[x].tag_name);
+                    await tag.setTagType(body.tags[x].tag_type);
+                    console.log(tag.getName());
+                    console.log(tag.getTagType());
+                    await tagService.saveTag(tag);
+                }
+                await tagList.push(tag);
             }
-            */
 
             const note = body.note;
             recipe.setNote(note);
@@ -92,6 +127,11 @@ class RecipeController {
                 await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
             }
 
+            for (let x = 0; x < tagList.length; x++) {
+                const tag = tagList[x];
+                await tagService.saveRecipeTag(tag.getTagID(), recipe.getID());
+            }
+
             response.sendStatus(200);
         } catch (e) {
             console.error(e);
@@ -99,13 +139,32 @@ class RecipeController {
         }
     }
 
-    async getSharedRecipes(request, response) {
+    async getSharedRecipe(request, response) {
+        try {
+            const recipeID = request.body.recipe_id;
+            const recipe = await recipeService.getRecipe(recipeID);
 
+            if (!recipe) {
+                return response.sendStatus(404);
+            }
+            await ingredientService.getRecipeIngredientCounts(recipe);
+            response.send(recipe);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
+        }
     }
 
     async searchSharedRecipes(request, response){
 
     }
+
+    /**
+     * Pretty much the same thing as createPersonalRecipe. Doesn't require an account to use.
+     * @param request
+     * @param response
+     * @returns {Promise<void>}
+     */
 
     async createSharedRecipe(request, response){
         const {body} = request;
@@ -117,9 +176,12 @@ class RecipeController {
         //const validImageURL = Fill this in later
 
         //Check for Duplicates here if necessary
-        const ingredientList = new Array();
+        let ingredientList = new Array();
+        const otherIngredientList = body.ingredientList;
 
-        await this.readIngredientList(ingredientList, body.ingredientList, response);
+        ingredientList = await RecipeController.readIngredientList(ingredientList, otherIngredientList, response);
+
+        console.log(ingredientList);
 
         const prepInstructions = body.prepInstructions;
         recipe.prepInstructions = prepInstructions;
@@ -140,11 +202,14 @@ class RecipeController {
         recipe.difficultyRating = difficultyRating;
 
 
-        /* Tag method, to fill in later.
         for(let x = 0; x < body.tags.length; x++) {
-
+            let tag = tagService.getTagByName(body.tags[x].tag_name)
+            if(!tag) {
+                tag.setName(body.tags[x].tag_name);
+                tag.setTagType(body.tags[x].tag_type);
+                await tagService.saveTag(tag);
+            }
         }
-        */
 
         await recipeService.savePublicRecipe(recipe);
 
@@ -229,33 +294,42 @@ class RecipeController {
     }
 
     /**For internal use, simplifying the reading of ingredients lists
+     * Does not work at the moment
      * Parameters passed:
      * 1:New ingredient list to create
      * 2: Other ingredient list to read
      * 3: Response to use to send.
-     */
-    async readIngredientList(newIngredientList, otherIngredientList, response)
+     *
+    static readIngredientList(newIngredientList, otherIngredientList, response)
     {
-        for(let x = 0; x < otherIngredientList.length; x++) {
-            const ingredient = await ingredientService.getIngredientByName(otherIngredientList[x].ingredient_name);
-            if (!ingredient) {
-                ingredient.setName(otherIngredientList[x].ingredient_name);
-                await ingredientService.saveIngredient(ingredient);
-            }
-            const measurementUnit = await ingredientService.getMeasurementByName(otherIngredientList[x].measurementUnit);
-            console.log(measurementUnit.getID());
-            if (!measurementUnit) {
-                response.sendStatus(404);
-            }
-            const ingredientCount = new IngredientCount();
+        try {
+            for(let x = 0; x < otherIngredientList.length; x++) {
+                const ingredient = ingredientService.getIngredientByName(otherIngredientList[x].ingredient_name);
+                if (!ingredient) {
+                     ingredient.setName(otherIngredientList[x].ingredient_name);
+                     ingredientService.saveIngredient(ingredient);
+                }
 
-            await ingredientCount.setIngredient(ingredient);
-            await ingredientCount.setMeasurement(otherIngredientList[x].measurement);
-            await ingredientCount.setMeasurementUnit(measurementUnit);
+                const measurementUnit = ingredientService.getMeasurementByName(otherIngredientList[x].measurementUnit);
 
-            await newIngredientList.push(ingredientCount);
+                if (!measurementUnit) {
+                    response.sendStatus(404);
+                }
+                const ingredientCount = new IngredientCount();
+
+                ingredientCount.setIngredient(ingredient);
+                ingredientCount.setMeasurement(otherIngredientList[x].measurement);
+                ingredientCount.setMeasurementUnit(measurementUnit);
+
+                newIngredientList.push(ingredientCount);
+        }
+    } catch(e) {
+           console.error(e);
+           response.sendStatus(500);
         }
     }
+    */
+
 }
 
 module.exports = new RecipeController();

@@ -29,7 +29,7 @@ const recipeController = require('../controller/recipeController');
  *      difficultyRating: int
  *      tags: [
  *          {
- *              tag_id: int
+ *              tag_type: string
  *              tag_name: string
  *          }
  *      ]
@@ -63,7 +63,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), recipeControll
  *
  *      tags: [
  *          {
- *              tag_id: int
+ *              tag_type: string
  *              tag_name: string
  *          }
  *      ]
@@ -102,6 +102,11 @@ router.post('/', passport.authenticate('jwt', { session: false }), recipeControl
  *          }
  *      ]
  *
+ *      commentTree: [
+ *          {
+ *              comment: string
+ *          }
+ *      ]
  * }
  */
 router.post('/shared', recipeController.createSharedRecipe);
