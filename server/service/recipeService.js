@@ -140,18 +140,22 @@ class RecipeService {
         })
     }
 
-    async deleteRecipe(Recipe, accountID) {
+    async deleteRecipe(RecipeID) {
+        await knex.delete()
+            .from('recipe_tag')
+            .where({'recipe_id' : RecipeID});
+
         await knex.delete()
             .from('personal_recipe')
-            .where({'recipe_id' : Recipe.getID()});
+            .where({'recipe_id' : RecipeID});
 
         await knex.delete()
             .from('ingredient_count')
-            .where({'recipe_id' : Recipe.getID()});
+            .where({'recipe_id' : RecipeID});
 
         await knex.delete()
             .from('recipe')
-            .where({'recipe_id' : Recipe.getID()});
+            .where({'recipe_id' : RecipeID});
 
     }
 

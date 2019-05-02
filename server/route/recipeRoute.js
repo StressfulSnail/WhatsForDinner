@@ -158,6 +158,7 @@ router.post('/addCount', passport.authenticate('jwt', { session: false }), recip
  * DELETE /api/recipe/delete
  * Delete Recipe
  *
+ * Requires: recipe_id
  */
 router.delete('/delete', passport.authenticate('jwt', { session: false }), recipeController.deleteRecipe);
 
