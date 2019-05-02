@@ -13,13 +13,21 @@ class AccountController {
         try {
             const account = await accountService.getAccount(request.user.id);
             if (!account) {
-                return response.sendStatus(404);
+                const { status, message } = errorResponses.accountNotFound;
+                return response.status(status).send(message);  //404 means we can't find it!
             }
-            account.password = null;
-            response.send(account);
+            account.password = "";
+            const json = JSON.stringify(account, (key, value) => {
+                if (value === null) {
+                    return "";
+                }
+                return value;
+            });
+            return response.json(json);
         } catch (e) {
             console.error(e);
-            response.sendStatus(500);
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
         }
     }
 
@@ -41,7 +49,7 @@ class AccountController {
         } catch (e) {
             console.error(e);
             const { status, message } = errorResponses.serverError;
-            response.status(status).send(message);
+            return response.status(status).send(message);
         }
     }
 
@@ -88,7 +96,8 @@ class AccountController {
             response.sendStatus(200);
         } catch (e) {
             console.error(e);
-            response.sendStatus(500);
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
         }
     }
 
@@ -102,7 +111,8 @@ class AccountController {
             response.redirect('/');
         } catch (e) {
             console.error(e);
-            response.sendStatus(500);
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
         }
     }
 
@@ -126,10 +136,12 @@ class AccountController {
 
     async recoverUser(request, response) {
         try {
+            console.log("start recover")
             const account = await accountService.findByEmail(request.body.email);
 
             if (!account) {
-                return response.sendStatus(404);
+                const { status, message } = errorResponses.accountNotFound;
+                return response.status(status).send(message);  //404 means we can't find it!
             }
 
             const newPassword = uuidv4(); // generate random password
@@ -137,10 +149,13 @@ class AccountController {
             await accountService.editAccount(account);
             emailService.sendRecovery(account.email, newPassword);
 
+            console.log("emailed");
+
             return response.sendStatus(200);
         } catch (e) {
             console.error(e);
-            response.sendStatus(500);
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
         }
     }
 
@@ -149,33 +164,36 @@ class AccountController {
             const account = await accountService.getAccount(request.user.id);
             if (!account)
             {
-                return response.sendStatus(404);  //404 means we dcan't find it!
+                const { status, message } = errorResponses.accountNotFound;
+                return response.status(status).send(message);  //404 means we can't find it!
             }
             await accountService.deleteAccount(account.id);
             response.sendStatus(200); //200 is OK!
         } catch (e) {
             console.error(e);
-            response.sendStatus(500); //500 is a problem!
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
         }
     }
 
     async editAccount(request, response)
     {
-        try
-        {
+        try {
 
             const account = await accountService.getAccount(request.user.id);
             if (!account)
                 {
-                return response.sendStatus(404);  //404 means we dcan't find it!
+                    const { status, message } = errorResponses.accountNotFound;
+                    return response.sendStatus(status).send(message);  //404 means we dcan't find it!
                 }
+
+
             account.id = request.user.id;
             account.email = request.body.email;
             account.username = request.body.username;
             account.firstName = request.body.firstName;
             account.middleName = request.body.middleName;
             account.lastName = request.body.lastName;
-            account.setHashedPassword(request.body.password);
 
             const duplicateEmail = await accountService.findByEmail(account.email);
             const duplicateUsername = await accountService.findByUsername(account.username);
@@ -198,11 +216,35 @@ class AccountController {
         catch (e)
         {
             console.error(e);
-            response.sendStatus(500);
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
         }
     }
 
+    async changePassword(request, response)
+    {
+        try {
 
+            const account = await accountService.getAccount(request.body.id);
+            if (!account)
+            {
+                const { status, message } = errorResponses.accountNotFound;
+                return response.status(status).send(message);  //404 means we can't find it!
+            }
+
+            account.id = request.body.id;
+            account.setHashedPassword(request.body.password);
+
+            await accountService.changePassword(account);
+            response.sendStatus(200);
+        }
+        catch (e)
+        {
+            console.error(e);
+            const { status, message } = errorResponses.serverError;
+            return response.status(status).send(message);
+        }
+    }
 
 }
 

@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { LOAD_ACCOUNT } from "../../actions/accountActions";
-import { Paper, withStyles } from '@material-ui/core';
+import { Card, CardActions, CardContent, Paper, Typography, withStyles } from '@material-ui/core';
 import UserNavBar from '../../components/common/UserNavBar';
 import {HOME} from "../../UIRoutes";
+import EditAccountDialog from "../../components/EditAccountDialog";
+import ChangePasswordDialog from "../../components/ChangePasswordDialog";
+import DeleteAccountDialog from "../../components/DeleteAccountDialog";
 
 /**
  * Styles for this component
@@ -19,9 +22,19 @@ const styles = {
     grow: {
         flexGrow: 1,
     },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
+    container: {
+      margin: 12
+    },
+    card: {
+        minWidth: 275,
+    },
+
+    header: {
+        fontSize: 14,
+        marginTop: 12
+    },
+    pos: {
+        marginTop: 12
     }
 };
 
@@ -48,9 +61,70 @@ class AccountPage extends React.Component {
 
             <div className={classes.root}>
                 <UserNavBar pageName={`${account.firstName}'s Account`} currentPath={HOME}/>
-                {Object.values(account).map( (item) => {
-                    return <Paper>{item}</Paper>;
-                }) }
+                <Paper className={classes.container} >
+                    <Card className={classes.card} >
+                        <CardContent>
+
+                            <Typography variant="h5" component="h2">
+                                Account Details:
+                            </Typography>
+
+                            <Typography className={classes.header} color="textSecondary" gutterBottom>
+                                Username:
+                            </Typography>
+
+                            <Typography component="p">
+                                {account.username}
+                            </Typography>
+
+                            <Typography className={classes.pos} color="textSecondary">
+                                Email Address:
+                            </Typography>
+
+                            <Typography component="p">
+                                {account.email}
+                            </Typography>
+
+                            <Typography className={classes.pos} color="textSecondary">
+                                First Name:
+                            </Typography>
+
+                            <Typography component="p">
+                                {account.firstName}
+                            </Typography>
+
+                            <Typography className={classes.pos} color="textSecondary">
+                                Last Name:
+                            </Typography>
+
+                            <Typography component="p">
+                                {account.lastName}
+                            </Typography>
+
+                            <Typography className={classes.pos} color="textSecondary">
+                                Middle Name:
+                            </Typography>
+
+                            <Typography component="p">
+                                {account.middleName}
+                            </Typography>
+
+                            <Typography className={classes.pos} color="textSecondary">
+                                Subscription:
+                            </Typography>
+
+                            <Typography component="p">
+                                {account.subscriptionLevel ? "free" : "paid"}
+                            </Typography>
+
+                        </CardContent>
+                        <CardActions>
+                            <EditAccountDialog />
+                            <ChangePasswordDialog />
+                            <DeleteAccountDialog />
+                        </CardActions>
+                    </Card>
+                </Paper>
             </div>
         );
     }

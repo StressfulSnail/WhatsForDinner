@@ -1,61 +1,110 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import { Link } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
+import RecoverAccountForm from "../../components/RecoverAccountForm";
+import AccountService from "../../services/accountService";
+import SuccessOrErrorDialog from "../../components/common/SuccessOrErrorDialogue";
 
-/**
- * Styles for this component
- * @type {{grow: {flexGrow: number}, root: {flexGrow: number}, menuButton: {marginRight: number, marginLeft: number}}}
- */
-const styles = {
+const styles = (theme) => ({
     root: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     grow: {
-        flexGrow: 1,
+        flexGrow: 1
     },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
+    container: {
+        display: "flex",
+        flexWrap: "wrap"
+    },
+    input: {
+        margin: theme.spacing.unit
     }
-};
+});
 
-// Prevents collisions with properties
-const HomeLink = (props) => <Link to="/" {...props} />;
+// Avoid properties collisions
+const HomeLink = props => <Link to="/" {...props} />;
 
-/**
- * This class represents the Account Recovery Page.  Currently unfinished and here to test routing.
- * @param props
- * @returns {*}
- * @constructor
- */
-function AccountRecoveryPage(props) {
-    const { classes } = props;
-    return (
-        <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" color="inherit" className={classes.grow}>
-                        Recover Account
-                    </Typography>
-                    <Button color="inherit" component={HomeLink}>Home</Button>
-                </Toolbar>
-            </AppBar>
-        </div>
-    );
+class AccountRecoveryPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            resultsOpen: false,
+            error: false,
+            resultsHeader: "",
+            resultsMessage: ""
+        }
+    }
+
+    handleClose = () => {
+        this.setState({
+            resultsOpen: false,
+        });
+    };
+
+    submit = (values) => {
+        const { email } = values;
+        console.log(email)
+        AccountService.recoverAccount(email)
+            .then( () => {
+                this.setState({
+                    resultsOpen: true,
+                    error: false,
+                    resultsHeader: "Account Found",
+                    resultsMessage: "Check your email address for account for temporary password"
+                });
+            })
+            .catch( (error) => {
+                this.setState({
+                    resultsOpen: true,
+                    error: true,
+                    resultsHeader: "Error",
+                    resultsMessage: error.message
+                });
+            });
+    };
+
+    render() {
+
+        const { classes } = this.props;
+        const { resultsOpen, error, resultsHeader, resultsMessage } = this.state;
+
+        return (
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <Typography variant="h6" color="inherit" className={classes.grow}>
+                            Create Account!
+                        </Typography>
+                        <Button color="inherit" component={HomeLink}>
+                            Home
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <Paper>
+                    <RecoverAccountForm onSubmit={this.submit}/>
+                </Paper>
+                <SuccessOrErrorDialog
+                    open={resultsOpen}
+                    error={error}
+                    resultsHeader={resultsHeader}
+                    resultsMessage={resultsMessage}
+                    handleClose={this.handleClose}
+                />
+            </div>
+        );
+    }
 }
 
 AccountRecoveryPage.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
+
+
 
 export default withStyles(styles)(AccountRecoveryPage);

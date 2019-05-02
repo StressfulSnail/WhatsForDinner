@@ -21,6 +21,21 @@ const accountController = require('../controller/accountController');
  */
 router.get('/', passport.authenticate('jwt', { session: false }), accountController.getAccountById);
 
+/**
+ * GET /api/account/find/
+ * Get account details
+ * Returns {
+ *      email: string
+ *      username: string
+ *      password: string
+ *      firstName: string
+ *      middleName: string
+ *      lastName: string
+ *      paymentInfo: string
+ *      subscriptionLevel: int
+ *      confirmed: boolean
+ * }
+ */
 router.get('/find', passport.authenticate('jwt', { session: false }), accountController.getAccountByUserName);
 
 /**
@@ -38,7 +53,7 @@ router.get('/find', passport.authenticate('jwt', { session: false }), accountCon
 router.post('/', accountController.createAccount);
 
 /**
- * Get /api/account/confirm/:invitationId
+ * GET /api/account/confirm/:invitationId
  * Confirm account with invitation key
  */
 router.get('/confirm/:invitationId', accountController.confirmAccount);
@@ -72,10 +87,28 @@ router.delete('/delete', passport.authenticate ('jwt', {session: false }), accou
 /**
  * POST /api/account/edit
  * Edit Account
+ * Body {
+ *      id: string
+ *      email: string
+ *      username: string
+ *      firstName: string
+ *      middleName: string
+ *      lastName: string
+ * }
  *
  */
 router.post('/edit', passport.authenticate ('jwt', {session: false }), accountController.editAccount);
 
+/**
+ * POST /api/account/change
+ * Edit Account
+ * Body {
+ *      id: string
+ *      password: string
+ * }
+ *
+ */
+router.post('/change', passport.authenticate ('jwt', {session: false }), accountController.changePassword);
 
 
 module.exports = router;

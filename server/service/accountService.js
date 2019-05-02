@@ -33,6 +33,22 @@ class AccountService {
         }
     }
 
+    _editToTable(editModel) {
+        return {
+            email: editModel.email,
+            username: editModel.username,
+            first_name: editModel.firstName,
+            middle_name: editModel.middleName,
+            last_name: editModel.lastName
+        }
+    }
+
+    _passToTable(model) {
+        return {
+            password: model.password
+        }
+    }
+
     async getAccount(id) {
         const accounts = await knex.select()
             .from('account')
@@ -113,6 +129,15 @@ class AccountService {
         await knex.from('account')
             .where({ account_id: account.id })
             .update(this._modelToTable(account));
+    }
+
+    async changePassword(account)
+    {
+        await knex.from('account')
+            .where({ account_id: account.id })
+            .update(this._passToTable(account));
+
+        console.log("update attempt performed");
     }
 }
 
