@@ -29,12 +29,12 @@ class RecipeService {
             caloric_est: recipeModel.caloricEstimate,
             taste_rating: recipeModel.tasteRating,
             difficulty_rating: recipeModel.difficultyRating,
-//            note: recipeModel.note                        Specific to PersonalRecipe
+           // note: recipeModel.note                        Specific to PersonalRecipe
         }
     }
 
-    _personalRecipeTable(recipeID, accountID) {
-        return { recipe_id: recipeID, account_id: accountID};
+    _personalRecipeTable(recipeID, accountID, note) {
+        return { recipe_id: recipeID, account_id: accountID, note: note };
     }
 
     async getRecipe(recipeID) {
@@ -50,7 +50,11 @@ class RecipeService {
             .from('recipe')
             .join('personal_recipe', 'recipe.recipe_id', '=', 'personal_recipe.recipe_id')
             .where({ 'account_id': accountID });
-        return recipes.map(this._recipeTableToModel);
+        return recipes.map(recipe => {
+            const recipeModel = this._recipeTableToModel(recipe);
+            recipeModel.note = recipe.note;
+            return recipeModel;
+        });
     }
 
     /**
@@ -107,8 +111,8 @@ class RecipeService {
         return recipes.account_id === accountID;
     }
 
-    async saveRecipe(Recipe, accountID) {
-        const recipeData = this._recipeModelToTable(Recipe);
+    async saveRecipe(recipe, accountID) {
+        const recipeData = this._recipeModelToTable(recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction(async (transaction) => {
@@ -116,15 +120,15 @@ class RecipeService {
                 .into( 'recipe')
                 .returning('recipe_id');
 
-            Recipe.setID(recipeID);
-            await transaction.insert(this._personalRecipeTable(recipeID, accountID))
+            recipe.setID(recipeID);
+            await transaction.insert(this._personalRecipeTable(recipeID, accountID, recipe.note))
                 .into('personal_recipe');
         });
 
     }
 
-    async savePublicRecipe(Recipe) {
-        const recipeData = this._recipeModelToTable(Recipe);
+    async savePublicRecipe(recipe) {
+        const recipeData = this._recipeModelToTable(recipe);
         recipeData.recipe_id = null;
 
         await knex.transaction( async(transaction) => {

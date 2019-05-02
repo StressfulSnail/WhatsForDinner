@@ -71,7 +71,7 @@ class RecipeController {
             //Check for Duplicates here if necessary
             const ingredientList = new Array();
 
-            await this.readIngredientList(ingredientList, body.ingredientList, response);
+            await RecipeController.readIngredientList(ingredientList, body.ingredientList, response);
 
             const prepInstructions = body.prepInstructions;
             recipe.prepInstructions = prepInstructions;
@@ -123,56 +123,60 @@ class RecipeController {
 
     }
 
-    async createSharedRecipe(request, response){
-        const {body} = request;
-        const recipe = new PersonalRecipe();
-        const name = body.name;
-        recipe.name = name;
-        const imageURL = body.imageURL;
-        recipe.imageURL = imageURL;
-        //const validImageURL = Fill this in later
+    async createSharedRecipe(request, response) {
+        try {
+            const {body} = request;
+            const recipe = new PersonalRecipe();
+            const name = body.name;
+            recipe.name = name;
+            const imageURL = body.imageURL;
+            recipe.imageURL = imageURL;
+            //const validImageURL = Fill this in later
 
-        //Check for Duplicates here if necessary
-        const ingredientList = new Array();
+            //Check for Duplicates here if necessary
+            const ingredientList = new Array();
 
-        await this.readIngredientList(ingredientList, body.ingredientList, response);
+            await this.readIngredientList(ingredientList, body.ingredientList, response);
 
-        const prepInstructions = body.prepInstructions;
-        recipe.prepInstructions = prepInstructions;
+            const prepInstructions = body.prepInstructions;
+            recipe.prepInstructions = prepInstructions;
 
-        const prepTime = body.prepTime;
-        recipe.prepTime = prepTime;
+            const prepTime = body.prepTime;
+            recipe.prepTime = prepTime;
 
-        const cookTime = body.cookTime;
-        recipe.cookTime = cookTime;
+            const cookTime = body.cookTime;
+            recipe.cookTime = cookTime;
 
-        const caloricEstimate = body.caloricEstimate;
-        recipe.caloricEstimate = caloricEstimate;
+            const caloricEstimate = body.caloricEstimate;
+            recipe.caloricEstimate = caloricEstimate;
 
-        const tasteRating = body.tasteRating;
-        recipe.tasteRating = tasteRating;
+            const tasteRating = body.tasteRating;
+            recipe.tasteRating = tasteRating;
 
-        const difficultyRating = body.difficultyRating;
-        recipe.difficultyRating = difficultyRating;
+            const difficultyRating = body.difficultyRating;
+            recipe.difficultyRating = difficultyRating;
 
+            const note = body.note;
+            recipe.note = note;
 
-        /* Tag method, to fill in later.
-        for(let x = 0; x < body.tags.length; x++) {
+            /* Tag method, to fill in later.
+            for(let x = 0; x < body.tags.length; x++) {
 
+            }
+            */
+
+            await recipeService.savePublicRecipe(recipe);
+
+            for (let x = 0; x < ingredientList.length; x++) {
+                const ingredientCount = ingredientList[x];
+                await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
+            }
+
+            response.sendStatus(200);
+        } catch (e) {
+            console.error(e);
+            response.sendStatus(500);
         }
-        */
-
-        await recipeService.savePublicRecipe(recipe);
-
-        for (let x = 0; x < ingredientList.length; x++) {
-            const ingredientCount = ingredientList[x];
-            await ingredientService.saveIngredientCount(ingredientCount, recipe.getID());
-        }
-
-        response.sendStatus(200);
-    } catch (e) {
-        console.error(e);
-        response.sendStatus(500);
     }
 
     async editRecipe(request, response) {
@@ -232,7 +236,7 @@ class RecipeController {
             const ingredientCount = await ingredientService.getIngredientCount(request.body.ingredient_id,
                     request.body.measurement_id, request.body.measurement);
 
-            const recipe = await recipeService.getRecipe(request.body.recipe_id)
+            const recipe = await recipeService.getRecipe(request.body.recipe_id);
 
             recipe.addIngredient(ingredientCount);
 
@@ -250,16 +254,16 @@ class RecipeController {
      * 2: Other ingredient list to read
      * 3: Response to use to send.
      */
-    async readIngredientList(newIngredientList, otherIngredientList, response)
+    static async readIngredientList(newIngredientList, otherIngredientList, response)
     {
         for(let x = 0; x < otherIngredientList.length; x++) {
-            const ingredient = await ingredientService.getIngredientByName(otherIngredientList[x].ingredient_name);
+            let ingredient = await ingredientService.getIngredientByName(otherIngredientList[x].ingredient);
             if (!ingredient) {
-                ingredient.setName(otherIngredientList[x].ingredient_name);
+                ingredient = new Ingredient();
+                ingredient.setName(otherIngredientList[x].ingredient);
                 await ingredientService.saveIngredient(ingredient);
             }
             const measurementUnit = await ingredientService.getMeasurementByName(otherIngredientList[x].measurementUnit);
-            console.log(measurementUnit.getID());
             if (!measurementUnit) {
                 response.sendStatus(404);
             }
