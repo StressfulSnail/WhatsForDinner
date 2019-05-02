@@ -14,6 +14,18 @@ class RecipeService extends BaseService {
 
         return await response.json();
     }
+
+    async createRecipe(token, recipe) {
+        const response = await fetch(`${host}/api/recipe`, {
+            headers: super.getHeaders(token),
+            body: JSON.stringify(recipe),
+            method: 'POST',
+        });
+
+        if(!response.ok) {
+            throw new Error(await response.text());
+        }
+    }
 }
 
 export default new RecipeService();
