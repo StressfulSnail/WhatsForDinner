@@ -28,7 +28,7 @@ const validate = (values) => {
             'difficultyRating',
             'prepTime',
             'cookTime',
-            'calories',
+            'caloricEstimate',
             'instructions',
         ],
         values,
@@ -110,7 +110,7 @@ const CreateRecipeForm = (props) => {
 
                 <Field
                     className={classes.textField}
-                    name="calories"
+                    name="caloricEstimate"
                     label="Calories Per Serving"
                     component={renderNumberField}
                 />
