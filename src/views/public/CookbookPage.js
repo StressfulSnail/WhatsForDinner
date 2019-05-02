@@ -27,7 +27,7 @@ class CookbookPage extends React.Component {
     render() {
         return (
             <div>
-                <UserNavBar pageName={"My sCookbook"} currentPath={MY_COOKBOOK}/>
+                <UserNavBar pageName={"My Cookbook"} currentPath={MY_COOKBOOK}/>
 
                 <RecipeSearch recipes={this.props.recipes} />
             </div>

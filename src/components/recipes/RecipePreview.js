@@ -30,7 +30,7 @@ const RecipePreview = function (props) {
 
     return <div>
         <Card className={classes.card}>
-            { recipe.imageUrl ? <CardMedia className={classes.media} image={recipe.imageUrl} title="Recipe Image" /> : '' }
+            { recipe.imageURL ? <CardMedia className={classes.media} image={recipe.imageURL} title="Recipe Image" /> : '' }
             <CardContent>
                 <Typography component="h3">{recipe.name}</Typography>
                 <Typography color="textSecondary" component="div">
