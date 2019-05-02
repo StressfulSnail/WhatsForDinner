@@ -18,6 +18,8 @@ import EditPlanModal from "../../components/mealPlans/EditPlanModal";
 import ShoppingList from "../../components/mealPlans/ShoppingList";
 import {HOME, MEAL_PLANS} from "../../UIRoutes";
 import UserNavBar from "../../components/common/UserNavBar";
+import recipeService from "../../services/recipeService";
+import {RECIPES_LOADED} from "../../actions/recipeActions";
 
 const styles = {
     mealTitle: {
@@ -214,7 +216,18 @@ class MealPlanPage extends React.Component {
         }
     };
 
-    openRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: true });
+    openRecipeModal = async () => {
+        try {
+            this.props.loadingStart();
+            const recipes = await recipeService.getPersonalRecipes(this.props.token);
+            this.props.recipesLoaded(recipes);
+            this.props.loadingComplete();
+            this.setState({...this.state, recipeModalOpen: true});
+        } catch (e) {
+            console.error(e);
+            this.loadingError();
+        }
+    };
     openEditPlanModal = () => this.setState({ ...this.state, editPlanModalOpen: true });
     closeRecipeModal = () => this.setState({ ...this.state, recipeModalOpen: false });
     closeMealTimeModal = () => this.setState({ ...this.state, selectTimeModalOpen: false });
@@ -222,14 +235,15 @@ class MealPlanPage extends React.Component {
     closeEditPlanModal = () => this.setState({ ...this.state, editPlanModalOpen: false });
 
     render() {
-        const { classes, selectedPlan, meals } = this.props;
+        const { classes, selectedPlan, meals, recipes } = this.props;
         return <div>
 
             <UserNavBar pageName="Meal Plan" currentPath={MEAL_PLANS}/>
 
             <AddRecipeModal open={this.state.recipeModalOpen}
                             onCancel={this.closeRecipeModal}
-                            onSelect={this.selectRecipe}/>
+                            onSelect={this.selectRecipe}
+                            recipes={recipes}/>
             <MealTimeSelectionModal open={this.state.selectTimeModalOpen}
                                     meals={meals}
                                     startDate={selectedPlan.startDate}
@@ -299,6 +313,7 @@ const mapStateToProps = (state) => {
         selectedPlan: state.mealPlans.selectedPlan,
         mealPlans: state.mealPlans.plans,
         meals: state.mealPlans.meals,
+        recipes: state.recipe.recipes,
     }
 };
 
@@ -309,6 +324,7 @@ const mapActionsToProps = (dispatch) => {
         loadMealPlans: (plans) => dispatch({ type: LOAD_MEAL_PLANS, payload: { plans } }),
         mealsLoaded: (meals) => dispatch({ type: LOAD_MEALS, payload: { meals } }),
         selectMealPlan: (id) => dispatch({ type: MEAL_PLAN_SELECTED, payload: { id } }),
+        recipesLoaded: (recipes) => dispatch({ type: RECIPES_LOADED, payload: { recipes } }),
     }
 };
 
