@@ -11,8 +11,6 @@
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
-    "jquery": "^3.4.0",
-    "jquery-ui": "^1.12.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.16.3",
     "mysql": "^2.16.0",

@@ -14,7 +14,7 @@ import AccountRecoveryPage from './views/public/AccountRecoveryPage.js';
 import HomePage from './views/public/HomePage.js';
 import MealPlansPage from './views/public/MealPlansPage';
 import MealPlanPage from './views/public/MealPlanPage';
-import RecipePage from './views/public/MyCookbook';
+import RecipePage from './views/public/CookbookPage';
 import AccountPage from './views/public/AccountPage';
 import ErrorPage from './views/public/ErrorPage';
 

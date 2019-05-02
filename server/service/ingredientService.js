@@ -3,7 +3,7 @@ const Ingredient = require('../model/Ingredient');
 const IngredientCount = require('../model/IngredientCount');
 const MeasurementUnit = require('../model/MeasurementUnit');
 
-class ingredientService {
+class IngredientService {
 
     _ingredientTableToModel(tableObj) {
         const ingredient = new Ingredient();
@@ -34,10 +34,10 @@ class ingredientService {
         }
     }
 
-    _ingredientCountTableToModel(tableObj) {
+    async _ingredientCountTableToModel(tableObj) {
         const ingredientCount = new IngredientCount();
-        ingredientCount.setIngredient(this.getIngredient(tableObj.ingredient_id));
-        ingredientCount.setMeasurementUnit(this.getIngredient(tableObj.unit_id));
+        ingredientCount.setIngredient(await this.getIngredient(tableObj.ingredient_id));
+        ingredientCount.setMeasurementUnit(await this.getMeasurement(tableObj.unit_id));
         ingredientCount.setMeasurement(tableObj.measurement);
         return ingredientCount;
     }
@@ -56,8 +56,6 @@ class ingredientService {
             .from('ingredient')
             .where({'ingredient_id' : ingredientID});
 
-        console.log(ingredients[0].name);
-        console.log(this._ingredientTableToModel(ingredients[0]));
         return ingredients.length === 0 ? null : this._ingredientTableToModel(ingredients[0]);
     }
 
@@ -130,7 +128,7 @@ class ingredientService {
             .where( {'recipe_id' : recipe.getID()});
 
         for (let x = 0; x < ingredientCounts.length; x++) {
-            const ingredientCount = this._ingredientCountTableToModel(ingredientCounts[x]);
+            const ingredientCount = await this._ingredientCountTableToModel(ingredientCounts[x]);
             recipe.addIngredient(ingredientCount);
         }
     }
@@ -156,4 +154,4 @@ class ingredientService {
     }
 }
 
-module.exports = new ingredientService();
+module.exports = new IngredientService();

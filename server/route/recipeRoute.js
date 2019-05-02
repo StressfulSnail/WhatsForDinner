@@ -7,7 +7,7 @@ const router = express.Router();
 const recipeController = require('../controller/recipeController');
 
 /**
- * GET /api/recipe/
+ * GET /api/recipe/:id
  * Get recipe details
  * Requires (recipe_id)
  * Returns {
@@ -37,7 +37,37 @@ const recipeController = require('../controller/recipeController');
  *
  * Passport utilized in case you need to return a ton of personal recipes.
  */
-router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getRecipe);
+router.get('/:id', passport.authenticate('jwt', { session: false }), recipeController.getRecipe);
+
+/**
+ * GET /api/recipe
+ * Get all personal recipe details
+ * Returns [{
+ *      name: string
+ *      imageURL: string
+ *
+ *      ingredientList: [
+ *          {
+ *              ingredient_name: string
+ *              measurement: Double
+ *              measurementUnit: string
+ *          }
+ *      ]
+ *      prepInstructions: string
+ *      prepTime: int
+ *      cookTime: int
+ *      caloricEstimate: int
+ *      tasteRating: int
+ *      difficultyRating: int
+ *      tags: [
+ *          {
+ *              tag_id: int
+ *              tag_name: string
+ *          }
+ *      ]
+ * }]
+ */
+router.get('/', passport.authenticate('jwt', { session: false }), recipeController.getPersonalRecipes);
 
 /**
  * POST /api/recipe/

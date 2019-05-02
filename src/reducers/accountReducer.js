@@ -1,9 +1,9 @@
 import { LOGIN, LOGOUT, LOAD_ACCOUNT } from '../actions/accountActions';
 
 const initialState = {
-    isAuthenticated: false,
+    isAuthenticated: window.localStorage.getItem('token') !== 'null',
     token: window.localStorage.getItem('token'),
-    accountData: null,
+    accountData: JSON.parse(window.localStorage.getItem('account')),
 };
 
 export default function (state = initialState, action) {
@@ -17,6 +17,7 @@ export default function (state = initialState, action) {
             };
         case LOGOUT:
             window.localStorage.setItem('token', null);
+            window.localStorage.setItem('account', null);
             return initialState;
         case LOAD_ACCOUNT:
             // extract necessary fields
@@ -32,18 +33,19 @@ export default function (state = initialState, action) {
                 confirmed
             } = action.payload.accountData;
             console.log(username);
-            return { ...state, accountData: {
-                    id: id,
-                    username: username,
-                    email: email,
-                    firstName: firstName,
-                    lastName: lastName,
-                    middleName: middleName ? middleName : "N/A",
-                    paymentInfo: paymentInfo,
-                    subscriptionLevel: subscriptionLevel,
-                    confirmed: confirmed
-                }
+            const accountData = {
+                id: id,
+                username: username,
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                middleName: middleName ? middleName : "N/A",
+                paymentInfo: paymentInfo,
+                subscriptionLevel: subscriptionLevel,
+                confirmed: confirmed
             };
+            window.localStorage.setItem('account', JSON.stringify(accountData));
+            return { ...state, accountData };
         default:
             return state;
     }
