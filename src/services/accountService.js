@@ -24,6 +24,25 @@ class AccountService extends BaseService {
         return json.token;
     }
 
+    async getAccountByID(token, id) {
+        const response = await fetch(`${host}/api/account`, {
+            method: 'GET',
+            headers: super.getHeaders(token),
+            user: JSON.stringify(id)
+        });
+
+        if (!response.ok) {
+            console.log('get by username failed');
+            throw new Error(await response.text());
+
+        }
+        const json = await response.json();
+        console.log(json);
+        let item = JSON.parse(json);
+        console.log("parsed");
+        return item;
+    }
+
     async getAccountByUsername(token, username) {
         const response = await fetch(`${host}/api/account/find`, {
             method: 'GET',
@@ -48,6 +67,18 @@ class AccountService extends BaseService {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password, firstName, lastName, middleName })
+        });
+
+        if (!response.ok) {
+            throw new Error('Account not edited');
+        }
+    }
+
+    async editAccount(token, id, username, email, firstName, lastName, middleName) {
+        const response = await fetch(`${host}/api/account/edit`, {
+            method: 'POST',
+            headers: super.getHeaders(token),
+            body: JSON.stringify({ id, username, email, firstName, lastName, middleName })
         });
 
         if (!response.ok) {

@@ -33,6 +33,17 @@ class AccountService {
         }
     }
 
+    _editToTable(editModel) {
+        return {
+            email: editModel.email,
+            username: editModel.username,
+            first_name: editModel.firstName,
+            middle_name: editModel.middleName,
+            last_name: editModel.lastName
+        }
+
+    }
+
     async getAccount(id) {
         const accounts = await knex.select()
             .from('account')
@@ -112,9 +123,10 @@ class AccountService {
 
     async editAccount(account)
     {
+        console.log("update attempted");
         await knex.from('account')
             .where({ account_id: account.id })
-            .update(this._modelToTable(account));
+            .update(this._editToTable(account));
 
         console.log("update attempt performed");
     }

@@ -21,6 +21,21 @@ const accountController = require('../controller/accountController');
  */
 router.get('/', passport.authenticate('jwt', { session: false }), accountController.getAccountById);
 
+/**
+ * GET /api/account/find/
+ * Get account details
+ * Returns {
+ *      email: string
+ *      username: string
+ *      password: string
+ *      firstName: string
+ *      middleName: string
+ *      lastName: string
+ *      paymentInfo: string
+ *      subscriptionLevel: int
+ *      confirmed: boolean
+ * }
+ */
 router.get('/find', passport.authenticate('jwt', { session: false }), accountController.getAccountByUserName);
 
 /**
@@ -72,6 +87,14 @@ router.delete('/delete', passport.authenticate ('jwt', {session: false }), accou
 /**
  * POST /api/account/edit
  * Edit Account
+ * Body {
+ *      id: string
+ *      email: string
+ *      username: string
+ *      firstName: string
+ *      middleName: string
+ *      lastName: string
+ * }
  *
  */
 router.post('/edit', passport.authenticate ('jwt', {session: false }), accountController.editAccount);

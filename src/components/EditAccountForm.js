@@ -2,11 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Paper, Button, withStyles } from "@material-ui/core";
 import { Field, reduxForm } from 'redux-form';
-import TermsOfService from "./TermsOfService.js";
 import { renderTextField, renderPasswordField, renderCheckbox } from "./common/InputFields";
 import {
-    requiredFields, maxFields, validatePasswords, validateEmail, MAX_NAME, MAX_PASSWORD, MAX_EMAIL
+    requiredFields, maxFields, validateEmail, MAX_NAME, MAX_PASSWORD, MAX_EMAIL
 } from "../services/AccountInputValidation";
+
+import { connect } from "react-redux";
 
 
 const styles = (theme) => ({
@@ -28,27 +29,12 @@ const validate = (values) => {
             'username',
             'firstName',
             'lastName',
-            'email',
-            'password',
-            'confirmPassword',
-            'termsOfService'
+            'email'
         ],
         values,
         errors
     );
 
-    if (values.password !== values.confirmPassword) {
-        errors.confirmPassword = 'passwords do not match';
-    }
-
-    validatePasswords(
-        [
-            'password',
-            'confirmPassword'
-        ],
-        values,
-        errors
-    );
 
     if ( validateEmail(values.email) ) {
         errors.email = 'Invalid email address'
@@ -66,10 +52,6 @@ const validate = (values) => {
         errors
     );
 
-    maxFields(
-        MAX_PASSWORD, [ 'password', 'confirmPassword'], values, errors
-    );
-
     if (
         values.email && values.email.length > MAX_EMAIL
     ) {
@@ -80,12 +62,11 @@ const validate = (values) => {
 };
 
 
-const CreateAccountForm = (props) => {
+const EditAccountForm = (props) => {
 
-    const { handleSubmit, pristine, reset, submitting, valid, classes } = props;
+    const { handleSubmit, pristine,submitting, valid, classes } = props;
 
     return (
-
         <form onSubmit={handleSubmit}>
             <Field
                 name="username"
@@ -119,30 +100,6 @@ const CreateAccountForm = (props) => {
                 component={renderTextField}
             />
 
-            <Field
-                name="password"
-                label="Password"
-                component={renderPasswordField}
-            />
-
-            <br/>
-
-            <Field
-                name="confirmPassword"
-                label="Confirm Password"
-                component={renderPasswordField}
-            />
-
-            <div className={classes.textField}>
-                <TermsOfService />
-            </div>
-
-            <Field
-                name="termsOfService"
-                label="I have read and agree to the terms of service"
-                component={renderCheckbox}
-            />
-
             <br/>
 
             <Button
@@ -159,14 +116,23 @@ const CreateAccountForm = (props) => {
 
 };
 
-CreateAccountForm.propTypes = {
+EditAccountForm.propTypes = {
     classes: PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired
 };
 
-const form = reduxForm({
-    form: "createAccountForm",
-    validate
-})(CreateAccountForm);
+const mapStateToProps = (state) => {
+    return {
+        initialValues: state.account.accountData
+    }
+};
 
-export default withStyles(styles)(form);
+const form = reduxForm({
+    form: "editAccountForm",
+    validate,
+    enableReinitialize: true
+})(EditAccountForm);
+
+const connected = connect(mapStateToProps, null)(form);
+
+export default withStyles(styles)(connected);

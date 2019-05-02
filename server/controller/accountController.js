@@ -15,8 +15,14 @@ class AccountController {
             if (!account) {
                 return response.sendStatus(404);
             }
-            account.password = null;
-            response.send(account);
+            account.password = "";
+            const json = JSON.stringify(account, (key, value) => {
+                if (value === null) {
+                    return "";
+                }
+                return value;
+            });
+            return response.json(json);
         } catch (e) {
             console.error(e);
             response.sendStatus(500);
@@ -161,21 +167,21 @@ class AccountController {
 
     async editAccount(request, response)
     {
-        try
-        {
+        try {
 
             const account = await accountService.getAccount(request.user.id);
             if (!account)
                 {
                 return response.sendStatus(404);  //404 means we dcan't find it!
                 }
+
+
             account.id = request.user.id;
             account.email = request.body.email;
             account.username = request.body.username;
             account.firstName = request.body.firstName;
             account.middleName = request.body.middleName;
             account.lastName = request.body.lastName;
-            account.setHashedPassword(request.body.password);
 
             const duplicateEmail = await accountService.findByEmail(account.email);
             const duplicateUsername = await accountService.findByUsername(account.username);
