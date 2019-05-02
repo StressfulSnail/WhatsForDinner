@@ -1,12 +1,12 @@
 const knex = require('../db');
 const Tag = require('../model/Tag');
 
-    class TagService {
+class TagService {
 
-    _tagTableToModel(tableObj) {
+    async _tagTableToModel(tableObj) {
         const tag = new Tag();
         tag.setTagID(tableObj.tag_id);
-        tag.setTagType(this.getTagTypeByID(tableObj.tag_type_id));
+        tag.setTagType(await this.getTagTypeByID(tableObj.tag_type_id));
         tag.setName(tableObj.tag_name);
         return tag;
     }
@@ -43,7 +43,7 @@ const Tag = require('../model/Tag');
             .from('tag')
             .where({'tag_id' : tagID});
 
-        return tags.length === 0 ? null : this._tagTableToModel(tags[0]);
+        return tags.length === 0 ? null : await this._tagTableToModel(tags[0]);
     }
 
     async getTagByName(tagName) {
@@ -51,7 +51,7 @@ const Tag = require('../model/Tag');
             .from('tag')
             .where({'tag_name' : tagName});
 
-        return tags.length === 0 ? null : this._tagTableToModel(tags[0]);
+        return tags.length === 0 ? null : await this._tagTableToModel(tags[0]);
     }
 
     async getTagsByType(tagTypeID) {
@@ -74,8 +74,8 @@ const Tag = require('../model/Tag');
             const tag_id = await transaction.insert(tagData)
                 .into('tag')
                 .returning('tag_id');
+            tag.setTagID(tag_id);
         })
-
     }
 
         /**If you have a tagTypeID, this will return a tag type name
@@ -87,7 +87,7 @@ const Tag = require('../model/Tag');
     async getTagTypeByID(tagTypeID) {
         const tagType = await knex.select()
             .from('tag_type')
-            .where( {'tag_type_id' : tagTypeID})
+            .where( {'tag_type_id' : tagTypeID});
 
         return tagType.length === 0 ? null : tagType[0].type_name;
     }
@@ -122,7 +122,7 @@ const Tag = require('../model/Tag');
               tag_type_id = await transaction.insert(tagType)
                 .into('tag_type')
                 .returning('tag_type_id')
-        })
+        });
 
         return tag_type_id;
     }
@@ -132,6 +132,16 @@ const Tag = require('../model/Tag');
         await knex.insert(recipeTag)
             .into('recipe_tag')
     }
+
+    async getRecipeTags(recipe) {
+        const tags = await knex
+            .select('*')
+            .from('tag')
+            .join('recipe_tag', 'tag.tag_id', '=', 'recipe_tag.tag_id')
+            .where({ 'recipe_id': recipe.getID() });
+        const tagsModel = await Promise.all(tags.map(tag => this._tagTableToModel(tag)));
+        recipe.setTags(tagsModel);
     }
+}
 
 module.exports = new TagService();
