@@ -26,7 +26,7 @@ const getRatingStars = (number) => {
 };
 
 const RecipePreview = function (props) {
-    const { classes, recipe } = props;
+    const { classes, recipe, select, onSelect } = props;
 
     return <div>
         <Card className={classes.card}>
@@ -40,7 +40,10 @@ const RecipePreview = function (props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button className={classes.actionItem} size="small" color="primary">View</Button>
+                { select ?
+                    <Button className={classes.actionItem} size="small" color="primary" onClick={onSelect}>Select</Button> :
+                    <Button className={classes.actionItem} size="small" color="primary">View</Button>
+                }
             </CardActions>
         </Card>
     </div>
@@ -48,6 +51,8 @@ const RecipePreview = function (props) {
 
 RecipePreview.propTypes = {
     recipe: PropTypes.object,
+    select: PropTypes.bool,
+    onSelect: PropTypes.func,
 };
 
 export default withStyles(styles)(RecipePreview);

@@ -103,14 +103,13 @@ class RecipeController {
 
             const tagList = new Array();
 
+            body.tags = body.tags ? body.tags : [];
             for(let x = 0; x < body.tags.length; x++) {
                 let tag = await tagService.getTagByName(body.tags[x].name);
                 if(!tag) {
                     tag = new Tag();
                     await tag.setName(body.tags[x].name);
                     await tag.setTagType(body.tags[x].tag_type);
-                    console.log(tag.getName());
-                    console.log(tag.getTagType());
                     await tagService.saveTag(tag);
                 }
                 await tagList.push(tag);
@@ -179,8 +178,6 @@ class RecipeController {
         const otherIngredientList = body.ingredientList;
 
         await RecipeController.readIngredientList(ingredientList, otherIngredientList, response);
-
-        console.log(ingredientList);
 
             const prepInstructions = body.prepInstructions;
             recipe.prepInstructions = prepInstructions;
@@ -377,7 +374,7 @@ class RecipeController {
      * 2: Other ingredient list to read
      * 3: Response to use to send.
      */
-    static async readIngredientList(newIngredientList, otherIngredientList, response) {
+    static async readIngredientList(newIngredientList = [], otherIngredientList = [], response) {
         for(let x = 0; x < otherIngredientList.length; x++) {
             let ingredient = await ingredientService.getIngredientByName(otherIngredientList[x].ingredient);
             if (!ingredient) {

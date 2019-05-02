@@ -32,7 +32,6 @@ export default function (state = initialState, action) {
                 subscriptionLevel,
                 confirmed
             } = action.payload.accountData;
-            console.log(username);
             const accountData = {
                 id: id,
                 username: username,

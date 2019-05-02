@@ -6,6 +6,7 @@ import RecipePreview from "./RecipePreview";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {Search} from "@material-ui/icons";
+import { Link } from 'react-router-dom';
 
 const styles = {
     grid: {
@@ -14,7 +15,7 @@ const styles = {
 };
 
 const RecipeSearch = function (props) {
-    const { classes, recipes } = props;
+    const { classes, recipes, select, onSelect } = props;
     const [searchedRecipes, setSearchedRecipes] = useState(null);
 
     const searchRecipes = (event) => {
@@ -45,11 +46,14 @@ const RecipeSearch = function (props) {
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <div align="right">
-                            <Button color="primary"
-                                    variant="contained"
-                                    onClick={''}>NEW RECIPE</Button>
-                        </div>
+                        {select ? '' :
+                            <div align="right">
+                                <Button color="primary"
+                                        variant="contained"
+                                        component={Link}
+                                        to="/my-cookbook/new-recipe">NEW RECIPE</Button>
+                            </div>
+                        }
                     </Grid>
                 </Grid>
             </Grid>
@@ -57,7 +61,7 @@ const RecipeSearch = function (props) {
         <Grid container justify="space-evenly" alignItems="flex-start" spacing={16}>
             {recipesToRender.map(recipe => (
                 <Grid item key={recipe.id} xs={12} md={4} lg={2}>
-                    <RecipePreview recipe={recipe} />
+                    <RecipePreview recipe={recipe} select={select} onSelect={() => onSelect(recipe)} />
                 </Grid>
             ))}
         </Grid>
@@ -66,6 +70,8 @@ const RecipeSearch = function (props) {
 
 RecipeSearch.propTypes = {
     recipes: PropTypes.array,
+    select: PropTypes.bool,
+    onSelect: PropTypes.func,
 };
 
 export default withStyles(styles)(RecipeSearch);
