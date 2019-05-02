@@ -33,8 +33,8 @@ class RecipeService {
         }
     }
 
-    _personalRecipeTable(recipeID, accountID) {
-        return { recipe_id: recipeID, account_id: accountID};
+    _personalRecipeTable(recipeID, accountID, note) {
+        return { recipe_id: recipeID, account_id: accountID, note: note};
     }
 
     async getRecipe(recipeID) {
@@ -120,7 +120,7 @@ class RecipeService {
                 .returning('recipe_id');
 
             Recipe.setID(recipeID);
-            await transaction.insert(this._personalRecipeTable(recipeID, accountID))
+            await transaction.insert(this._personalRecipeTable(recipeID, accountID, Recipe.getNote()))
                 .into('personal_recipe');
         });
 

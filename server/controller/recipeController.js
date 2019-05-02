@@ -294,6 +294,7 @@ class RecipeController {
     }
 
     /**For internal use, simplifying the reading of ingredients lists
+     * Does not work at the moment
      * Parameters passed:
      * 1:New ingredient list to create
      * 2: Other ingredient list to read
