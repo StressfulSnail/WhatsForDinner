@@ -6,6 +6,7 @@ import RecipePreview from "./RecipePreview";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {Search} from "@material-ui/icons";
+import { Link } from 'react-router-dom';
 
 const styles = {
     grid: {
@@ -49,7 +50,8 @@ const RecipeSearch = function (props) {
                             <div align="right">
                                 <Button color="primary"
                                         variant="contained"
-                                        onClick={''}>NEW RECIPE</Button>
+                                        component={Link}
+                                        to="/my-cookbook/new-recipe">NEW RECIPE</Button>
                             </div>
                         }
                     </Grid>
